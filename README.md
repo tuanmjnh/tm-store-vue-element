@@ -22,8 +22,12 @@ npm run lint
 ```
 git push -f origin master
 ```
-
 ## source project
+```
+https://github.com/PanJiaChen/vue-element-admin
+```
+
+## source project preview
 ```
 https://panjiachen.github.io/vue-element-admin
 ```
