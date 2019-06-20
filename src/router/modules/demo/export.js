@@ -1,8 +1,8 @@
-import Layout from '@/layout'
+import Demo from '@/views/demo'
 
 const excel = {
   path: '/demo/excel',
-  component: Layout,
+  component: Demo,
   redirect: '/demo/excel/export-excel',
   name: 'Excel',
   meta: {
@@ -12,25 +12,25 @@ const excel = {
   children: [
     {
       path: 'export-excel',
-      component: () => import('@/views/excel/export-excel'),
+      component: () => import('@/views/demo/excel/export-excel'),
       name: 'ExportExcel',
       meta: { title: 'exportExcel' }
     },
     {
       path: 'export-selected-excel',
-      component: () => import('@/views/excel/select-excel'),
+      component: () => import('@/views/demo/excel/select-excel'),
       name: 'SelectExcel',
       meta: { title: 'selectExcel' }
     },
     {
       path: 'export-merge-header',
-      component: () => import('@/views/excel/merge-header'),
+      component: () => import('@/views/demo/excel/merge-header'),
       name: 'MergeHeader',
       meta: { title: 'mergeHeader' }
     },
     {
       path: 'upload-excel',
-      component: () => import('@/views/excel/upload-excel'),
+      component: () => import('@/views/demo/excel/upload-excel'),
       name: 'UploadExcel',
       meta: { title: 'uploadExcel' }
     }
@@ -39,7 +39,7 @@ const excel = {
 
 const zip = {
   path: '/demo/zip',
-  component: Layout,
+  component: Demo,
   redirect: '/demo/zip/download',
   alwaysShow: true,
   name: 'Zip',
@@ -47,7 +47,7 @@ const zip = {
   children: [
     {
       path: 'download',
-      component: () => import('@/views/zip/index'),
+      component: () => import('@/views/demo/zip/index'),
       name: 'ExportZip',
       meta: { title: 'exportZip' }
     }
@@ -56,18 +56,18 @@ const zip = {
 
 const pdf = {
   path: '/demo/pdf',
-  component: Layout,
+  component: Demo,
   redirect: '/demo/pdf/index',
   children: [
     {
       path: 'index',
-      component: () => import('@/views/pdf/index'),
+      component: () => import('@/views/demo/pdf/index'),
       name: 'PDF',
       meta: { title: 'pdf', icon: 'pdf' }
     },
     {
       path: '/pdf/download',
-      component: () => import('@/views/pdf/download'),
+      component: () => import('@/views/demo/pdf/download'),
       hidden: true
     }
   ]

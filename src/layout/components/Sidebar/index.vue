@@ -41,7 +41,7 @@ export default {
       return path
     },
     showLogo() {
-      return this.$store.state.settings.sidebarLogo
+      return this.$store.state.settings.user_seting.layout.sidebar_logo
     },
     variables() {
       return variables

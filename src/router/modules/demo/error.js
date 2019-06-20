@@ -1,8 +1,8 @@
-import Layout from '@/layout'
+import Demo from '@/views/demo'
 
 const error = {
   path: '/demo/error',
-  component: Layout,
+  component: Demo,
   redirect: 'noRedirect',
   name: 'ErrorPages',
   meta: { title: 'errorPages', icon: '404' },
@@ -24,11 +24,11 @@ const error = {
 
 const errorLog = {
   path: '/demo/error-log',
-  component: Layout,
+  component: Demo,
   children: [
     {
       path: 'log',
-      component: () => import('@/views/error-log/index'),
+      component: () => import('@/views/demo/error-log/index'),
       name: 'ErrorLog',
       meta: { title: 'errorLog', icon: 'bug' }
     }

@@ -10,17 +10,17 @@
 
       <div class="drawer-item">
         <span>{{ $t('settings.tagsView') }}</span>
-        <el-switch v-model="tagsView" class="drawer-switch" />
+        <el-switch v-model="userSeting.layout.tags_view" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
         <span>{{ $t('settings.fixedHeader') }}</span>
-        <el-switch v-model="fixedHeader" class="drawer-switch" />
+        <el-switch v-model="userSeting.layout.fixed_header" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
         <span>{{ $t('settings.sidebarLogo') }}</span>
-        <el-switch v-model="sidebarLogo" class="drawer-switch" />
+        <el-switch v-model="userSeting.layout.sidebar_logo" class="drawer-switch" />
       </div>
 
     </div>
@@ -36,46 +36,59 @@ export default {
     return {}
   },
   computed: {
-    fixedHeader: {
-      get() {
-        return this.$store.state.settings.fixedHeader
+    userSeting() {
+      return this.$store.state.settings.user_seting
+    }
+    //   fixedHeader: {
+    //     get() {
+    //       return this.$store.state.settings.fixedHeader
+    //     },
+    //     set(val) {
+    //       this.$store.dispatch('settings/changeSetting', {
+    //         key: 'fixedHeader',
+    //         value: val
+    //       })
+    //     }
+    //   },
+    //   tagsView: {
+    //     get() {
+    //       return this.$store.state.settings.tagsView
+    //     },
+    //     set(val) {
+    //       this.$store.dispatch('settings/changeSetting', {
+    //         key: 'tagsView',
+    //         value: val
+    //       })
+    //     }
+    //   },
+    //   sidebarLogo: {
+    //     get() {
+    //       return this.$store.state.settings.sidebarLogo
+    //     },
+    //     set(val) {
+    //       this.$store.dispatch('settings/changeSetting', {
+    //         key: 'sidebarLogo',
+    //         value: val
+    //       })
+    //     }
+    //   }
+  },
+  watch: {
+    userSeting: {
+      handler: function(val, oldVal) {
+        this.$store.dispatch('settings/changeUserSetting', val)
       },
-      set(val) {
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'fixedHeader',
-          value: val
-        })
-      }
-    },
-    tagsView: {
-      get() {
-        return this.$store.state.settings.tagsView
-      },
-      set(val) {
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'tagsView',
-          value: val
-        })
-      }
-    },
-    sidebarLogo: {
-      get() {
-        return this.$store.state.settings.sidebarLogo
-      },
-      set(val) {
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'sidebarLogo',
-          value: val
-        })
-      }
+      deep: true
     }
   },
   methods: {
     themeChange(val) {
-      this.$store.dispatch('settings/changeSetting', {
-        key: 'theme',
-        value: val
-      })
+      // this.$store.dispatch('settings/changeSetting', {
+      //   key: 'theme',
+      //   value: val
+      // })
+
+      this.$store.dispatch('settings/changeUserSetting', { theme: val })
     }
   }
 }
@@ -90,19 +103,19 @@ export default {
 
   .drawer-title {
     margin-bottom: 12px;
-    color: rgba(0, 0, 0, .85);
+    color: rgba(0, 0, 0, 0.85);
     font-size: 14px;
     line-height: 22px;
   }
 
   .drawer-item {
-    color: rgba(0, 0, 0, .65);
+    color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     padding: 12px 0;
   }
 
   .drawer-switch {
-    float: right
+    float: right;
   }
 }
 </style>

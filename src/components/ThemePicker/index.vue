@@ -1,10 +1,6 @@
 <template>
-  <el-color-picker
-    v-model="theme"
-    :predefine="['#409EFF', '#1890ff', '#304156','#212121','#11a983', '#13c2c2', '#6959CD', '#f5222d', ]"
-    class="theme-picker"
-    popper-class="theme-picker-dropdown"
-  />
+  <el-color-picker v-model="theme" :predefine="['#409EFF', '#1890ff', '#304156','#212121','#11a983', '#13c2c2', '#6959CD', '#f5222d', ]"
+    class="theme-picker" popper-class="theme-picker-dropdown" />
 </template>
 
 <script>
@@ -20,7 +16,7 @@ export default {
   },
   computed: {
     defaultTheme() {
-      return this.$store.state.settings.theme
+      return this.$store.state.settings.user_seting.layout.theme
     }
   },
   watch: {
@@ -36,7 +32,6 @@ export default {
       const themeCluster = this.getThemeCluster(val.replace('#', ''))
       const originalCluster = this.getThemeCluster(oldVal.replace('#', ''))
       console.log(themeCluster, originalCluster)
-
       const $message = this.$message({
         message: '  Compiling the theme',
         customClass: 'theme-message',
@@ -45,48 +40,54 @@ export default {
         iconClass: 'el-icon-loading'
       })
 
-      const getHandler = (variable, id) => {
-        return () => {
-          const originalCluster = this.getThemeCluster(ORIGINAL_THEME.replace('#', ''))
-          const newStyle = this.updateStyle(this[variable], originalCluster, themeCluster)
-
-          let styleTag = document.getElementById(id)
-          if (!styleTag) {
-            styleTag = document.createElement('style')
-            styleTag.setAttribute('id', id)
-            document.head.appendChild(styleTag)
-          }
-          styleTag.innerText = newStyle
-        }
-      }
-
       if (!this.chalk) {
         const url = `https://unpkg.com/element-ui@${version}/lib/theme-chalk/index.css`
         await this.getCSSString(url, 'chalk')
       }
 
-      const chalkHandler = getHandler('chalk', 'chalk-style')
+      const chalkHandler = this.getHandler('chalk', 'chalk-style', themeCluster, oldVal)
 
       chalkHandler()
-
-      const styles = [].slice.call(document.querySelectorAll('style'))
-        .filter(style => {
-          const text = style.innerText
-          return new RegExp(oldVal, 'i').test(text) && !/Chalk Variables/.test(text)
-        })
-      styles.forEach(style => {
-        const { innerText } = style
-        if (typeof innerText !== 'string') return
-        style.innerText = this.updateStyle(innerText, originalCluster, themeCluster)
-      })
 
       this.$emit('change', val)
 
       $message.close()
     }
   },
-
+  created() {
+    const oldVal = this.defaultTheme
+    const themeCluster = this.getThemeCluster(oldVal.replace('#', ''))
+    console.log(themeCluster)
+    this.getHandler('chalk', 'chalk-style', themeCluster, oldVal)
+  },
   methods: {
+    getHandler(variable, id, themeCluster, oldVal) {
+      return () => {
+        const originalCluster = this.getThemeCluster(ORIGINAL_THEME.replace('#', ''))
+        const newStyle = this.updateStyle(this[variable], originalCluster, themeCluster)
+
+        let styleTag = document.getElementById(id)
+        if (!styleTag) {
+          styleTag = document.createElement('style')
+          styleTag.setAttribute('id', id)
+          document.head.appendChild(styleTag)
+        }
+        styleTag.innerText = newStyle
+
+        // styles
+        const styles = [].slice.call(document.querySelectorAll('style'))
+          .filter(style => {
+            const text = style.innerText
+            return new RegExp(oldVal, 'i').test(text) && !/Chalk Variables/.test(text)
+          })
+        styles.forEach(style => {
+          const { innerText } = style
+          if (typeof innerText !== 'string') return
+          style.innerText = this.updateStyle(innerText, originalCluster, themeCluster)
+        })
+      }
+    },
+    async changeTheme() { },
     updateStyle(style, oldCluster, newCluster) {
       let newStyle = style
       oldCluster.forEach((color, index) => {

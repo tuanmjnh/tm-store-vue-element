@@ -1,8 +1,8 @@
-import Layout from '@/layout'
+import Demo from '@/views/demo'
 
 const permissionRouter = {
   path: '/demo/permission',
-  component: Layout,
+  component: Demo,
   redirect: '/demo/permission/page',
   alwaysShow: true, // will always show the root menu
   name: 'Permission',
@@ -14,7 +14,7 @@ const permissionRouter = {
   children: [
     {
       path: 'page',
-      component: () => import('@/views/permission/page'),
+      component: () => import('@/views/demo/permission/page'),
       name: 'PagePermission',
       meta: {
         title: 'pagePermission',
@@ -23,7 +23,7 @@ const permissionRouter = {
     },
     {
       path: 'directive',
-      component: () => import('@/views/permission/directive'),
+      component: () => import('@/views/demo/permission/directive'),
       name: 'DirectivePermission',
       meta: {
         title: 'directivePermission'
@@ -32,7 +32,7 @@ const permissionRouter = {
     },
     {
       path: 'role',
-      component: () => import('@/views/permission/role'),
+      component: () => import('@/views/demo/permission/role'),
       name: 'RolePermission',
       meta: {
         title: 'rolePermission',
