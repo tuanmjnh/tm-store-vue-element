@@ -1,8 +1,8 @@
-import variables from '@/styles/element-variables.scss'
-import defaultSettings from '@/settings'
+// import variables from '@/styles/element-variables.scss'
+// import defaultSettings from '@/settings'
 // collection
 const collection = 'settings'
-const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
+// const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
   user_seting: {},
@@ -14,12 +14,12 @@ const state = {
       sidebar_logo: true,
       theme: '#1890ff'
     }
-  },
-  showSettings: showSettings,
-  theme: variables.theme,
-  tagsView: tagsView,
-  fixedHeader: fixedHeader,
-  sidebarLogo: sidebarLogo
+  }
+  // showSettings: showSettings,
+  // theme: variables.theme,
+  // tagsView: tagsView,
+  // fixedHeader: fixedHeader,
+  // sidebarLogo: sidebarLogo
 }
 
 const mutations = {
@@ -56,7 +56,7 @@ const actions = {
     if (data.theme) {
       state.user_seting.layout.theme = data.theme
     }
-    const userSeting = rootState.firebase.fs.collection(collection).doc(rootState.user.id)
+    const userSeting = rootState.$firebase.fs.collection(collection).doc(rootState.user.id)
     userSeting.set(state.user_seting, { merge: true }).then(function() {
       console.log('Document successfully written!')
     }).catch(function(error) {
@@ -66,7 +66,7 @@ const actions = {
   async select({ commit, state, rootState }) {
     // state.default_user_seting.user_id = rootState.user.id
     commit('SET_USER_SETTING')
-    await rootState.firebase.fs
+    await rootState.$firebase.fs
       .collection(collection)
       // .where('user_id', '==', rootState.user.id)
       .doc(rootState.user.id)

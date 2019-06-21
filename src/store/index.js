@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
+// Message
+import { Message } from 'element-ui'
 // firebase
-import { firestore } from '@/vendor/firebaseInit'
+import { auth, firestore } from '@/vendor/firebaseInit'
 Vue.use(Vuex)
 
 // https://webpack.js.org/guides/dependency-management/#requirecontext
@@ -23,7 +25,11 @@ const store = new Vuex.Store({
   getters,
   state: {
     $appLoading: true,
-    firebase: {
+    $getLoading: false,
+    $commitLoading: false,
+    $message: Message,
+    $firebase: {
+      auth: auth,
       fs: firestore
     }
   }

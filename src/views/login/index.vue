@@ -10,8 +10,8 @@
       </div>
 
       <el-form-item prop="username" :rules="[
-      {required: true, message: 'Please input Username', trigger: 'change'},
-      {min:4, message: 'The Username can not be less than 4 digits', trigger: 'change'}]">
+      {required: true, message: $t('login.msg_required_username'), trigger: 'change'},
+      {min:4, message: $t('login.msg_min_username',{min:4}), trigger: 'change'}]">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
@@ -19,28 +19,32 @@
           tabindex="1" autocomplete="on" />
       </el-form-item>
 
-      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
+      <el-tooltip v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
         <el-form-item prop="password" :rules="[
-      {required: true, message: 'Please input Password', trigger: 'change'},
-      {min: 6, message: 'The Password can not be less than 6 digits', trigger: 'change'}]">
+      {required: true, message: $t('login.msg_required_password'), trigger: 'change'},
+      {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'change'}]">
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>
           <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" :placeholder="$t('login.password')"
             name="password" tabindex="2" autocomplete="on" @keyup.native="checkCapslock" @blur="capsTooltip = false"
             @keyup.enter.native="onLogin" />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-          </span>
+          <el-tooltip class="show-pwd" effect="dark" :content="$t('login.show_password')" placement="top-start">
+            <!-- <span class="show-pwd" @click="showPwd"> -->
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" @click="showPwd" />
+            <!-- </span> -->
+          </el-tooltip>
         </el-form-item>
       </el-tooltip>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="onLogin">
-        {{ $t('login.logIn') }}
-      </el-button>
-
+      <el-row type="flex" class="row-bg" justify="end">
+        <el-button :loading="$store.state.$getLoading" type="primary" @click.native.prevent="onLogin">
+          {{ $t('login.logIn') }}
+        </el-button>
+      </el-row>
       <div style="position:relative">
-        <div class="tips">
+        <div class="tips">{{ $t('login.thirdpartyTips') }}</div>
+        <br>
+        <!-- <div class="tips">
           <span>{{ $t('login.username') }} : admin</span>
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
         </div>
@@ -49,12 +53,13 @@
             {{ $t('login.username') }} : editor
           </span>
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-
+        </div> -->
+      </div>
+      <el-row type="flex" class="row-bg" justify="end">
         <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
           {{ $t('login.thirdparty') }}
         </el-button>
-      </div>
+      </el-row>
     </el-form>
 
     <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
@@ -68,7 +73,7 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+// import { validUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './components/SocialSignin'
 
@@ -76,32 +81,32 @@ export default {
   name: 'Login',
   components: { LangSelect, SocialSign },
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
+    // const validateUsername = (rule, value, callback) => {
+    //   if (!validUsername(value)) {
+    //     callback(new Error('Please enter the correct user name'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
+    // const validatePassword = (rule, value, callback) => {
+    //   if (value.length < 6) {
+    //     callback(new Error('The password can not be less than 6 digits'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       loginForm: {
         username: 'admin',
         password: '111111'
       },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
-      },
+      // loginRules: {
+      //   username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+      //   password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+      // },
       passwordType: 'password',
       capsTooltip: false,
-      loading: false,
+      // loading: false,
       showDialog: false,
       redirect: undefined,
       otherQuery: {}
@@ -121,6 +126,7 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
+    // this.$message.error('This is a message.');
   },
   mounted() {
     const $this = this
@@ -162,14 +168,15 @@ export default {
     onLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
+          // this.loading = true
+          this.loginForm.loading = true
+          this.$store.dispatch('auth/login', this.loginForm)
             .then(() => {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              this.loading = false
+              // this.loading = false
             })
             .catch(() => {
-              this.loading = false
+              // this.loading = false
             })
         } else {
           console.log('error submit!!')
@@ -318,7 +325,7 @@ $light_gray: #eee;
   .show-pwd {
     position: absolute;
     right: 10px;
-    top: 7px;
+    top: 16px;
     font-size: 16px;
     color: $dark_gray;
     cursor: pointer;
@@ -326,9 +333,10 @@ $light_gray: #eee;
   }
 
   .thirdparty-button {
-    position: absolute;
-    right: 0;
-    bottom: 6px;
+    // position: absolute;
+    // right: 0;
+    // bottom: 6px;
+    margin-bottom: 30px;
   }
 
   @media only screen and (max-width: 470px) {

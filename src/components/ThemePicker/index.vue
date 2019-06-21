@@ -55,10 +55,10 @@ export default {
     }
   },
   created() {
-    const oldVal = this.defaultTheme
-    const themeCluster = this.getThemeCluster(oldVal.replace('#', ''))
-    console.log(themeCluster)
-    this.getHandler('chalk', 'chalk-style', themeCluster, oldVal)
+    // const oldVal = ORIGINAL_THEME
+    // const themeCluster = this.getThemeCluster(this.defaultTheme.replace('#', ''))
+    // console.log(themeCluster,oldVal)
+    // this.getHandler('chalk', 'chalk-style', themeCluster, oldVal)
   },
   methods: {
     getHandler(variable, id, themeCluster, oldVal) {
