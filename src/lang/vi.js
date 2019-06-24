@@ -78,7 +78,7 @@ export default {
     logIn: 'Đăng nhập',
     username: 'Tài khoản',
     password: 'Mật khẩu',
-    show_password: 'Xem trước mật khẩu',
+    show_password: 'Xem mật khẩu',
     caps_lock: 'Caps Lock đang bật',
     any: 'any',
     thirdparty: 'Đăng nhập khác',
@@ -86,7 +86,11 @@ export default {
     msg_required_username: 'Vui lòng nhập tài khoản',
     msg_min_username: 'Tài khoản ít nhất phải có {min} ký tự',
     msg_required_password: 'Vui lòng nhập mật khẩu',
-    msg_min_password: 'Mật khẩu ít nhất phải có {min} ký tự'
+    msg_min_password: 'Mật khẩu ít nhất phải có {min} ký tự',
+    auth_invalid_email: 'Tài khoản sai định dạng!',
+    auth_user_not_found: 'Tài khoản không tồn tại!',
+    auth_wrong_password: 'Mật khẩu không đúng!',
+    auth_too_many_requests: 'Quá nhiều lần thử đăng nhập không thành công. Vui lòng xác minh reCaptcha hoặc thử lại sau!'
   },
   documentation: {
     documentation: 'Tài liệu',
@@ -178,5 +182,8 @@ export default {
     tagsView: 'Thẻ xem',
     fixedHeader: 'Cố định đầu trang',
     sidebarLogo: 'Hiển thị Logo'
+  },
+  language: {
+    msg_switch_language: 'Thay đổi ngôn ngữ thành công'
   }
 }

@@ -35,7 +35,7 @@ export default {
       this.$i18n.locale = lang
       this.$store.dispatch('app/setLanguage', lang)
       this.$message({
-        message: 'Switch Language Success',
+        message: this.$t('language.msg_switch_language'),
         type: 'success'
       })
     }

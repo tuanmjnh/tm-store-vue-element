@@ -86,7 +86,11 @@ export default {
     msg_required_username: 'Please input Username',
     msg_min_username: 'The Username can not be less than {min} digits',
     msg_required_password: 'Please input Password',
-    msg_min_password: 'The Password can not be less than {min} digits'
+    msg_min_password: 'The Password can not be less than {min} digits',
+    auth_invalid_email: 'The Username is badly formatted!',
+    auth_user_not_found: 'Account does not exist!',
+    auth_wrong_password: 'The password is invalid!',
+    auth_too_many_requests: 'Too many unsuccessful login attempts. Please include reCaptcha verification or try again later!'
   },
   documentation: {
     documentation: 'Documentation',
@@ -178,5 +182,8 @@ export default {
     tagsView: 'Open Tags-View',
     fixedHeader: 'Fixed Header',
     sidebarLogo: 'Sidebar Logo'
+  },
+  language: {
+    msg_switch_language: 'Switch language success'
   }
 }

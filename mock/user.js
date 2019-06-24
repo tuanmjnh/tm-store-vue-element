@@ -5,6 +5,9 @@ const tokens = {
   },
   editor: {
     token: 'editor-token'
+  },
+  sp_admin: {
+    token: '8bTUlzR590hnkdKUBSBQdMHjU2u1'
   }
 }
 
@@ -22,6 +25,13 @@ const users = {
     introduction: 'I am an editor',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     name: 'Normal Editor'
+  },
+  '8bTUlzR590hnkdKUBSBQdMHjU2u1': {
+    id: '6YMKRfgpKHpOuY9dBcnq',
+    roles: ['admin'],
+    introduction: 'I am a super administrator',
+    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+    name: 'tuanmjnh'
   }
 }
 

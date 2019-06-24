@@ -27,8 +27,7 @@
             <svg-icon icon-class="password" />
           </span>
           <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" :placeholder="$t('login.password')"
-            name="password" tabindex="2" autocomplete="on" @keyup.native="checkCapslock" @blur="capsTooltip = false"
-            @keyup.enter.native="onLogin" />
+            name="password" tabindex="2" autocomplete="on" @keyup.native="checkCapslock" @blur="capsTooltip = false" />
           <el-tooltip class="show-pwd" effect="dark" :content="$t('login.show_password')" placement="top-start">
             <!-- <span class="show-pwd" @click="showPwd"> -->
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" @click="showPwd" />
@@ -172,7 +171,11 @@ export default {
           this.loginForm.loading = true
           this.$store.dispatch('auth/login', this.loginForm)
             .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.$store.dispatch('auth/getUser', { uid: this.$store.state.auth.uid })
+                .then(() => {
+                  // console.log({ path: this.redirect || '/', query: this.otherQuery })
+                  this.$router.push({ path: this.redirect })
+                })
               // this.loading = false
             })
             .catch(() => {
