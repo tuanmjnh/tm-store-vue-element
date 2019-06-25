@@ -50,8 +50,9 @@ export default {
       return !this.sidebar.opened
     }
   },
-  created() {
-    console.log(this.permission_routes)
+  async created() {
+    // const accessRoutes = await this.$store.dispatch('permission/generateRoutes', 'admin')
+    // console.log(this.permission_routes)
   }
 }
 </script>

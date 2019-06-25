@@ -174,10 +174,11 @@ export default {
               // this.$store.dispatch('auth/getUser', { uid: this.$store.state.auth.uid })
               //   .then(() => {
               //     // console.log({ path: this.redirect || '/', query: this.otherQuery })
-              //     this.$router.push({ path: this.redirect })
+              //     this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               //   })
               // this.loading = false
-              this.$router.push({ path: this.redirect })
+              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              // this.$router.push({ path: this.redirect })
             })
             .catch(() => {
               // this.loading = false

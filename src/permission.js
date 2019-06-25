@@ -24,7 +24,9 @@ router.beforeEach(async (to, from, next) => {
       NProgress.done()
     } else {
       // determine whether the user has obtained his permission roles through getInfo
-      const hasRoles = store.getters.auth.roles && store.getters.auth.roles.length > 0
+      const hasRoles = store.state.auth.user.roles && store.state.auth.user.roles.length > 0
+      console.log(store.state.auth.user.roles)
+      // const hasRoles = store.getters.roles && store.getters.roles.length > 0
       if (hasRoles) {
         next()
       } else {
@@ -32,14 +34,13 @@ router.beforeEach(async (to, from, next) => {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
           // const { roles } = await store.dispatch('user/getInfo')
-          console.log(store.state.user.roles)
           // await store.dispatch('auth/getUser')
-          const roles = ['admin']
+          // store.state.auth.user.roles = ['admin']
+          await store.dispatch('auth/getUser')
+          const roles = store.state.auth.user.roles
+          console.log(roles)
           // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch(
-            'permission/generateRoutes',
-            roles
-          )
+          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
           // const accessRoutes = []
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
@@ -47,10 +48,12 @@ router.beforeEach(async (to, from, next) => {
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })
+          // next(to)
         } catch (error) {
           // remove token and go to login page to re-login
-          await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
+          await store.dispatch('auth/logout')
+          // Message.error(error || 'Has Error')
+          console.log(error)
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }
@@ -58,7 +61,6 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     /* has no token*/
-
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

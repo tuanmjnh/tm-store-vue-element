@@ -54,7 +54,10 @@ export default {
     }
   },
   beforeCreate() {
-    this.$store.dispatch('settings/select', { loading: true })
+    this.$store.dispatch('settings/select', { loading: true }).then(async () => {
+      // await this.$store.dispatch('permission/generateRoutes', this.$store.state.auth.user.roles)
+      // console.log(this.$store.state.auth.user.roles)
+    })
   },
   methods: {
     handleClickOutside() {
