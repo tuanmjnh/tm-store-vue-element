@@ -63,13 +63,14 @@ const actions = {
       console.error('Error writing document: ', error)
     })
   },
-  async select({ commit, state, rootState }) {
+  async select({ commit, rootState }, params) {
     // state.default_user_seting.user_id = rootState.user.id
+    if (params && params.loading) rootState.$appLoading = true
     commit('SET_USER_SETTING')
     await rootState.$firebase.fs
       .collection(collection)
       // .where('user_id', '==', rootState.user.id)
-      .doc(rootState.user.id)
+      .doc(rootState.auth.uid)
       .get()
       .then(doc => {
         if (doc.exists) {
@@ -77,6 +78,11 @@ const actions = {
         } // else {
         //   commit('SET_USER_SETTING')
         // }
+      }).catch((err) => {
+        commit('MESSAGE_ERROR', err, { root: true })
+      })
+      .finally(() => {
+        if (params && params.loading) rootState.$appLoading = false
       })
     // state.user_seting.user_id = rootState.user.id
     // console.log(state.user_seting)

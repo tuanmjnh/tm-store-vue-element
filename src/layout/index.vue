@@ -54,9 +54,7 @@ export default {
     }
   },
   beforeCreate() {
-    this.$store.dispatch('settings/select').then((x) => {
-      this.$store.state.$appLoading = false
-    })
+    this.$store.dispatch('settings/select', { loading: true })
   },
   methods: {
     handleClickOutside() {

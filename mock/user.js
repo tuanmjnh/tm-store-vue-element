@@ -26,7 +26,7 @@ const users = {
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     name: 'Normal Editor'
   },
-  '8bTUlzR590hnkdKUBSBQdMHjU2u1': {
+  'auwcmh2nZChwvFy7lHHWDWNWjYN2': {
     id: '6YMKRfgpKHpOuY9dBcnq',
     roles: ['admin'],
     introduction: 'I am a super administrator',

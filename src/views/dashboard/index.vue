@@ -8,7 +8,7 @@
 import { mapGetters } from 'vuex'
 import adminDashboard from './admin'
 import editorDashboard from './editor'
-
+import { auth } from '@/vendor/firebaseInit'
 export default {
   name: 'Dashboard',
   components: { adminDashboard, editorDashboard },
@@ -18,14 +18,23 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'roles'
-    ])
+    // ...mapGetters([
+    //   'auth'
+    // ])
   },
   created() {
-    if (!this.roles.includes('admin')) {
+    if (!this.$store.state.auth.roles.includes('admin')) {
       this.currentRole = 'editorDashboard'
     }
+    // auth.currentUser.updateProfile({
+    //   displayName: "tuanmjnh",
+    //   phoneNumber: '0888814222',
+    //   photoURL: "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
+    // }).then(function() {
+    //   console.log(auth.currentUser)
+    // }).catch(function(err) {
+    //   console.log(err)
+    // });
   }
 }
 </script>

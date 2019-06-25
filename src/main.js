@@ -12,14 +12,14 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-
-import i18n from './lang' // internationalization
+// firebaseInit
+import { auth, firestore } from '@/vendor/firebaseInit'
+// internationalization
+import i18n from './lang'
 import './icons' // icon
-import './permission' // permission control
 import './utils/error-log' // error log
-
 import * as filters from './filters' // global filters
-
+import './permission'
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -44,11 +44,18 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
-
-new Vue({
-  el: '#app',
-  router,
-  store,
-  i18n,
-  render: h => h(App)
+auth.onAuthStateChanged((user) => {
+  new Vue({
+    el: '#app',
+    router,
+    store,
+    i18n,
+    beforeCreate() {
+      if (user) {
+        store.commit('auth/SET_UID', user.uid)
+        store.dispatch('auth/getUser', { uid: user.uid })
+      }
+    },
+    render: h => h(App)
+  })
 })

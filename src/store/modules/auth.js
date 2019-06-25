@@ -3,16 +3,21 @@ const collection = 'users'
 const state = {
   uid: '',
   user: {},
-  roles: ['admin']
+  roles: ['admin'],
+  token: getToken()
 }
 
 const mutations = {
   SET_UID: (state, uid) => {
     state.uid = uid
-    setToken(uid)
+    // setToken(uid)
+  },
+  SET_TOKEN: (state, token) => {
+    state.token = token
+    setToken(token)
   },
   SET_USER: (state, user) => {
-    state.user = user
+    state.user = { ...state.user, ...user }
   }
 }
 
@@ -21,9 +26,11 @@ const actions = {
     if (params.loading) rootState.$getLoading = true
     await rootState.$firebase.auth.signInWithEmailAndPassword(params.username, params.password)
       .then(doc => {
+        console.log(doc)
         commit('SET_UID', doc.user.uid)
+        commit('SET_TOKEN', doc.user.refreshToken)
         // dispatch('getUser', { uid: doc.user.uid })
-        console.log(doc.user.uid)
+        // console.log(doc.user.uid)
       })
       .catch((err) => {
         console.log(err)
@@ -39,9 +46,8 @@ const actions = {
     if (params.loading) rootState.$getLoading = true
     await rootState.$firebase.fs.collection(collection).doc(params.uid).get()
       .then(doc => {
-        // console.log(doc)
         if (doc.exists) {
-          commit('SET_USER', doc)
+          commit('SET_USER', doc.data())
         }
       })
       .catch((err) => {
