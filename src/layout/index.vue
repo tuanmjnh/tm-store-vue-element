@@ -1,16 +1,16 @@
 <template>
   <div>
-    <el-table v-if="$store.state.$appLoading" v-loading="$store.state.$appLoading" style="width: 100%" />
-    <div v-else :class="classObj" class="app-wrapper">
+    <!-- <el-table v-if="$store.state.$appLoading" v-loading="$store.state.$appLoading" style="width: 100%" /> -->
+    <div :class="classObj" class="app-wrapper">
       <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
       <sidebar class="sidebar-container" />
-      <div :class="{hasTagsView:userSeting.layout.tags_view}" class="main-container">
-        <div :class="{'fixed-header':userSeting.layout.fixed_header}">
+      <div :class="{hasTagsView:setting.tags_view}" class="main-container">
+        <div :class="{'fixed-header':setting.fixed_header}">
           <navbar />
-          <tags-view v-if="userSeting.layout.tags_view" />
+          <tags-view v-if="setting.tags_view" />
         </div>
         <app-main />
-        <right-panel v-if="userSeting.show_settings">
+        <right-panel v-if="setting.show">
           <settings />
         </right-panel>
       </div>
@@ -42,7 +42,7 @@ export default {
       // showSettings: state => state.settings.showSettings,
       // needTagsView: state => state.settings.tagsView,
       // fixedHeader: state => state.settings.fixedHeader,
-      userSeting: state => state.settings.user_seting
+      setting: state => state.auth.setting
     }),
     classObj() {
       return {
@@ -54,10 +54,10 @@ export default {
     }
   },
   beforeCreate() {
-    this.$store.dispatch('settings/select', { loading: true }).then(async () => {
-      // await this.$store.dispatch('permission/generateRoutes', this.$store.state.auth.user.roles)
-      // console.log(this.$store.state.auth.user.roles)
-    })
+    // this.$store.dispatch('settings/select', { loading: true }).then(async () => {
+    //   // await this.$store.dispatch('permission/generateRoutes', this.$store.state.auth.user.roles)
+    //   // console.log(this.$store.state.auth.user.roles)
+    // })
   },
   methods: {
     handleClickOutside() {

@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     defaultTheme() {
-      return this.$store.state.settings.user_seting.layout.theme
+      return this.$store.state.auth.setting.theme
     }
   },
   watch: {
@@ -31,7 +31,7 @@ export default {
       if (typeof val !== 'string') return
       const themeCluster = this.getThemeCluster(val.replace('#', ''))
       const originalCluster = this.getThemeCluster(oldVal.replace('#', ''))
-      console.log(themeCluster, originalCluster)
+      // console.log(themeCluster, originalCluster)
       const $message = this.$message({
         message: '  Compiling the theme',
         customClass: 'theme-message',
@@ -45,9 +45,11 @@ export default {
         await this.getCSSString(url, 'chalk')
       }
 
-      const chalkHandler = this.getHandler('chalk', 'chalk-style', themeCluster, oldVal)
+      // const chalkHandler = this.getHandler('chalk', 'chalk-style', themeCluster, oldVal)
 
-      chalkHandler()
+      // chalkHandler()
+
+      this.getHandler('chalk', 'chalk-style', themeCluster, oldVal)
 
       this.$emit('change', val)
 
@@ -62,30 +64,30 @@ export default {
   },
   methods: {
     getHandler(variable, id, themeCluster, oldVal) {
-      return () => {
-        const originalCluster = this.getThemeCluster(ORIGINAL_THEME.replace('#', ''))
-        const newStyle = this.updateStyle(this[variable], originalCluster, themeCluster)
+      // return () => {
+      const originalCluster = this.getThemeCluster(ORIGINAL_THEME.replace('#', ''))
+      const newStyle = this.updateStyle(this[variable], originalCluster, themeCluster)
 
-        let styleTag = document.getElementById(id)
-        if (!styleTag) {
-          styleTag = document.createElement('style')
-          styleTag.setAttribute('id', id)
-          document.head.appendChild(styleTag)
-        }
-        styleTag.innerText = newStyle
-
-        // styles
-        const styles = [].slice.call(document.querySelectorAll('style'))
-          .filter(style => {
-            const text = style.innerText
-            return new RegExp(oldVal, 'i').test(text) && !/Chalk Variables/.test(text)
-          })
-        styles.forEach(style => {
-          const { innerText } = style
-          if (typeof innerText !== 'string') return
-          style.innerText = this.updateStyle(innerText, originalCluster, themeCluster)
-        })
+      let styleTag = document.getElementById(id)
+      if (!styleTag) {
+        styleTag = document.createElement('style')
+        styleTag.setAttribute('id', id)
+        document.head.appendChild(styleTag)
       }
+      styleTag.innerText = newStyle
+
+      // styles
+      const styles = [].slice.call(document.querySelectorAll('style'))
+        .filter(style => {
+          const text = style.innerText
+          return new RegExp(oldVal, 'i').test(text) && !/Chalk Variables/.test(text)
+        })
+      styles.forEach(style => {
+        const { innerText } = style
+        if (typeof innerText !== 'string') return
+        style.innerText = this.updateStyle(innerText, originalCluster, themeCluster)
+      })
+      // }
     },
     async changeTheme() { },
     updateStyle(style, oldCluster, newCluster) {

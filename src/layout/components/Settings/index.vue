@@ -10,17 +10,17 @@
 
       <div class="drawer-item">
         <span>{{ $t('settings.tagsView') }}</span>
-        <el-switch v-model="userSeting.layout.tags_view" class="drawer-switch" />
+        <el-switch v-model="tags_view" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
         <span>{{ $t('settings.fixedHeader') }}</span>
-        <el-switch v-model="userSeting.layout.fixed_header" class="drawer-switch" />
+        <el-switch v-model="fixed_header" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
         <span>{{ $t('settings.sidebarLogo') }}</span>
-        <el-switch v-model="userSeting.layout.sidebar_logo" class="drawer-switch" />
+        <el-switch v-model="sidebar_logo" class="drawer-switch" />
       </div>
 
     </div>
@@ -33,23 +33,55 @@ import ThemePicker from '@/components/ThemePicker'
 export default {
   components: { ThemePicker },
   data() {
-    return {}
+    return {
+      // fixed_header: true
+    }
   },
   computed: {
-    userSeting() {
-      return this.$store.state.settings.user_seting
+    setting() {
+      const rs = this.$store.state.auth.setting
+      console.log(rs)
+      return rs
+    },
+    tags_view: {
+      get() {
+        return this.$store.state.auth.setting.tags_view
+      },
+      set(val) {
+        // this.$store.state.auth.setting.fixed_header = val
+        this.$store.dispatch('auth/changeSetting', {
+          key: 'tags_view',
+          value: val,
+          loading: true
+        })
+      }
+    },
+    fixed_header: {
+      get() {
+        return this.$store.state.auth.setting.fixed_header
+      },
+      set(val) {
+        // this.$store.state.auth.setting.fixed_header = val
+        this.$store.dispatch('auth/changeSetting', {
+          key: 'fixed_header',
+          value: val,
+          loading: true
+        })
+      }
+    },
+    sidebar_logo: {
+      get() {
+        return this.$store.state.auth.setting.sidebar_logo
+      },
+      set(val) {
+        // this.$store.state.auth.setting.fixed_header = val
+        this.$store.dispatch('auth/changeSetting', {
+          key: 'sidebar_logo',
+          value: val,
+          loading: true
+        })
+      }
     }
-    //   fixedHeader: {
-    //     get() {
-    //       return this.$store.state.settings.fixedHeader
-    //     },
-    //     set(val) {
-    //       this.$store.dispatch('settings/changeSetting', {
-    //         key: 'fixedHeader',
-    //         value: val
-    //       })
-    //     }
-    //   },
     //   tagsView: {
     //     get() {
     //       return this.$store.state.settings.tagsView
@@ -73,22 +105,13 @@ export default {
     //     }
     //   }
   },
-  watch: {
-    userSeting: {
-      handler: function(val, oldVal) {
-        this.$store.dispatch('settings/changeUserSetting', val)
-      },
-      deep: true
-    }
-  },
   methods: {
     themeChange(val) {
       // this.$store.dispatch('settings/changeSetting', {
       //   key: 'theme',
       //   value: val
       // })
-
-      this.$store.dispatch('settings/changeUserSetting', { theme: val })
+      this.$store.dispatch('auth/changeSetting', { theme: val })
     }
   }
 }

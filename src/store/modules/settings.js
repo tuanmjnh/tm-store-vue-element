@@ -5,8 +5,8 @@ const collection = 'settings'
 // const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
-  user_seting: {},
-  default_user_seting: {
+  user_setting: {},
+  default_user_setting: {
     show_settings: true,
     layout: {
       tags_view: true,
@@ -29,10 +29,11 @@ const mutations = {
     }
   },
   CHANGE_USER_SETTING: (state, data) => {
-    state.user_seting = data
+    state.user_setting = data
   },
   SET_USER_SETTING(state, data) {
-    state.user_seting = data ? { ...state.default_user_seting, ...data } : { ...state.default_user_seting }
+    state.user_setting = data ? { ...state.default_user_setting, ...data } : { ...state.default_user_setting }
+    console.log(state.user_setting)
   }
 }
 
@@ -41,30 +42,18 @@ const actions = {
     commit('CHANGE_SETTING', data)
   },
   changeUserSetting({ commit, state, rootState }, data) {
-    // const _data = {
-    //   user_id: rootState.user.id
-    //   // layout: stri
+    // if (data.theme) {
+    //   state.user_setting.layout.theme = data.theme
     // }
-    // rootState.firestore.collection(collection).add(data)
-    // state.user_seting.filter((x) => { return x.user_id === rootState.user.id })
-    // if (state.user_seting.user_id === rootState.user.id) {
-    //   console.log(state.user_seting)
-    // } else {
-    //   rootState.firestore.collection(collection).add(_data)
-    //   console.log(state.user_seting)
-    // }
-    if (data.theme) {
-      state.user_seting.layout.theme = data.theme
-    }
-    const userSeting = rootState.$firebase.fs.collection(collection).doc(rootState.user.id)
-    userSeting.set(state.user_seting, { merge: true }).then(function() {
+    const userSeting = rootState.$firebase.fs.collection(collection).doc(rootState.auth.uid)
+    userSeting.set(state.user_setting, { merge: true }).then(function() {
       console.log('Document successfully written!')
     }).catch(function(error) {
       console.error('Error writing document: ', error)
     })
   },
   async select({ commit, rootState }, params) {
-    // state.default_user_seting.user_id = rootState.user.id
+    // state.default_user_setting.user_id = rootState.user.id
     if (params && params.loading) rootState.$appLoading = true
     commit('SET_USER_SETTING')
     await rootState.$firebase.fs
@@ -84,8 +73,8 @@ const actions = {
       .finally(() => {
         if (params && params.loading) rootState.$appLoading = false
       })
-    // state.user_seting.user_id = rootState.user.id
-    // console.log(state.user_seting)
+    // state.user_setting.user_id = rootState.user.id
+    // console.log(state.user_setting)
     // console.log(rootState.user.id)
   }
 }

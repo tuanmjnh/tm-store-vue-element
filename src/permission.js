@@ -9,6 +9,7 @@ import getPageTitle from '@/utils/get-page-title'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+let isAddedRoutes = true
 router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -24,10 +25,10 @@ router.beforeEach(async (to, from, next) => {
       NProgress.done()
     } else {
       // determine whether the user has obtained his permission roles through getInfo
-      const hasRoles = store.state.auth.user.roles && store.state.auth.user.roles.length > 0
-      console.log(store.state.auth.user.roles)
-      // const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      if (hasRoles) {
+      // const hasRoles = store.state.auth.user.roles && store.state.auth.user.roles.length > 0
+      // console.log(store.state.auth.user.roles)
+      let roles = store.state.auth.roles
+      if (roles && roles.length > 0) {
         next()
       } else {
         try {
@@ -36,27 +37,30 @@ router.beforeEach(async (to, from, next) => {
           // const { roles } = await store.dispatch('user/getInfo')
           // await store.dispatch('auth/getUser')
           // store.state.auth.user.roles = ['admin']
-          await store.dispatch('auth/getUser')
-          const roles = store.state.auth.user.roles
+          const user = await store.dispatch('auth/getUser')
+          roles = user.roles
           console.log(roles)
-          // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-          // const accessRoutes = []
-          // dynamically add accessible routes
-          router.addRoutes(accessRoutes)
-
-          // hack method to ensure that addRoutes is complete
-          // set the replace: true, so the navigation will not leave a history record
-          next({ ...to, replace: true })
-          // next(to)
-        } catch (error) {
+        } catch (err) {
           // remove token and go to login page to re-login
           await store.dispatch('auth/logout')
           // Message.error(error || 'Has Error')
-          console.log(error)
+          console.log(err)
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }
+      }
+      // Check is added routes
+      if (isAddedRoutes) {
+        isAddedRoutes = false
+        // generate accessible routes map based on roles
+        const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+        // const accessRoutes = []
+        // dynamically add accessible routes
+        router.addRoutes(accessRoutes)
+        // hack method to ensure that addRoutes is complete
+        // set the replace: true, so the navigation will not leave a history record
+        next({ ...to, replace: true })
+        // next()
       }
     }
   } else {
