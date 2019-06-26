@@ -26,16 +26,16 @@ const store = new Vuex.Store({
   modules,
   getters,
   mutations: {
-    MESSAGE: (msg) => {
+    MESSAGE: (state, msg) => {
       Message({ message: i18n.t(msg.message), type: msg.type || null, showClose: msg.showClose || true })
     },
-    MESSAGE_SUCCESS: (msg) => {
+    MESSAGE_SUCCESS: (state, msg) => {
       Message({ message: i18n.t(msg.message), type: 'success', showClose: msg.showClose || true })
     },
-    MESSAGE_WARNING: (msg) => {
+    MESSAGE_WARNING: (state, msg) => {
       Message({ message: i18n.t(msg.message), type: 'warning', showClose: msg.showClose || true })
     },
-    MESSAGE_ERROR: (msg) => {
+    MESSAGE_ERROR: (state, msg) => {
       Message({ message: i18n.t(msg.message), type: 'error', showClose: msg.showClose || true })
     }
   },

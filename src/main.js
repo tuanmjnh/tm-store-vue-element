@@ -45,16 +45,20 @@ Object.keys(filters).forEach(key => {
 
 Vue.config.productionTip = false
 
+let app
 auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    await store.dispatch('auth/setUserID', { uid: user.uid })
-    await store.dispatch('auth/getUser', { uid: user.uid })
+  if (!app) {
+    if (user) {
+      const setUserID = await store.dispatch('auth/setUserID', { uid: user.uid })
+      const getUser = await store.dispatch('auth/getUser', { uid: user.uid })
+      console.log(user.uid)
+    }
+    app = new Vue({
+      el: '#app',
+      router,
+      store,
+      i18n,
+      render: h => h(App)
+    })
   }
-  new Vue({
-    el: '#app',
-    router,
-    store,
-    i18n,
-    render: h => h(App)
-  })
 })

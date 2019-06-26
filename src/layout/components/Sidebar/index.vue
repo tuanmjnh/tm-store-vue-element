@@ -49,10 +49,6 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     }
-  },
-  async created() {
-    // const accessRoutes = await this.$store.dispatch('permission/generateRoutes', 'admin')
-    // console.log(this.permission_routes)
   }
 }
 </script>

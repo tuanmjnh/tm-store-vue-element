@@ -28,7 +28,7 @@ const mutations = {
     state.profile = item.profile
     state.roles = item.roles
     state.setting = { ...state.setting, ...item.setting }
-    console.log(state.setting)
+    // console.log(state.setting)
   },
   CHANGE_SETTING(state, item) {
     state.setting[item.key] = item.value
@@ -61,6 +61,7 @@ const actions = {
   },
   getUser({ commit, rootState }, params) {
     return new Promise((resolve, reject) => {
+      console.log(params.uid)
       if (params && params.loading) rootState.$getLoading = true
       rootState.$firebase.fs.collection(collection).doc(params.uid).get()
         .then(doc => {

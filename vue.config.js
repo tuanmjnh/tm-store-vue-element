@@ -54,7 +54,9 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    // debug
+    devtool: 'source-map'
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
