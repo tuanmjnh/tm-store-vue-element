@@ -66,7 +66,7 @@ const actions = {
         .then(doc => {
           if (doc.exists) {
             commit('SET_USER', doc.data())
-            // console.log(doc.data())
+            console.log(doc.data())
             resolve(doc.data())
           }
         })
