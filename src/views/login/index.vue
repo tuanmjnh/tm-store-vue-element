@@ -171,11 +171,6 @@ export default {
           this.loginForm.loading = true
           this.$store.dispatch('auth/login', this.loginForm)
             .then(() => {
-              // this.$store.dispatch('auth/getUser', { uid: this.$store.state.auth.uid })
-              //   .then(() => {
-              //     // console.log({ path: this.redirect || '/', query: this.otherQuery })
-              //     this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              //   })
               // this.loading = false
               // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.$router.push({ path: this.redirect })

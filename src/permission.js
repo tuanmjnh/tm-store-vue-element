@@ -9,7 +9,6 @@ import getPageTitle from '@/utils/get-page-title'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
-let isAddedRoutes = true
 router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -37,10 +36,10 @@ router.beforeEach(async (to, from, next) => {
           // const { roles } = await store.dispatch('user/getInfo')
           // await store.dispatch('auth/getUser')
           // store.state.auth.user.roles = ['admin']
-          console.log(store.state.auth.uid)
-          // const user = await store.dispatch('auth/getUser', store.state.auth.uid)
-          store.state.auth.roles = 'admin'
-          const user = { roles: 'admin' }
+          // console.log(store.state.auth.uid)
+          const user = await store.dispatch('auth/getUser', { uid: store.state.auth.uid })
+          // store.state.auth.roles = 'admin'
+          // const user = { roles: 'admin' }
           roles = user.roles
           // roles = store.state.auth.roles
         } catch (err) {
@@ -53,8 +52,9 @@ router.beforeEach(async (to, from, next) => {
         }
       }
       // Check is added routes
-      if (isAddedRoutes) {
-        isAddedRoutes = false
+      if (store.state.permission.isAddRoutes) {
+        await store.dispatch('permission/isAddRoutes', false)
+        store.state.permission.isAddRoutes = false
         // generate accessible routes map based on roles
         const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
         // const accessRoutes = []

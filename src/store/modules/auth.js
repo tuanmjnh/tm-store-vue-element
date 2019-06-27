@@ -61,13 +61,12 @@ const actions = {
   },
   getUser({ commit, rootState }, params) {
     return new Promise((resolve, reject) => {
-      console.log(params.uid)
       if (params && params.loading) rootState.$getLoading = true
       rootState.$firebase.fs.collection(collection).doc(params.uid).get()
         .then(doc => {
           if (doc.exists) {
             commit('SET_USER', doc.data())
-            console.log(doc.data())
+            // console.log(doc.data())
             resolve(doc.data())
           }
         })

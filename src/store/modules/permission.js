@@ -36,13 +36,17 @@ export function filterAsyncRoutes(routes, roles) {
 
 const state = {
   routes: [],
-  addRoutes: []
+  addRoutes: [],
+  isAddRoutes: true
 }
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
+  },
+  SET_ADD_ROUTES: (state, value) => {
+    state.isAddRoutes = value
   }
 }
 
@@ -57,6 +61,12 @@ const actions = {
       }
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
+    })
+  },
+  isAddRoutes({ commit }, value) {
+    return new Promise(resolve => {
+      commit('SET_ADD_ROUTES', value)
+      resolve(true)
     })
   }
 }
