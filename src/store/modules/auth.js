@@ -10,7 +10,8 @@ const state = {
     tags_view: true,
     fixed_header: true,
     sidebar_logo: true,
-    theme: '#1890ff'
+    theme: '#1890ff',
+    language: 'vi'
   },
   token: getToken()
 }
@@ -24,10 +25,10 @@ const mutations = {
     state.token = token
     setToken(token)
   },
-  SET_USER: (state, item) => {
-    state.profile = item.profile
-    state.roles = item.roles
-    state.setting = { ...state.setting, ...item.setting }
+  SET_USER: (state, user) => {
+    state.profile = user.profile
+    state.roles = user.roles
+    state.setting = { ...state.setting, ...user.setting }
     // console.log(state.setting)
   },
   CHANGE_SETTING(state, item) {
@@ -42,7 +43,10 @@ const actions = {
       rootState.$firebase.auth.signInWithEmailAndPassword(params.username, params.password)
         .then(doc => {
           commit('SET_UID', doc.user.uid)
-          commit('SET_TOKEN', doc.user.refreshToken)
+          doc.user.getIdToken().then((token) => {
+            commit('SET_TOKEN', token)
+          })
+          // commit('SET_TOKEN', doc.user.refreshToken)
           // dispatch('getUser', { uid: doc.user.uid })
           // console.log(doc.user.uid)
           resolve(doc)
@@ -114,7 +118,7 @@ const actions = {
       const data = {}
       data[`setting.${params.key}`] = params.value
       // data.setting[params.key] = params.value
-      console.log(data)
+      // console.log(data)
       if (params && params.loading) rootState.$commitLoading = true
       rootState.$firebase.fs.collection(collection).doc(state.uid)
         .update(data)

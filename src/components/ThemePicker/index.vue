@@ -15,29 +15,32 @@ export default {
     }
   },
   computed: {
-    defaultTheme() {
-      return this.$store.state.auth.setting.theme
-    }
+    // theme() {
+    //   return this.$store.state.auth.setting.theme
+    // }
   },
   watch: {
-    defaultTheme: {
-      handler: function(val, oldVal) {
-        this.theme = val
-      },
-      immediate: true
-    },
+    // defaultTheme: {
+    //   handler: function(val, oldVal) {
+    //     this.theme = val
+    //   },
+    //   // immediate: true
+    //   deep: true
+    // },
     async theme(val) {
       const oldVal = this.chalk ? this.theme : ORIGINAL_THEME
+      // console.log(oldVal)
       if (typeof val !== 'string') return
       const themeCluster = this.getThemeCluster(val.replace('#', ''))
       const originalCluster = this.getThemeCluster(oldVal.replace('#', ''))
       // console.log(themeCluster, originalCluster)
       const $message = this.$message({
-        message: '  Compiling the theme',
+        message: `&nbsp;&nbsp;${this.$t('settings.msg_change_theme')}`,
         customClass: 'theme-message',
         type: 'success',
-        duration: 0,
-        iconClass: 'el-icon-loading'
+        duration: 2000,
+        iconClass: 'el-icon-loading',
+        dangerouslyUseHTMLString: true
       })
 
       if (!this.chalk) {
@@ -53,13 +56,14 @@ export default {
 
       this.$emit('change', val)
 
-      $message.close()
+      // $message.close()
     }
   },
-  created() {
-    // const oldVal = ORIGINAL_THEME
+  mounted() {
+    this.theme = this.$store.state.auth.setting.theme
+    // const oldVal = this.$store.state.auth.setting.theme || ORIGINAL_THEME
     // const themeCluster = this.getThemeCluster(this.defaultTheme.replace('#', ''))
-    // console.log(themeCluster,oldVal)
+    // console.log(themeCluster, oldVal)
     // this.getHandler('chalk', 'chalk-style', themeCluster, oldVal)
   },
   methods: {

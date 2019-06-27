@@ -181,9 +181,10 @@ export default {
     theme: 'Mầu chủ đề',
     tagsView: 'Thẻ xem',
     fixedHeader: 'Cố định đầu trang',
-    sidebarLogo: 'Hiển thị Logo'
+    sidebarLogo: 'Hiển thị Logo',
+    msg_change_theme: 'Thay đổi mầu chủ đề thành công',
+    msg_switch_language: 'Thay đổi ngôn ngữ thành công'
   },
   language: {
-    msg_switch_language: 'Thay đổi ngôn ngữ thành công'
   }
 }

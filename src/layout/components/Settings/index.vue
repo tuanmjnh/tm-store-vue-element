@@ -111,7 +111,11 @@ export default {
       //   key: 'theme',
       //   value: val
       // })
-      this.$store.dispatch('auth/changeSetting', { theme: val })
+      this.$store.dispatch('auth/changeSetting', {
+        key: 'theme',
+        value: val,
+        loading: true
+      })
     }
   }
 }

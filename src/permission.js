@@ -3,8 +3,9 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import { getToken, checkToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+import { auth, firestore } from '@/vendor/firebaseInit'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -16,8 +17,12 @@ router.beforeEach(async (to, from, next) => {
   document.title = getPageTitle(to.meta.title)
 
   // determine whether the user has logged in
-  const hasToken = getToken()
-  if (hasToken) {
+  // const hasToken = getToken()
+  // if (auth.currentUser) {
+  //   const token = await auth.currentUser.getIdToken()
+  //   console.log(token)
+  // }
+  if (auth.currentUser) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })

@@ -128,35 +128,10 @@ export const asyncRoutes = [
       i18n,
       externalLink
     ]
-  },
-  {
-    path: '/test',
-    component: () => import('@/layout'),
-    redirect: 'noRedirect',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/test/index'),
-        name: 'test',
-        meta: { title: 'test', icon: 'test', affix: true }
-      }
-    ]
   }
 ]
 
-// const r = function(router) {
-//   const res = []
-//   router.forEach(route => {
-//     const tmp = { ...route }
-//     if (tmp.children) {
-//       tmp.children = r(tmp.children)
-//     }
-//     res.push(tmp)
-//   })
-//   return res
-// }
-// const rs = r(asyncRoutes)
-// console.log(JSON.stringify(rs))
+console.log(asyncRoutes)
 
 const createRouter = () => new Router({
   mode: 'history', // require service support

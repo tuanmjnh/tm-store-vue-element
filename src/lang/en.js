@@ -181,9 +181,10 @@ export default {
     theme: 'Theme Color',
     tagsView: 'Open Tags-View',
     fixedHeader: 'Fixed Header',
-    sidebarLogo: 'Sidebar Logo'
+    sidebarLogo: 'Sidebar Logo',
+    msg_change_theme: 'Change the theme color success',
+    msg_switch_language: 'Switch language success'
   },
   language: {
-    msg_switch_language: 'Switch language success'
   }
 }

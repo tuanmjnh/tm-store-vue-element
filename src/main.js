@@ -51,6 +51,10 @@ auth.onAuthStateChanged(async (user) => {
     if (user) {
       await store.dispatch('auth/setUserID', { uid: user.uid })
       await store.dispatch('auth/getUser', { uid: user.uid })
+      // const tokenid = await user.getIdToken()
+      // console.log(tokenid)
+      // console.log(tokenid)
+      // console.log(token)
       // console.log(user.uid)
     }
     app = new Vue({
