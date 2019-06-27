@@ -38,7 +38,9 @@ router.beforeEach(async (to, from, next) => {
           // await store.dispatch('auth/getUser')
           // store.state.auth.user.roles = ['admin']
           console.log(store.state.auth.uid)
-          const user = await store.dispatch('auth/getUser', store.state.auth.uid)
+          // const user = await store.dispatch('auth/getUser', store.state.auth.uid)
+          store.state.auth.roles = 'admin'
+          const user = { roles: 'admin' }
           roles = user.roles
           // roles = store.state.auth.roles
         } catch (err) {
@@ -60,9 +62,9 @@ router.beforeEach(async (to, from, next) => {
         router.addRoutes(accessRoutes)
         // hack method to ensure that addRoutes is complete
         // set the replace: true, so the navigation will not leave a history record
-        // next({ ...to, replace: true })
+        next({ ...to, replace: true })
         // console.log(to)
-        next({ replace: true })
+        // next({ replace: true })
       }
     }
   } else {

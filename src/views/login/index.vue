@@ -177,8 +177,8 @@ export default {
               //     this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               //   })
               // this.loading = false
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              // this.$router.push({ path: this.redirect })
+              // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.$router.push({ path: this.redirect })
             })
             .catch(() => {
               // this.loading = false
