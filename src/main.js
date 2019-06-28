@@ -56,6 +56,7 @@ auth.onAuthStateChanged(async (user) => {
       // console.log(tokenid)
       // console.log(token)
       // console.log(user.uid)
+      // console.log(user.currentUser)
     }
     app = new Vue({
       el: '#app',

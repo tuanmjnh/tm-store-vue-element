@@ -13,10 +13,13 @@ import table from './modules/demo/table'
 import nested from './modules/demo/nested'
 import permission from './modules/demo/permission'
 import example from './modules/demo/example'
-import { guide, documentation, profile, icon, tab, theme, clipboard, i18n, externalLink } from './modules/demo/common'
+import { guide, documentation, icon, tab, theme, clipboard, i18n, externalLink } from './modules/demo/common'
 import { error, errorLog } from './modules/demo/error'
 import { excel, zip, pdf } from './modules/demo/export'
 
+// vue-loader at least v13.0.0+
+// module.exports = file => () => import('@/views/' + file + '.vue')
+// module.exports = file => require('@/views/' + file + '.vue').default
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -87,8 +90,7 @@ export const constantRoutes = [
         meta: { title: 'dashboard', icon: 'dashboard', affix: true }
       }
     ]
-  },
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
 
 /**
@@ -96,7 +98,47 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
-  /** when your routing map is too long, you can split it into small modules **/
+  {
+    path: '/manager',
+    component: Layout,
+    redirect: 'noRedirect',
+    alwaysShow: true, // will always show the root menu
+    name: 'Manager',
+    meta: {
+      title: 'manager',
+      icon: 'segmdl2-defender-app',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'users',
+        component: () => import('@/views/users/index'),
+        name: 'users',
+        meta: { title: 'users', icon: 'user', noCache: true }
+      },
+      {
+        path: 'roles',
+        component: () => import('@/views/roles/index'),
+        name: 'roles',
+        meta: { title: 'roles', icon: 'lock', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/profile',
+    component: Layout,
+    redirect: '/profile/index',
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/profile/index'),
+        name: 'Profile',
+        meta: { title: 'profile', icon: 'user', noCache: true }
+      }
+    ]
+  },
+  // Demo app
   {
     path: '/demo',
     component: Layout,
@@ -106,10 +148,10 @@ export const asyncRoutes = [
       title: 'demo',
       icon: 'guide'
     },
+    /** when your routing map is too long, you can split it into small modules **/
     children: [
       guide,
       documentation,
-      profile,
       permission,
       components,
       charts,
@@ -129,19 +171,7 @@ export const asyncRoutes = [
       externalLink
     ]
   },
-  {
-    path: '/test',
-    component: () => import('@/layout'),
-    redirect: 'noRedirect',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/test/index'),
-        name: 'test',
-        meta: { title: 'test', icon: 'test', affix: true }
-      }
-    ]
-  }
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 // const r = function(router) {

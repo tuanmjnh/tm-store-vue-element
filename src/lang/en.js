@@ -1,6 +1,9 @@
 export default {
   route: {
     dashboard: 'Dashboard',
+    manager: 'Manager',
+    users: 'Users',
+    roles: 'Roles',
     demo: 'Demo',
     documentation: 'Documentation',
     guide: 'Guide',
@@ -65,6 +68,16 @@ export default {
     externalLink: 'External Link',
     profile: 'Profile'
   },
+  global: {
+    add: 'Add',
+    edit: 'Edit',
+    delete: 'Delete',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
+    back: 'Back',
+    note: 'Note',
+    desc: 'Description'
+  },
   navbar: {
     dashboard: 'Dashboard',
     github: 'Github',
@@ -97,14 +110,15 @@ export default {
     github: 'Github Repository'
   },
   permission: {
-    addRole: 'New Role',
-    editPermission: 'Edit',
     roles: 'Your roles',
     switchRoles: 'Switch roles',
-    tips: 'In some cases, using v-permission will have no effect. For example: Element-UI  el-tab or el-table-column and other scenes that dynamically render dom. You can only do this with v-if.',
-    delete: 'Delete',
-    confirm: 'Confirm',
-    cancel: 'Cancel'
+    tips: 'In some cases, using v-permission will have no effect. For example: Element-UI  el-tab or el-table-column and other scenes that dynamically render dom. You can only do this with v-if.'
+  },
+  roles: {
+    title: 'Roles',
+    key: 'Role key',
+    name: 'Role name',
+    list: 'Roles list'
   },
   guide: {
     description: 'The guide page is useful for some people who entered the project for the first time. You can briefly introduce the features of the project. Demo is based on ',

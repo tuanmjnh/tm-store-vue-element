@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import UserCard from './components/UserCard'
 import Activity from './components/Activity'
 import Timeline from './components/Timeline'
@@ -45,11 +45,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'name',
-      'avatar',
-      'roles'
-    ])
+    ...mapState({
+      profile: state => state.auth.profile,
+      roles: state => state.auth.roles
+    })
   },
   created() {
     this.getUser()
@@ -57,10 +56,11 @@ export default {
   methods: {
     getUser() {
       this.user = {
-        name: this.name,
+        name: `${this.profile.first_name} ${this.profile.last_name}`,
         role: this.roles.join(' | '),
-        email: 'admin@test.com',
-        avatar: this.avatar
+        email: this.profile.email,
+        avatar: this.profile.avatar,
+        introduction: this.profile.introduction
       }
     }
   }

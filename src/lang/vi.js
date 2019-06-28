@@ -1,6 +1,9 @@
 export default {
   route: {
     dashboard: 'Dashboard',
+    manager: 'Quản trị',
+    users: 'Tài khoản',
+    roles: 'Quyền',
     demo: 'Bản giới thiệu',
     documentation: 'Tài liệu',
     guide: 'Hướng dẫn',
@@ -65,6 +68,16 @@ export default {
     externalLink: 'External Link',
     profile: 'Profile'
   },
+  global: {
+    add: 'Thêm mới',
+    edit: 'Sửa',
+    delete: 'Xóa',
+    confirm: 'Xác nhận',
+    cancel: 'Hủy bỏ',
+    back: 'Quay lại',
+    note: 'Ghi chú',
+    desc: 'Miêu tả'
+  },
   navbar: {
     dashboard: 'Dashboard',
     github: 'Github',
@@ -97,14 +110,15 @@ export default {
     github: 'Github Repository'
   },
   permission: {
-    addRole: 'Thêm quyền',
-    editPermission: 'Sửa',
     roles: 'Quyền của bạn',
     switchRoles: 'Chuyển đổi quyền',
-    tips: 'In some cases, using v-permission will have no effect. For example: Element-UI  el-tab or el-table-column and other scenes that dynamically render dom. You can only do this with v-if.',
-    delete: 'Xóa',
-    confirm: 'Xác nhận',
-    cancel: 'Hủy bỏ'
+    tips: 'In some cases, using v-permission will have no effect. For example: Element-UI  el-tab or el-table-column and other scenes that dynamically render dom. You can only do this with v-if.'
+  },
+  roles: {
+    title: 'Quyền',
+    key: 'Khóa quyền',
+    name: 'Tên quyền',
+    list: 'Danh sách quyền'
   },
   guide: {
     description: 'The guide page is useful for some people who entered the project for the first time. You can briefly introduce the features of the project. Demo is based on ',

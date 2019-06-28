@@ -14,21 +14,6 @@ const guide = {
   ]
 }
 
-const profile = {
-  path: '/demo/profile',
-  component: Demo,
-  redirect: '/demo/profile/index',
-  hidden: true,
-  children: [
-    {
-      path: 'index',
-      component: () => import('@/views/demo/profile/index'),
-      name: 'Profile',
-      meta: { title: 'profile', icon: 'user', noCache: true }
-    }
-  ]
-}
-
 const documentation = {
   path: '/demo/documentation',
   component: Demo,
@@ -119,4 +104,4 @@ const externalLink = {
   ]
 }
 
-export { guide, documentation, profile, icon, tab, theme, clipboard, i18n, externalLink }
+export { guide, documentation, icon, tab, theme, clipboard, i18n, externalLink }

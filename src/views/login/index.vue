@@ -96,8 +96,8 @@ export default {
     // }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '',
+        password: ''
       },
       // loginRules: {
       //   username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -134,7 +134,7 @@ export default {
     } else if ($this.loginForm.password === '') {
       $this.$refs.password.focus()
     }
-    window.addEventListener('keyup', function(event) {
+    document.body.addEventListener('keyup', function(event) {
       if (event.keyCode === 13) $this.onLogin()
     })
   },
