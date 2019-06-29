@@ -1,11 +1,14 @@
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { auth, firestore } from '@/api/firebase/index'
+import { getToken, setToken, removeToken, getUserSetting, setUserSetting, removeUserSetting } from '@/utils/auth'
+import message from '@/utils/message'
 import router, { resetRouter } from '@/router'
-const collection = 'users'
+const collection = firestore.collection('users')
 const state = {
   uid: '',
   profile: {},
   roles: [],
   setting: {
+    cookie: true,
     show: true,
     tags_view: true,
     fixed_header: true,
@@ -28,8 +31,12 @@ const mutations = {
   SET_USER: (state, user) => {
     state.profile = user.profile
     state.roles = user.roles
-    state.setting = { ...state.setting, ...user.setting }
-    // console.log(state.setting)
+    if (user.setting.cookie) {
+      state.setting = { ...state.setting, ...user.setting }
+    } else {
+      state.setting = { ...state.setting, ...getUserSetting() }
+    }
+    // console.log(getUserSetting())
   },
   CHANGE_SETTING(state, item) {
     state.setting[item.key] = item.value
@@ -40,7 +47,7 @@ const actions = {
   login({ commit, rootState }, params) {
     return new Promise((resolve, reject) => {
       if (params && params.loading) rootState.$getLoading = true
-      rootState.$firebase.auth.signInWithEmailAndPassword(params.username, params.password)
+      auth.signInWithEmailAndPassword(params.username, params.password)
         .then(doc => {
           commit('SET_UID', doc.user.uid)
           doc.user.getIdToken().then((token) => {
@@ -57,7 +64,7 @@ const actions = {
           else if (err.code === 'auth/user-not-found') err.message = 'login.auth_user_not_found'
           else if (err.code === 'auth/wrong-password') err.message = 'login.auth_wrong_password'
           else if (err.code === 'auth/too-many-requests') err.message = 'login.auth_too_many_requests'
-          commit('MESSAGE_ERROR', err, { root: true })
+          message.error(err)
           reject(err)
         })
         .finally(() => { if (params && params.loading) rootState.$getLoading = false })
@@ -66,7 +73,7 @@ const actions = {
   getUser({ commit, rootState }, params) {
     return new Promise((resolve, reject) => {
       if (params && params.loading) rootState.$getLoading = true
-      rootState.$firebase.fs.collection(collection).doc(params.uid).get()
+      collection.doc(params.uid).get()
         .then(doc => {
           if (doc.exists) {
             commit('SET_USER', doc.data())
@@ -76,7 +83,7 @@ const actions = {
         })
         .catch((err) => {
           console.log(err)
-          commit('MESSAGE_ERROR', err, { root: true })
+          message.error(err)
           reject(err)
         })
         .finally(() => { if (params && params.loading) rootState.$getLoading = false })
@@ -91,7 +98,7 @@ const actions = {
   logout({ commit, rootState }, params) {
     return new Promise((resolve, reject) => {
       if (params && params.loading) rootState.$getLoading = true
-      rootState.$firebase.auth.signOut()
+      auth.signOut()
         .then(() => {
           commit('SET_TOKEN', '')
           removeToken()
@@ -105,6 +112,7 @@ const actions = {
           // else if (err.code === 'auth/wrong-password') err.message = 'login.auth_wrong_password'
           // else if (err.code === 'auth/too-many-requests') err.message = 'login.auth_too_many_requests'
           // commit('MESSAGE_ERROR', err, { root: true })
+          message.error(err)
           reject(err)
         })
         .finally(() => { if (params && params.loading) rootState.$getLoading = false })
@@ -112,27 +120,26 @@ const actions = {
   },
   changeSetting({ commit, state, rootState }, params) {
     return new Promise((resolve, reject) => {
-      // commit('CHANGE_SETTING', params)
-      // state.setting[params.key] = params.value
-      // console.log(state.setting[params.key])
-      const data = {}
-      data[`setting.${params.key}`] = params.value
-      // data.setting[params.key] = params.value
-      // console.log(data)
-      if (params && params.loading) rootState.$commitLoading = true
-      rootState.$firebase.fs.collection(collection).doc(state.uid)
-        .update(data)
-        .then((doc) => {
-          commit('CHANGE_SETTING', params)
-          // console.log('Document successfully written!')
-          resolve(true)
-        })
-        .catch((err) => {
-          console.log(err)
-          commit('MESSAGE_ERROR', err, { root: true })
-          reject(err)
-        })
-        .finally(() => { if (params && params.loading) rootState.$commitLoading = false })
+      if (state.setting.cookie) {
+        commit('CHANGE_SETTING', params)
+        setUserSetting(state.setting)
+      } else {
+        const data = {}
+        data[`setting.${params.key}`] = params.value
+        if (params && params.loading) rootState.$commitLoading = true
+        collection.doc(state.uid)
+          .update(data)
+          .then((doc) => {
+            commit('CHANGE_SETTING', params)
+            resolve(true)
+          })
+          .catch((err) => {
+            console.log(err)
+            message.error(err)
+            reject(err)
+          })
+          .finally(() => { if (params && params.loading) rootState.$commitLoading = false })
+      }
     })
   }
 }

@@ -12,8 +12,8 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-// firebaseInit
-import { auth, firestore } from '@/vendor/firebaseInit'
+// firebase
+import { auth } from '@/api/firebase/index'
 // internationalization
 import i18n from './lang'
 import './icons' // icon

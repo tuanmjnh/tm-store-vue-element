@@ -1,12 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
-// i18n lang
-import i18n from '@/lang'
-// Message
-import { Message } from 'element-ui'
-// firebase
-import { auth, firestore } from '@/vendor/firebaseInit'
 Vue.use(Vuex)
 
 // https://webpack.js.org/guides/dependency-management/#requirecontext
@@ -25,29 +19,10 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
 const store = new Vuex.Store({
   modules,
   getters,
-  mutations: {
-    MESSAGE: (state, msg) => {
-      Message({ message: i18n.t(msg.message), type: msg.type || null, showClose: msg.showClose || true })
-    },
-    MESSAGE_SUCCESS: (state, msg) => {
-      Message({ message: i18n.t(msg.message), type: 'success', showClose: msg.showClose || true })
-    },
-    MESSAGE_WARNING: (state, msg) => {
-      Message({ message: i18n.t(msg.message), type: 'warning', showClose: msg.showClose || true })
-    },
-    MESSAGE_ERROR: (state, msg) => {
-      Message({ message: i18n.t(msg.message), type: 'error', showClose: msg.showClose || true })
-    }
-  },
   state: {
     $appLoading: true,
     $getLoading: false,
-    $commitLoading: false,
-    // $message: Message,
-    $firebase: {
-      auth: auth,
-      fs: firestore
-    }
+    $commitLoading: false
   }
 })
 

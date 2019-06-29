@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 
 const TokenKey = 'Auth-Token'
+const userSetting = 'User-Setting'
 
 export function getToken() {
   return Cookies.get(TokenKey)
@@ -16,4 +17,16 @@ export function removeToken() {
 
 export function checkToken(token) {
   return getToken === token
+}
+
+export function getUserSetting() {
+  return JSON.parse(Cookies.get(userSetting))
+}
+
+export function setUserSetting(value) {
+  return Cookies.set(userSetting, JSON.stringify(value))
+}
+
+export function removeUserSetting() {
+  return Cookies.remove(userSetting)
 }

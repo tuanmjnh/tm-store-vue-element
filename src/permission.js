@@ -5,7 +5,8 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken, checkToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
-import { auth, firestore } from '@/vendor/firebaseInit'
+// firebase
+import { auth } from '@/api/firebase/index'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 

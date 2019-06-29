@@ -76,7 +76,13 @@ export default {
     cancel: 'Cancel',
     back: 'Back',
     note: 'Note',
-    desc: 'Description'
+    desc: 'Descriptions'
+  },
+  success: {
+    insert: 'Insert record success',
+    update: 'Update record success',
+    trash: 'Move record to recycle bin success',
+    delete: 'Delete record success'
   },
   navbar: {
     dashboard: 'Dashboard',

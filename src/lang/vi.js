@@ -78,6 +78,12 @@ export default {
     note: 'Ghi chú',
     desc: 'Miêu tả'
   },
+  success: {
+    insert: 'Thêm mới bản ghi thành công',
+    update: 'Cập nhật bản ghi thành công',
+    trash: 'Chuyển bản ghi đến thùng rác thành công',
+    delete: 'Xóa bản ghi thành công'
+  },
   navbar: {
     dashboard: 'Dashboard',
     github: 'Github',
