@@ -1,4 +1,14 @@
-.row {
+.p-10 {
+  padding: 10px;
+}
+.flex,
+.row-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.row,
+.row-flex {
   margin-bottom: 20px;
   .form-label {
     padding-bottom: 6px;
@@ -23,7 +33,12 @@
   transition: inherit;
   overflow: visible;
 }
-
+.spacer {
+  flex-grow: 1 !important;
+}
+.title {
+  font-size: 20px;
+}
 //
 .el-dialog__header {
   padding: 20px 20px 20px !important;
@@ -35,4 +50,9 @@
   .el-button {
     margin-left: initial !important;
   }
+}
+.bg-info {
+  color: #fff;
+  background-color: #909399;
+  border-color: #909399;
 }

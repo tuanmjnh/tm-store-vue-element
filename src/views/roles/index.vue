@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="al-right row">
-      <el-tooltip class="item" effect="dark" :content="$t('global.add')" placement="l-start">
+      <el-tooltip effect="dark" :content="$t('global.add')" placement="left-start">
         <el-button type="primary" size="small" @click="onAddRole">
           <i class="el-icon-plus" />
         </el-button>
@@ -26,7 +26,7 @@
       </el-table-column>
       <el-table-column align="center" label="#">
         <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" :content="$t('global.edit')" placement="top-start">
+          <el-tooltip effect="dark" :content="$t('global.edit')" placement="top-start">
             <el-button type="primary" size="mini" @click="onEdit(scope)">
               <svg-icon icon-class="edit" />
               <!-- {{ $t('permission.editPermission') }} -->

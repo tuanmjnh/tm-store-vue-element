@@ -73,6 +73,7 @@ export default {
   },
   global: {
     add: 'Thêm mới',
+    drafts: 'Bản nháp',
     edit: 'Sửa',
     delete: 'Xóa',
     confirm: 'Xác nhận',

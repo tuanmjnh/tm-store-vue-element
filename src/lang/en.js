@@ -72,7 +72,8 @@ export default {
     template_add: 'Add'
   },
   global: {
-    add: 'Add',
+    add: 'Add new',
+    drafts: 'Drafts',
     edit: 'Edit',
     delete: 'Delete',
     confirm: 'Confirm',
