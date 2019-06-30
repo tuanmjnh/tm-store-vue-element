@@ -55,7 +55,7 @@ const actions = {
           })
           // commit('SET_TOKEN', doc.user.refreshToken)
           // dispatch('getUser', { uid: doc.user.uid })
-          // console.log(doc.user.uid)
+          console.log(doc.user.uid)
           resolve(doc)
         })
         .catch((err) => {
@@ -64,6 +64,7 @@ const actions = {
           else if (err.code === 'auth/user-not-found') err.message = 'login.auth_user_not_found'
           else if (err.code === 'auth/wrong-password') err.message = 'login.auth_wrong_password'
           else if (err.code === 'auth/too-many-requests') err.message = 'login.auth_too_many_requests'
+          else err.message = 'login.network_request_failed'
           message.error(err)
           reject(err)
         })

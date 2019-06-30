@@ -66,7 +66,10 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: 'I18n',
     externalLink: 'External Link',
-    profile: 'Profile'
+    profile: 'Profile',
+    template: 'Template',
+    template_list: 'List',
+    template_add: 'Add'
   },
   global: {
     add: 'Add',
@@ -109,7 +112,8 @@ export default {
     auth_invalid_email: 'The Username is badly formatted!',
     auth_user_not_found: 'Account does not exist!',
     auth_wrong_password: 'The password is invalid!',
-    auth_too_many_requests: 'Too many unsuccessful login attempts. Please include reCaptcha verification or try again later!'
+    auth_too_many_requests: 'Too many unsuccessful login attempts. Please include reCaptcha verification or try again later!',
+    network_request_failed: 'A network error. Please try again!'
   },
   documentation: {
     documentation: 'Documentation',

@@ -2,9 +2,9 @@ import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/storage'
 import 'firebase/firestore'
-import 'firebase/database'
-import 'firebase/messaging'
-import 'firebase/functions'
+// import 'firebase/database'
+// import 'firebase/messaging'
+// import 'firebase/functions'
 // Initialize Firebase
 var config = {
   apiKey: 'AIzaSyAwMnmy7tyvDjIt283Tnp1-u9T7OubwDhs',
@@ -12,13 +12,14 @@ var config = {
   databaseURL: 'https://tm-store-4576e.firebaseio.com',
   projectId: 'tm-store-4576e',
   storageBucket: 'tm-store-4576e.appspot.com',
-  messagingSenderId: '45492650401'
+  messagingSenderId: '45492650401',
+  clientId: '45492650401-84j1lpnseu0lgn2k0cgs4hchks18cahn.apps.googleusercontent.com'
 }
 if (!firebase.apps.length) firebase.initializeApp(config)
 export const GoogleAuthProvider = new firebase.auth.GoogleAuthProvider()
 export const auth = firebase.auth()
 export const storage = firebase.storage()
-export const database = firebase.database()
+// export const database = firebase.database()
 export const firestore = firebase.firestore()
 export const timestamp = firebase.firestore.FieldValue.serverTimestamp()
 // export const FBMessaging = firebase.messaging()

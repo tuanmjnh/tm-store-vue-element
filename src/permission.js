@@ -9,11 +9,11 @@ import getPageTitle from '@/utils/get-page-title'
 import { auth } from '@/api/firebase/index'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
+// start progress bar
+NProgress.start()
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 router.beforeEach(async (to, from, next) => {
-  // start progress bar
-  NProgress.start()
   // set page title
   document.title = getPageTitle(to.meta.title)
 

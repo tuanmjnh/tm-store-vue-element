@@ -20,7 +20,8 @@ export function checkToken(token) {
 }
 
 export function getUserSetting() {
-  return JSON.parse(Cookies.get(userSetting))
+  if (Cookies.get(userSetting)) return JSON.parse(Cookies.get(userSetting))
+  else return {}
 }
 
 export function setUserSetting(value) {

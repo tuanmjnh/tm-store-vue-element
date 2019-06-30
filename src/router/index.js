@@ -125,6 +125,32 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/template',
+    component: Layout,
+    redirect: 'noRedirect',
+    alwaysShow: true, // will always show the root menu
+    name: 'template',
+    meta: {
+      title: 'template',
+      icon: 'template',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/template/list'),
+        name: 'template-list',
+        meta: { title: 'template_list', icon: 'list', noCache: true }
+      },
+      {
+        path: 'add',
+        component: () => import('@/views/template/add'),
+        name: 'template-add',
+        meta: { title: 'template_add', icon: 'add', noCache: true }
+      }
+    ]
+  },
+  {
     path: '/profile',
     component: Layout,
     redirect: '/profile/index',

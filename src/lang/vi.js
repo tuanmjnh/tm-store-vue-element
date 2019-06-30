@@ -66,7 +66,10 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: 'I18n',
     externalLink: 'External Link',
-    profile: 'Profile'
+    profile: 'Profile',
+    template: 'Template',
+    template_list: 'List',
+    template_add: 'Add'
   },
   global: {
     add: 'Thêm mới',
@@ -109,7 +112,8 @@ export default {
     auth_invalid_email: 'Tài khoản sai định dạng!',
     auth_user_not_found: 'Tài khoản không tồn tại!',
     auth_wrong_password: 'Mật khẩu không đúng!',
-    auth_too_many_requests: 'Quá nhiều lần thử đăng nhập không thành công. Vui lòng xác minh reCaptcha hoặc thử lại sau!'
+    auth_too_many_requests: 'Quá nhiều lần thử đăng nhập không thành công. Vui lòng xác minh reCaptcha hoặc thử lại sau!',
+    network_request_failed: 'Lỗi kết nối mạng. Vui lòng thử lại!'
   },
   documentation: {
     documentation: 'Tài liệu',
