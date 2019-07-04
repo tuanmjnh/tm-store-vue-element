@@ -4,18 +4,18 @@
       <label class="title">{{ $t('global.add') }}</label>
       <div class="spacer" />
       <el-button-group>
-        <el-tooltip effect="dark" :content="$t('global.add')" placement="bottom">
-          <el-button type="primary" @click="onSubmit">
+        <el-tooltip effect="dark" :content="$t('global.publish')" placement="bottom">
+          <el-button type="primary" :loading="loading_add" :disabled="loading_drafts" @click="onAdd">
             <svg-icon icon-class="edit-saved" />
           </el-button>
         </el-tooltip>
         <el-tooltip effect="dark" :content="$t('global.drafts')" placement="bottom">
-          <el-button type="warning" @click="onDrafts">
+          <el-button type="warning" :loading="loading_drafts" :disabled="loading_add" @click="onDrafts">
             <svg-icon icon-class="drafts" />
           </el-button>
         </el-tooltip>
         <el-tooltip effect="dark" :content="$t('global.back')" placement="bottom">
-          <el-button @click="onBack">
+          <el-button :disabled="loading_add||loading_drafts" @click="$router.push('list')">
             <svg-icon icon-class="back" />
           </el-button>
         </el-tooltip>
@@ -23,31 +23,39 @@
     </div>
     <hr class="hr">
     <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item prop="name" label="Activity name" required :rules="[
+      <el-form-item prop="name" label="Activity name" :rules="[
       {required: true, message: $t('login.msg_required_username'), trigger: 'change'},
       {min:4, message: $t('login.msg_min_username',{min:4}), trigger: 'change'}]">
-        <el-input ref="name" v-model="form.name" name="name" type="text"></el-input>
+        <el-input v-model="form.name" type="text"></el-input>
       </el-form-item>
-      <el-form-item label="Activity zone">
+      <el-form-item prop="region" label="Activity zone"
+        :rules="[{required: true, message: $t('login.msg_required_username'), trigger: 'change'}]">
         <el-select v-model="form.region" placeholder="please select your zone">
           <el-option label="Zone one" value="shanghai"></el-option>
           <el-option label="Zone two" value="beijing"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="Activity time">
+      <el-form-item label="Activity time" required>
         <el-col :span="11">
-          <el-date-picker v-model="form.date1" type="date" placeholder="Pick a date" style="width: 100%;">
-          </el-date-picker>
+          <el-form-item prop="date1"
+            :rules="[{required: true, message: $t('login.msg_required_username'), trigger: 'change'}]">
+            <el-date-picker v-model="form.date1" type="date" placeholder="Pick a date" style="width: 100%;">
+            </el-date-picker>
+          </el-form-item>
         </el-col>
         <el-col class="line" :span="2">-</el-col>
         <el-col :span="11">
-          <el-time-picker v-model="form.date2" placeholder="Pick a time" style="width: 100%;"></el-time-picker>
+          <el-form-item prop="date2"
+            :rules="[{required: true, message: $t('login.msg_required_username'), trigger: 'change'}]">
+            <el-time-picker v-model="form.date2" placeholder="Pick a time" style="width: 100%;"></el-time-picker>
+          </el-form-item>
         </el-col>
       </el-form-item>
       <el-form-item label="Instant delivery">
         <el-switch v-model="form.delivery"></el-switch>
       </el-form-item>
-      <el-form-item label="Activity type">
+      <el-form-item prop="type" label="Activity type"
+        :rules="[{required: true, message: $t('login.msg_required_username'), trigger: 'change'}]">
         <el-checkbox-group v-model="form.type">
           <el-checkbox label="Online activities" name="type"></el-checkbox>
           <el-checkbox label="Promotion activities" name="type"></el-checkbox>
@@ -55,7 +63,8 @@
           <el-checkbox label="Simple brand exposure" name="type"></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="Resources">
+      <el-form-item prop="resource" label="Resources"
+        :rules="[{required: true, message: $t('login.msg_required_username'), trigger: 'change'}]">
         <el-radio-group v-model="form.resource">
           <el-radio label="Sponsor"></el-radio>
           <el-radio label="Venue"></el-radio>
@@ -69,10 +78,14 @@
 </template>
 
 <script>
+import * as api from '@/api/firebase/template'
 export default {
   data() {
     return {
-      form: {
+      loading_add: false,
+      loading_drafts: false,
+      form: {},
+      default: {
         name: '',
         region: '',
         date1: '',
@@ -80,25 +93,42 @@ export default {
         delivery: false,
         type: [],
         resource: '',
-        desc: ''
+        desc: '',
+        flag: 1
       }
     }
   },
+  created() {
+    this.form = { ...this.default }
+  },
   methods: {
-    onSubmit() {
+    onAdd() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          console.log('submit!')
-        } else {
-          console.log('invalid!')
+          this.loading_add = true
+          this.form.flag = 1
+          api.add(this.form).then((rs) => {
+            this.reset()
+          })
         }
       })
     },
     onDrafts() {
-      console.log('onDrafts!')
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.loading_drafts = true
+          this.form.flag = 0
+          api.add(this.form).then((rs) => {
+            this.reset()
+          })
+        }
+      })
     },
-    onBack() {
-      console.log('onBack!')
+    reset() {
+      this.form = { ...this.default }
+      this.$refs.form.resetFields()
+      this.loading_add = false
+      this.loading_drafts = false
     }
   }
 }

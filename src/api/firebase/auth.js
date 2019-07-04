@@ -1,8 +1,8 @@
-import { auth, firestore } from './index'
-const collection = firestore.collection('users')
+import firebase from './index'
+const collection = firebase.firestore().collection('users')
 
 export function signInWithEmailAndPassword({ username, password }) {
-  auth.signInWithEmailAndPassword(username, password).then((doc) => {
+  firebase.auth().signInWithEmailAndPassword(username, password).then((doc) => {
     return doc
   })
 }

@@ -72,7 +72,9 @@ export default {
     template_add: 'Add'
   },
   global: {
+    list: 'Danh sách dữ liệu',
     add: 'Thêm mới',
+    publish: 'Công bố',
     drafts: 'Bản nháp',
     edit: 'Sửa',
     delete: 'Xóa',
@@ -80,7 +82,8 @@ export default {
     cancel: 'Hủy bỏ',
     back: 'Quay lại',
     note: 'Ghi chú',
-    desc: 'Miêu tả'
+    desc: 'Miêu tả',
+    filter: 'Lọc dữ liệu'
   },
   success: {
     insert: 'Thêm mới bản ghi thành công',

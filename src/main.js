@@ -13,7 +13,7 @@ import App from './App'
 import store from './store'
 import router from './router'
 // firebase
-import { auth } from '@/api/firebase/index'
+import firebase from '@/api/firebase/index'
 // internationalization
 import i18n from './lang'
 import './icons' // icon
@@ -46,7 +46,7 @@ Object.keys(filters).forEach(key => {
 Vue.config.productionTip = false
 
 let app
-auth.onAuthStateChanged(async (user) => {
+firebase.auth().onAuthStateChanged(async (user) => {
   if (!app) {
     if (user) {
       await store.dispatch('auth/setUserID', { uid: user.uid })

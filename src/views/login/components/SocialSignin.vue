@@ -20,13 +20,14 @@
 
 <script>
 // import openWindow from '@/utils/open-window'
-import { auth, GoogleAuthProvider } from '@/api/firebase/index'
+import firebase from '@/api/firebase/index'
 import message from '@/utils/message'
 export default {
   name: 'SocialSignin',
   methods: {
     onGoogle() {
-      auth.signInWithPopup(GoogleAuthProvider).then((result) => {
+      const GoogleAuthProvider = new firebase.auth.GoogleAuthProvider()
+      firebase.auth().signInWithPopup(GoogleAuthProvider).then((result) => {
         var token = result.credential.accessToken
         var user = result.user
         this.$router.push({ path: this.redirect })

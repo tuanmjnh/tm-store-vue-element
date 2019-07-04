@@ -16,12 +16,12 @@ var config = {
   clientId: '45492650401-84j1lpnseu0lgn2k0cgs4hchks18cahn.apps.googleusercontent.com'
 }
 if (!firebase.apps.length) firebase.initializeApp(config)
-export const GoogleAuthProvider = new firebase.auth.GoogleAuthProvider()
-export const auth = firebase.auth()
-export const storage = firebase.storage()
+// export const GoogleAuthProvider = new firebase.auth.GoogleAuthProvider()
+// export const auth = firebase.auth()
+// export const storage = firebase.storage()
 // export const database = firebase.database()
-export const firestore = firebase.firestore()
-export const timestamp = firebase.firestore.FieldValue.serverTimestamp()
+// export const firestore = firebase.firestore()
+// export const timestamp = firebase.firestore.FieldValue.serverTimestamp()
 // export const FBMessaging = firebase.messaging()
 // export const FBFuntions = firebase.functions()
 // Functions

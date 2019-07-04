@@ -1,16 +1,16 @@
-import { firestore } from './index'
+import firebase from './index'
 import message from '@/utils/message'
-const collection = firestore.collection('template')
+import store from '@/store'
+const collection = firebase.firestore().collection('template')
 
-export function get({ commit, state, rootGetters, rootState }, params) {
+export function get(params) {
   return new Promise((resolve, reject) => {
-    if (params && params.loading) rootState.$getLoading = true
-    collection.orderBy('created_at', 'asc').get()
+    collection.where('flag', '==', params.flag).get()// .orderBy('created_at', 'asc').get()
       .then(docs => {
         const items = []
         docs.forEach(function(doc) {
           // console.log(doc.id, ' => ', doc.data())
-          items.push({ ...{ id: doc.id }, ...doc })
+          items.push({ ...{ id: doc.id }, ...doc.data() })
         })
         resolve(items)
       })
@@ -18,20 +18,17 @@ export function get({ commit, state, rootGetters, rootState }, params) {
         message.error(err)
         reject(err)
       })
-      .finally(() => {
-        if (params && params.loading) rootState.$getLoading = true
-      })
+      .finally(() => { })
   })
 }
 
-export function getSnapshot({ commit, state, rootGetters, rootState }, params) {
+export function getSnapshot(params) {
   return new Promise((resolve, reject) => {
-    if (params && params.loading) rootState.$getLoading = true
     collection.orderBy('created_at', 'asc')
       .onSnapshot((snapshot) => {
         const items = []
         snapshot.forEach((doc) => {
-          items.push({ ...{ id: doc.id }, ...doc })
+          items.push({ ...{ id: doc.id }, ...doc.data() })
         })
         resolve(items)
       })
@@ -39,16 +36,16 @@ export function getSnapshot({ commit, state, rootGetters, rootState }, params) {
         message.error(err)
         reject(err)
       })
-      .finally(() => {
-        if (params && params.loading) rootState.$getLoading = true
-      })
+      .finally(() => { })
   })
 }
 
-export function add({ commit, state, rootGetters, rootState }, params) {
+export function add(params) {
   return new Promise((resolve, reject) => {
-    if (params && params.loading) rootState.$commitLoading = true
-    collection.add(params.item)
+    params.created_by = store.state.auth.uid
+    params.created_at = firebase.firestore.FieldValue.serverTimestamp()
+    params.created_ip = ''
+    collection.add(params)
       .then(doc => {
         message.success({ message: 'success.insert' })
         resolve(doc)
@@ -57,16 +54,16 @@ export function add({ commit, state, rootGetters, rootState }, params) {
         message.error(err)
         reject(err)
       })
-      .finally(() => {
-        if (params && params.loading) rootState.$commitLoading = true
-      })
+      .finally(() => { })
   })
 }
 
-export function edit({ commit, state, rootGetters, rootState }, params) {
+export function edit(params) {
   return new Promise((resolve, reject) => {
-    if (params && params.loading) rootState.$commitLoading = true
     const data = { ...params.item }
+    data.updated_by = store.state.auth.uid
+    data.updated_at = firebase.firestore.FieldValue.serverTimestamp()
+    data.updated_ip = ''
     delete data.id
     collection.doc(params.item.id).update(data)
       .then(doc => {
@@ -77,33 +74,40 @@ export function edit({ commit, state, rootGetters, rootState }, params) {
         message.error(err)
         reject(err)
       })
-      .finally(() => {
-        if (params && params.loading) rootState.$commitLoading = true
-      })
+      .finally(() => { })
   })
 }
 
-export function trash({ commit, state, rootGetters, rootState }, params) {
-  return new Promise((resolve, reject) => {
-    if (params && params.loading) rootState.$commitLoading = true
-    collection.doc(params.item.id).update(params.item)
-      .then(doc => {
-        message.success({ message: 'success.trash' })
-        resolve(doc)
-      })
-      .catch((err) => {
-        message.error(err)
-        reject(err)
-      })
-      .finally(() => {
-        if (params && params.loading) rootState.$commitLoading = true
-      })
+export function trash(params) {
+  return new Promise(async (resolve, reject) => {
+    const result = []
+    try {
+      for await (const item of params) {
+        const data = {
+          deleted_by: store.state.auth.uid,
+          deleted_at: firebase.firestore.FieldValue.serverTimestamp(),
+          deleted_ip: '',
+          flag: item.flag === 0 ? 1 : 0
+        }
+        await collection.doc(item.id).update(data)
+          .then(doc => {
+            result.push({ ...{ id: item.id }, ...data })
+          })
+          .catch((err) => {
+            throw err
+          })
+      }
+      message.success({ message: 'success.trash' })
+      resolve(result)
+    } catch (err) {
+      message.error(err)
+      reject(err)
+    }
   })
 }
 
-export function del({ commit, state, rootGetters, rootState }, params) {
+export function del(params) {
   new Promise((resolve, reject) => {
-    if (params && params.loading) rootState.$commitLoading = true
     collection.doc(params.item.id).delete()
       .then(doc => {
         message.success({ message: 'success.trash' })
@@ -113,8 +117,6 @@ export function del({ commit, state, rootGetters, rootState }, params) {
         message.error(err)
         reject(err)
       })
-      .finally(() => {
-        if (params && params.loading) rootState.$commitLoading = true
-      })
+      .finally(() => { })
   })
 }

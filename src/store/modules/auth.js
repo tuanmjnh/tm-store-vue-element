@@ -1,8 +1,8 @@
-import { auth, firestore } from '@/api/firebase/index'
+import firebase from '@/api/firebase/index'
 import { getToken, setToken, removeToken, getUserSetting, setUserSetting, removeUserSetting } from '@/utils/auth'
 import message from '@/utils/message'
 import router, { resetRouter } from '@/router'
-const collection = firestore.collection('users')
+const collection = firebase.firestore().collection('users')
 const state = {
   uid: '',
   profile: {},
@@ -47,7 +47,7 @@ const actions = {
   login({ commit, rootState }, params) {
     return new Promise((resolve, reject) => {
       if (params && params.loading) rootState.$getLoading = true
-      auth.signInWithEmailAndPassword(params.username, params.password)
+      firebase.auth().signInWithEmailAndPassword(params.username, params.password)
         .then(doc => {
           commit('SET_UID', doc.user.uid)
           doc.user.getIdToken().then((token) => {
@@ -99,7 +99,7 @@ const actions = {
   logout({ commit, rootState }, params) {
     return new Promise((resolve, reject) => {
       if (params && params.loading) rootState.$getLoading = true
-      auth.signOut()
+      firebase.auth().signOut()
         .then(() => {
           commit('SET_TOKEN', '')
           removeToken()

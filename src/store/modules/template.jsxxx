@@ -1,5 +1,5 @@
-import { firestore } from '@/api/firebase/index'
-const collection = firestore.collection('template')
+import firebase from '@/api/firebase/index'
+const collection = firebase.firestore().collection('template')
 
 const state = {
   items: [],

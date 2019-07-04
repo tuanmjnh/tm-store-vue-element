@@ -37,7 +37,7 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
     let value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value] }
     if (result.length > 0 && value < 10) {
       value = '0' + value
     }
@@ -163,12 +163,12 @@ export function param2Obj(url) {
   }
   return JSON.parse(
     '{"' +
-      decodeURIComponent(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\+/g, ' ') +
-      '"}'
+    decodeURIComponent(search)
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"')
+      .replace(/\+/g, ' ') +
+    '"}'
   )
 }
 
@@ -347,4 +347,113 @@ export function removeClass(ele, cls) {
     const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
     ele.className = ele.className.replace(reg, ' ')
   }
+}
+
+export function last(data) {
+  if (data.length > 0) return data[data.length - 1]
+  return data
+}
+
+export function indexOfArray(data, element) {
+  for (let i = 0; i < element.length; i++) {
+    const index = data.indexOf(element[i])
+    if (index > -1) return index
+  }
+  return -1
+}
+
+export function update({ data, element, key }) {
+  if (key) {
+    if (Array.isArray(element)) {
+      return data.forEach(source => {
+        var destination = element.find(x => x[key] === source[key])
+        if (destination) {
+          Object.keys(source).forEach(function(keyobj, index) {
+            // if (typeof source[keyobj] !== 'object')
+            if (destination[keyobj] !== undefined) {
+              source[keyobj] = destination[keyobj]
+            }
+          })
+        }
+      })
+    } else {
+      return data.forEach(source => {
+        if (source[key] === element[key]) {
+          Object.keys(source).forEach(function(keyobj, index) {
+            // if (typeof source[keyobj] !== 'object')
+            if (element[keyobj] !== undefined) source[keyobj] === element[keyobj]
+          })
+        }
+      })
+    }
+  } else {
+    if (Array.isArray(element)) {
+      element.forEach(e => {
+        const index = data.indexOf(e)
+        if (index > -1) data.splice(index, 1, element)
+      })
+    } else {
+      const index = data.indexOf(element)
+      if (index > -1) data.splice(index, 1, element)
+    }
+  }
+  return data
+}
+
+export function updateKey({ data, element }) {
+  if (Array.isArray(element)) {
+    element.forEach(e => {
+      const index = data.indexOf(e)
+      if (index > -1) data.splice(index, 1, element)
+    })
+  } else {
+    data.array.forEach(e => {
+      Object.keys(e).forEach(function(key, index) {
+        if (typeof e[key] === 'object') {
+          e[key] = element[key]
+        }
+      })
+    })
+  }
+  return data
+}
+
+export function remove({ data, element, key }) {
+  if (key) {
+    if (Array.isArray(element)) {
+      element.forEach(e => {
+        const index = data.findIndex((x) => { return x[key] === e[key] })
+        if (index > -1) data.splice(index, 1)
+      })
+    } else {
+      const index = data.findIndex((x) => { return x[key] === element[key] })
+      if (index > -1) data.splice(index, 1)
+    }
+  } else {
+    if (Array.isArray(element)) {
+      element.forEach(e => {
+        const index = data.indexOf(e)
+        if (index > -1) data.splice(index, 1)
+      })
+    } else {
+      const index = data.indexOf(element)
+      if (index > -1) data.splice(index, 1)
+    }
+  }
+  return data
+}
+
+export function pushIfNotExist({ data, element, comparer }) {
+  if (comparer) {
+    if (data.indexOf(comparer) < 0) data.push(element)
+  } else {
+    if (Array.isArray(element)) {
+      element.forEach(e => {
+        if (data.indexOf(e) < 0) data.push(e)
+      })
+    } else {
+      if (data.indexOf(element) < 0) data.push(element)
+    }
+  }
+  return data
 }

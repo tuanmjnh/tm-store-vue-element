@@ -6,7 +6,7 @@ import 'nprogress/nprogress.css' // progress bar style
 import { getToken, checkToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 // firebase
-import { auth } from '@/api/firebase/index'
+import firebase from '@/api/firebase/index'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 // start progress bar
@@ -23,7 +23,7 @@ router.beforeEach(async (to, from, next) => {
   //   const token = await auth.currentUser.getIdToken()
   //   console.log(token)
   // }
-  if (auth.currentUser) {
+  if (firebase.auth().currentUser) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })

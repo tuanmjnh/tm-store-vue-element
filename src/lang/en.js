@@ -72,7 +72,9 @@ export default {
     template_add: 'Add'
   },
   global: {
+    list: 'List data',
     add: 'Add new',
+    publish: 'Publish',
     drafts: 'Drafts',
     edit: 'Edit',
     delete: 'Delete',
@@ -80,7 +82,8 @@ export default {
     cancel: 'Cancel',
     back: 'Back',
     note: 'Note',
-    desc: 'Descriptions'
+    desc: 'Descriptions',
+    filter: 'Filter data'
   },
   success: {
     insert: 'Insert record success',
