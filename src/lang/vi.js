@@ -69,27 +69,47 @@ export default {
     profile: 'Profile',
     template: 'Template',
     template_list: 'List',
-    template_add: 'Add'
+    template_add: 'Add',
+    template_trash: 'Trash'
   },
   global: {
     list: 'Danh sách dữ liệu',
     add: 'Thêm mới',
+    details: 'Chi tiết',
     publish: 'Công bố',
     drafts: 'Bản nháp',
+    trash: 'Thùng rác',
     edit: 'Sửa',
+    update: 'Cập nhật',
     delete: 'Xóa',
+    deleted: 'Đã xóa',
+    accept: 'Chấp nhận',
     confirm: 'Xác nhận',
     cancel: 'Hủy bỏ',
     back: 'Quay lại',
     note: 'Ghi chú',
     desc: 'Miêu tả',
-    filter: 'Lọc dữ liệu'
+    filter: 'Lọc dữ liệu',
+    search: 'Tìm kiếm',
+    start_date: 'Ngày bắt đầu',
+    end_date: 'Ngày kết thúc',
+    created_by: 'Người tạo',
+    created_at: 'Ngày tạo',
+    updated_by: 'Người sửa',
+    updated_at: 'Ngày sửa',
+    deleted_by: 'Người xóa',
+    deleted_at: 'Ngày xóa',
+    updating: 'Đang cập nhật...'
   },
   success: {
     insert: 'Thêm mới bản ghi thành công',
     update: 'Cập nhật bản ghi thành công',
     trash: 'Chuyển bản ghi đến thùng rác thành công',
     delete: 'Xóa bản ghi thành công'
+  },
+  tabs: {
+    main: 'Thông tin chính',
+    updated: 'Thông tin cập nhật'
   },
   navbar: {
     dashboard: 'Dashboard',

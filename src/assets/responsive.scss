@@ -1,0 +1,54 @@
+.el-form-item__content {
+  .el-col {
+    margin-right: 10px;
+  }
+  .el-col:last-child {
+    margin-right: 0px;
+  }
+}
+@media only screen and (min-width: 768px) {
+  // .el-col-sm-24 {
+  //   width: 100%;
+  // }
+  .el-col-sm-24 {
+    margin-bottom: 10px;
+  }
+  .el-col-sm-24:last-child {
+    margin-bottom: 0;
+  }
+}
+@media only screen and (min-width: 992px) {
+  // .el-col-md-12 {
+  //   width: 50%;
+  // }
+  .el-col-sm-24 {
+    margin-bottom: 0;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  // .el-col-lg-8 {
+  //   width: 33.33333%;
+  // }
+  .el-col-sm-24 {
+    margin-bottom: 0;
+  }
+}
+@media only screen and (min-width: 1920px) {
+  // .el-col-xl-8 {
+  //   width: 33.33333%;
+  // }
+  .el-col-sm-24 {
+    margin-bottom: 0;
+  }
+}
+@media only screen and (max-width: 767px) {
+  // .el-col-xs-24 {
+  //   width: 100%;
+  // }
+  .el-col-xs-24 {
+    margin-bottom: 10px;
+  }
+  .el-col-xs-24:last-child {
+    margin-bottom: 0;
+  }
+}

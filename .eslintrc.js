@@ -9,7 +9,7 @@ module.exports = {
     node: true,
     es6: true,
   },
-  extends: ['plugin:vue/recommended', 'eslint:recommended'],
+  extends: ['eslint:recommended', 'plugin:vue/recommended'],
 
   // add your custom rules here
   //it is base on https://github.com/vuejs/eslint-config-vue
@@ -24,12 +24,15 @@ module.exports = {
     "vue/html-indent": "off",
     "vue/max-attributes-per-line": "off",
     "vue/singleline-html-element-content-newline": "off",
-    "vue/multiline-html-element-content-newline":"off",
+    "vue/multiline-html-element-content-newline": "off",
     "vue/name-property-casing": ["error", "PascalCase"],
     "vue/html-closing-bracket-spacing": "off",
     "vue/html-closing-bracket-newline": "off",
     "vue/html-self-closing": "off",
     "vue/no-v-html": "off",
+    "vue/no-unused-vars": "off",// ["error", {
+    //   "ignoreWhenBindingPresent": true
+    // }],
     'accessor-pairs': 2,
     'arrow-spacing': [2, {
       'before': true,
@@ -52,7 +55,7 @@ module.exports = {
     'curly': [2, 'multi-line'],
     'dot-location': [2, 'property'],
     'eol-last': 2,
-    'eqeqeq': ["error", "always", {"null": "ignore"}],
+    'eqeqeq': ["error", "always", { "null": "ignore" }],
     'generator-star-spacing': [2, {
       'before': true,
       'after': true
@@ -147,7 +150,7 @@ module.exports = {
     }],
     'no-unreachable': 2,
     'no-unsafe-finally': 2,
-    'no-unused-vars': 0,
+    'no-unused-vars': [0, { "args": "none" }],
     // 'no-unused-vars': [2, {
     //   'vars': 'all',
     //   'args': 'none'

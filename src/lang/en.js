@@ -69,27 +69,47 @@ export default {
     profile: 'Profile',
     template: 'Template',
     template_list: 'List',
-    template_add: 'Add'
+    template_add: 'Add',
+    template_trash: 'Trash'
   },
   global: {
     list: 'List data',
     add: 'Add new',
+    details: 'Details',
     publish: 'Publish',
     drafts: 'Drafts',
+    trash: 'Trash',
     edit: 'Edit',
+    update: 'Update',
     delete: 'Delete',
+    deleted: 'Deleted',
+    accept: 'Accept',
     confirm: 'Confirm',
     cancel: 'Cancel',
     back: 'Back',
     note: 'Note',
     desc: 'Descriptions',
-    filter: 'Filter data'
+    filter: 'Filter data',
+    search: 'Search',
+    start_date: 'Start date',
+    end_date: 'End date',
+    created_by: 'Created by',
+    created_at: 'Created at',
+    updated_by: 'Updated by',
+    updated_at: 'Updated at',
+    deleted_by: 'Deleted by',
+    deleted_at: 'Deleted by',
+    updating: 'Updating...'
   },
   success: {
     insert: 'Insert record success',
     update: 'Update record success',
     trash: 'Move record to recycle bin success',
     delete: 'Delete record success'
+  },
+  tabs: {
+    main: 'Main information',
+    updated: 'Updated information'
   },
   navbar: {
     dashboard: 'Dashboard',

@@ -1,6 +1,9 @@
 .p-10 {
   padding: 10px;
 }
+.pb-10 {
+  padding-bottom: 10px;
+}
 .flex,
 .row-flex {
   display: flex;
@@ -55,4 +58,23 @@
   color: #fff;
   background-color: #909399;
   border-color: #909399;
+}
+.details {
+  label,
+  span {
+    line-height: 40px;
+    font-size: 14px;
+  }
+  label {
+    text-align: right;
+    vertical-align: middle;
+    float: left;
+    color: #606266;
+    padding: 0 12px 0 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  span {
+    font-style: italic;
+  }
 }

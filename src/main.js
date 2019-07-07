@@ -8,6 +8,7 @@ import Element from 'element-ui'
 import './styles/element-variables.scss'
 
 import '@/styles/index.scss' // global css
+import moment from 'moment' // momentjs
 
 import App from './App'
 import store from './store'
@@ -32,6 +33,9 @@ import './permission'
 // if (process.env.NODE_ENV === 'production') {
 //   mockXHR()
 // }
+
+//
+Vue.prototype.$moment = moment
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
