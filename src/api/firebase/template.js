@@ -1,5 +1,6 @@
 import firebase from './index'
 import store from '@/store'
+import * as logs from './logs'
 const collection = firebase.firestore().collection('template')
 
 export function get(params) {
@@ -17,78 +18,64 @@ export function get(params) {
 }
 
 export function getSnapshot(params) {
-  return new Promise((resolve, reject) => {
-    collection.orderBy('created_at', 'asc')
-      .onSnapshot((snapshot) => {
-        const items = []
-        snapshot.forEach((doc) => {
-          items.push({ ...{ id: doc.id }, ...doc.data() })
-        })
-        resolve(items)
+  return collection.orderBy('created_at', 'asc')
+    .onSnapshot((snapshot) => {
+      const items = []
+      snapshot.forEach((doc) => {
+        items.push({ ...{ id: doc.id }, ...doc.data() })
       })
-      .catch((err) => {
-        // message.error(err)
-        reject(err)
-      })
-      .finally(() => { })
-  })
-}
-
-export function find(id) {
-  return new Promise((resolve, reject) => {
-    collection.doc(id).get().then(doc => {
-      if (doc.exists) {
-        resolve(doc.data())
-      }
+      return items
     })
-      .catch((err) => {
-        // message.error(err)
-        reject(err)
-      })
-      .finally(() => { })
+}
+export function find(id) {
+  // return new Promise((resolve, reject) => {
+  return collection.doc(id).get().then(async doc => {
+    if (doc.exists) {
+      const rs = doc.data()
+      rs.start_date = rs.start_date ? rs.start_date.toDate() : null
+      rs.end_date = rs.end_date ? rs.end_date.toDate() : null
+      rs.log = await logs.getByDoc({ cid: id, coll: collection.id })
+      return rs
+      // resolve(doc.data())
+    }
   })
+  // .catch((err) => {
+  // message.error(err)
+  // reject(err)
+  // })
+  // .finally(() => { })
+  // })
 }
 
 export function add(params) {
-  return new Promise((resolve, reject) => {
-    params.data.created = {
-      uid: store.state.auth.uid,
-      by: store.state.auth.profile.email,
-      at: firebase.firestore.FieldValue.serverTimestamp(),
-      ip: ''
-    }
-    collection.add(params.data)
-      .then(doc => {
-        // message.success({ message: 'success.insert' })
-        resolve(doc)
-      })
-      .catch((err) => {
-        // message.error(err)
-        reject(err)
-      })
-      .finally(() => { })
-  })
+  return collection.add(params.data)
+    .then(doc => {
+      logs.insertType({ coll: collection.id, cid: doc.id })
+    })
 }
 
-export function edit(params) {
-  return new Promise((resolve, reject) => {
-    params.data.updated = {
-      uid: store.state.auth.uid,
-      by: store.state.auth.profile.email,
-      at: firebase.firestore.FieldValue.serverTimestamp(),
-      ip: ''
-    }
-    collection.doc(params.id).update(params.data)
-      .then(doc => {
-        // message.success({ message: 'success.update' })
-        resolve(doc)
-      })
-      .catch((err) => {
-        // message.error(err)
-        reject(err)
-      })
-      .finally(() => { })
-  })
+export async function edit(params) {
+  // Get a new write batch
+  var batch = db.batch();
+
+  // Set the value of 'NYC'
+  var nycRef = db.collection("cities").doc("NYC");
+  batch.set(nycRef, { name: "New York City" });
+
+  // Update the population of 'SF'
+  var sfRef = db.collection("cities").doc("SF");
+  batch.update(sfRef, { "population": 1000000 });
+
+  // Delete the city 'LA'
+  var laRef = db.collection("cities").doc("LA");
+  batch.delete(laRef);
+
+  // Commit the batch
+  batch.commit().then(function() {
+    // ...
+  });
+  await collection.doc(params.id).update(params.data)
+  return await logs.updateType({ coll: collection.id, cid: params.id })
 }
 
 export function trash(params) {
@@ -96,27 +83,17 @@ export function trash(params) {
     const result = []
     try {
       for await (const item of params) {
-        const data = {
-          flag: item.flag === 0 ? 1 : 0,
-          deleted: {
-            uid: store.state.auth.uid,
-            by: store.state.auth.profile.email,
-            at: firebase.firestore.FieldValue.serverTimestamp(),
-            ip: ''
-          }
-        }
-        await collection.doc(item.id).update(data)
+        await collection.doc(item.id).update({ flag: item.flag === 0 ? 1 : 0 })
           .then(doc => {
-            result.push({ ...{ id: item.id }, ...data })
+            result.push(item)
+            logs.trashType({ coll: collection.id, cid: item.id })
           })
           .catch((err) => {
             throw err
           })
       }
-      // message.success({ message: 'success.trash' })
       resolve(result)
     } catch (err) {
-      // message.error(err)
       reject(err)
     }
   })

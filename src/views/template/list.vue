@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- Filter Dialog -->
-    <el-dialog :title="$t('global.filter')" :visible.sync="dialog_filter" width="30%">
+    <el-dialog :title="$t('global.filter')" :visible.sync="dialogFilter" width="30%">
       <span>
         <div class="row-flex">
           <el-date-picker v-model="params.start_at" type="date" format="dd-MM-yyyy"
@@ -22,6 +22,19 @@
         <!-- <el-button @click="dialog_filter=false">{{ $t('global.cancel') }}</el-button> -->
       </span>
     </el-dialog>
+    <!-- Confirm Dialog -->
+    <el-dialog :title="$t('message_box.warning')" width="30%" :visible.sync="dialogConfirmTrash"
+      @closed="onConfirmTrashClose">
+      <span>
+        <div class="row">
+          {{ $t('message_box.trash') }}
+        </div>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="onConfirmTrashOk">{{ $t('global.accept') }}</el-button>
+        <el-button @click="dialogConfirmTrash=false">{{ $t('global.cancel') }}</el-button>
+      </span>
+    </el-dialog>
     <div class="row-flex">
       <label class="title">{{ $t('global.list') }}</label>
       <div class="spacer" />
@@ -33,7 +46,7 @@
       </el-tooltip>
       <el-tooltip v-if="$refs.table&&$refs.table.selection.length>0" effect="dark" :content="$t('global.delete')"
         placement="bottom">
-        <el-button type="danger" icon="el-icon-delete" @click="onTrash()" />
+        <el-button type="danger" icon="el-icon-delete" @click="dialogConfirmTrash=true" />
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('global.add')" placement="bottom">
         <el-button type="primary" icon="el-icon-plus" @click="$router.push('/template/add')" />
@@ -43,7 +56,7 @@
     <hr class="hr">
     <!-- <loading-content v-if="loading"></loading-content> -->
     <el-table ref="table" v-loading="loading" :data="items">
-      <el-table-column type="selection" width="55" @selection-change="onSelection">
+      <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column prop="name" label="Name" width="140">
       </el-table-column>
@@ -61,20 +74,23 @@
           {{ scope.row.end_date ? scope.row.end_date.toDate().toLocaleTimeString() : '' }}
         </template>
       </el-table-column>
-      <el-table-column label="Created At">
+      <!-- <el-table-column label="Created At">
         <template slot-scope="scope">
-          {{ scope.row.created_at.toDate().toLocaleString() }}
+          {{ scope.row.created_at ? scope.row.created_at.toDate().toLocaleString() : '' }}
         </template>
-      </el-table-column>
-      <el-table-column label="#" width="180" align="right">
+      </el-table-column> -->
+      <el-table-column label="#" width="180" align="center">
         <template slot="header" slot-scope="scope">
           <el-input v-model="params.search" :d-val="scope" :placeholder="$t('global.search')" @change="getItems()" />
         </template>
         <template slot-scope="scope">
-          <el-button size="mini" @click="$router.push(`/template/add/${scope.row.id}`)">{{ $t('global.edit') }}
-          </el-button>
-          <el-button size="mini" type="danger" @click="onDelete(scope.$index, scope.row)">{{ $t('global.delete') }}
-          </el-button>
+          <el-tooltip effect="dark" :content="$t('global.edit')" placement="bottom">
+            <el-button type="warning" size="mini" icon="el-icon-edit-outline"
+              @click="$router.push(`/template/add/${scope.row.id}`)" />
+          </el-tooltip>
+          <el-tooltip effect="dark" :content="$t('global.delete')" placement="bottom">
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="onTrash(scope.row)" />
+          </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
@@ -91,8 +107,9 @@ export default {
     return {
       loading: false,
       items: [],
-      selected: [],
-      dialog_filter: false,
+      // selected: [],
+      dialogFilter: false,
+      dialogConfirmTrash: false,
       params: {
         start_date: this.$moment().format('DD-MM-YYYY'),
         end_date: this.$moment().format('DD-MM-YYYY'),
@@ -110,28 +127,33 @@ export default {
       api.get(this.params).then((x) => {
         this.items = x
       }).catch((err) => {
-        this.$message({
-          type: 'error',
-          showClose: true,
-          message: this.$t(err.message)
-        })
+        this.$message.error(this.$t(err.message))
       }).finally(() => {
         this.loading = false
       })
     },
-    onSelection(val) {
-      this.selected = val
-    },
+    // onSelection(val) {
+    //   this.selected = val
+    // },
     onTrash(val) {
+      this.$refs.table.selection.push(val)
+      this.dialogConfirmTrash = true
+    },
+    onConfirmTrashOk(val) {
+      this.loading = true
+      this.dialogConfirmTrash = false
       api.trash(this.$refs.table.selection).then((rs) => {
         remove({ data: this.items, element: rs, key: 'id' })
+        this.$message.success(this.$t('success.trash'))
+      }).catch((err) => {
+        this.$message.error(this.$t(err.message))
+      }).finally(() => {
+        this.loading = false
       })
     },
-    onEdit(index, row, scope) {
-      console.log(index, row, scope)
-    },
-    onDelete() {
-
+    onConfirmTrashClose() {
+      this.$refs.table.clearSelection()
+      console.log(this.$refs.table.selection)
     },
     onDialogFilter() {
       this.getItems()

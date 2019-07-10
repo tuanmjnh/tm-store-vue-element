@@ -89,9 +89,10 @@
       </el-tab-pane>
       <el-tab-pane :label="$t('tabs.updated')" name="secondary" class="details">
         <el-timeline :reverse="true">
-          <el-timeline-item v-for="(item, index) in item_log" :key="index" :icon="item.icon" :type="item.type"
-            :color="item.color" :size="item.size" :timestamp="item.timestamp">
-            {{ item.content }}
+          <el-timeline-item v-for="(item, index) in form.log" :key="index" :icon="item.icon" :type="item.type"
+            :color="item.color" :size="item.size"
+            :timestamp="item.at?$moment(item.at.toDate()).format('DD/MM/YYYY hh:mm'):$t('global.updating')">
+            {{ $t(`global.${item.action}`) }}: {{ item.by }}
           </el-timeline-item>
         </el-timeline>
       </el-tab-pane>
@@ -137,7 +138,6 @@ export default {
       loading_add: false,
       loading_drafts: false,
       tabs: 'primary',
-      item_log: [],
       form: {},
       default: {
         name: '',
@@ -157,22 +157,25 @@ export default {
       this.loading = true
       api.find(this.$route.params.id).then((x) => {
         this.form = x
-        this.item_log = [
-          {
-            content: `${this.$t('global.created_by')}: ${x.created_by}`,
-            timestamp: x.created_at ? this.$moment(x.created_at.toDate()).format('DD/MM/YYYY hh:mm') : '',
-            size: 'large',
-            type: 'primary',
-            icon: 'el-icon-plus',
-            color: '#1890FF'
-          },
-          {
-            content: x.updated_by ? `${this.$t('global.updated_by')}: ${x.updated_by}` : this.$t('global.updating'),
-            timestamp: x.updated_at ? this.$moment(x.updated_at.toDate()).format('DD/MM/YYYY hh:mm') : '',
-            color: '#0bbd87'
-          }
-        ]
-        // await users.find(this)
+        // console.log(x)
+        // this.item_log = [
+        //   {
+        //     content: `${this.$t('global.created_by')}: ${x.created_by}`,
+        //     timestamp: x.created_at ? this.$moment(x.created_at.toDate()).format('DD/MM/YYYY hh:mm') : '',
+        //     size: 'large',
+        //     type: 'primary',
+        //     icon: 'el-icon-plus',
+        //     color: '#1890FF'
+        //   },
+        //   {
+        //     content: x.updated_by ? `${this.$t('global.updated_by')}: ${x.updated_by}` : this.$t('global.updating'),
+        //     timestamp: x.updated_at ? this.$moment(x.updated_at.toDate()).format('DD/MM/YYYY hh:mm') : '',
+        //     color: '#0bbd87'
+        //   }
+        // ]
+      }).catch((err) => {
+        this.$message.error(this.$t(err.message))
+      }).finally(() => {
         this.loading = false
       })
     } else {
@@ -187,7 +190,12 @@ export default {
             this.loading_add = true
             this.form.flag = 1
             api.edit({ id: this.$route.params.id, data: this.form }).then((x) => {
-              this.form = x
+              if (x) this.form.log.push(x)
+              this.$message.success(this.$t('success.update'))
+            }).catch((err) => {
+              this.$message.error(this.$t(err.message))
+            }).finally(() => {
+              this.loading_add = false
             })
           }
         })
@@ -203,6 +211,12 @@ export default {
             }
             api.add({ data: this.form }).then((x) => {
               this.reset()
+              this.$message.success(this.$t('success.insert'))
+            }).catch((err) => {
+              this.$message.error(this.$t(err.message))
+            }).finally(() => {
+              this.loading_add = false
+              this.loading_drafts = false
             })
           }
         })
@@ -211,8 +225,8 @@ export default {
     reset() {
       this.form = { ...this.default }
       this.$refs.form.resetFields()
-      this.loading_add = false
-      this.loading_drafts = false
+      // this.loading_add = false
+      // this.loading_drafts = false
     }
   }
 }

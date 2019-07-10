@@ -79,6 +79,7 @@ export default {
     publish: 'Công bố',
     drafts: 'Bản nháp',
     trash: 'Thùng rác',
+    insert: 'Tạo mới',
     edit: 'Sửa',
     update: 'Cập nhật',
     delete: 'Xóa',
@@ -110,6 +111,11 @@ export default {
   tabs: {
     main: 'Thông tin chính',
     updated: 'Thông tin cập nhật'
+  },
+  message_box: {
+    title: 'Thông báo',
+    warning: 'Cảnh báo',
+    trash: 'Các bản ghi này sẽ được chuyển vào thùng rác. Bạn có muốn tiếp tục không?'
   },
   navbar: {
     dashboard: 'Dashboard',

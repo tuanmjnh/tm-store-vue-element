@@ -79,6 +79,7 @@ export default {
     publish: 'Publish',
     drafts: 'Drafts',
     trash: 'Trash',
+    insert: 'Insert',
     edit: 'Edit',
     update: 'Update',
     delete: 'Delete',
@@ -110,6 +111,11 @@ export default {
   tabs: {
     main: 'Main information',
     updated: 'Updated information'
+  },
+  message_box: {
+    title: 'Message box',
+    warning: 'Warning',
+    trash: 'The items will move to trash. Do you want to continue?'
   },
   navbar: {
     dashboard: 'Dashboard',

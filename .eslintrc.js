@@ -129,7 +129,7 @@ module.exports = {
     'no-octal-escape': 2,
     'no-path-concat': 2,
     'no-proto': 2,
-    'no-redeclare': 2,
+    'no-redeclare': 0,
     'no-regex-spaces': 2,
     'no-return-assign': [2, 'except-parens'],
     'no-self-assign': 2,
@@ -161,7 +161,7 @@ module.exports = {
     'no-useless-escape': 0,
     'no-whitespace-before-property': 2,
     'no-with': 2,
-    'one-var': [2, {
+    'one-var': [0, {
       'initialized': 'never'
     }],
     'operator-linebreak': [2, 'after', {
