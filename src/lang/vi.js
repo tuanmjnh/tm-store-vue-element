@@ -79,6 +79,7 @@ export default {
     publish: 'Công bố',
     drafts: 'Bản nháp',
     trash: 'Thùng rác',
+    recover: 'Khôi phục',
     insert: 'Tạo mới',
     edit: 'Sửa',
     update: 'Cập nhật',

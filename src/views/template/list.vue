@@ -86,7 +86,7 @@
         <template slot-scope="scope">
           <el-tooltip effect="dark" :content="$t('global.edit')" placement="bottom">
             <el-button type="warning" size="mini" icon="el-icon-edit-outline"
-              @click="$router.push(`/template/add/${scope.row.id}`)" />
+              @click="$router.push(`/template/edit/${scope.row.id}`)" />
           </el-tooltip>
           <el-tooltip effect="dark" :content="$t('global.delete')" placement="bottom">
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="onTrash(scope.row)" />
@@ -136,6 +136,7 @@ export default {
     //   this.selected = val
     // },
     onTrash(val) {
+      this.$refs.table.clearSelection()
       this.$refs.table.selection.push(val)
       this.dialogConfirmTrash = true
     },
@@ -153,7 +154,7 @@ export default {
     },
     onConfirmTrashClose() {
       this.$refs.table.clearSelection()
-      console.log(this.$refs.table.selection)
+      // console.log(this.$refs.table.selection)
     },
     onDialogFilter() {
       this.getItems()

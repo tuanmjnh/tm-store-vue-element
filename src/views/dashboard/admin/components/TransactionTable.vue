@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { transactionList } from '@/api/remote-search'
+import { NewGuid, RandomDate } from '@/utils'
 
 export default {
   filters: {
@@ -46,9 +46,16 @@ export default {
   },
   methods: {
     fetchData() {
-      transactionList().then(response => {
-        this.list = response.data.items.slice(0, 8)
-      })
+      this.list = []
+      for (let index = 0; index < 8; index++) {
+        this.list.push({
+          order_no: NewGuid().substr(0, 18),
+          timestamp: RandomDate(new Date(2012, 0, 1), new Date()),
+          username: 'name',
+          price: (Math.random() * (0.120 - 0.0200) + 0.0200).toFixed(4),
+          status: Math.random() % 2 === 0 ? 'success' : 'pending'
+        })
+      }
     }
   }
 }

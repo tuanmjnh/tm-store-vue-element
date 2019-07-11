@@ -143,10 +143,17 @@ export const asyncRoutes = [
         meta: { title: 'template_list', icon: 'list', noCache: true }
       },
       {
-        path: 'add/:id?',
+        path: 'add',
         component: () => import('@/views/template/add'),
         name: 'template-add',
         meta: { title: 'template_add', icon: 'add', noCache: true }
+      },
+      {
+        path: 'edit/:id',
+        component: () => import('@/views/template/add'),
+        name: 'template_edit',
+        meta: { title: 'template_edit', noCache: true, activeMenu: '/template/list' },
+        hidden: true
       },
       {
         path: 'trash',

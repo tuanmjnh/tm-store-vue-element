@@ -28,7 +28,6 @@ export function getSnapshot(params) {
     })
 }
 export function find(id) {
-  // return new Promise((resolve, reject) => {
   return collection.doc(id).get().then(async doc => {
     if (doc.exists) {
       const rs = doc.data()
@@ -36,15 +35,8 @@ export function find(id) {
       rs.end_date = rs.end_date ? rs.end_date.toDate() : null
       rs.log = await logs.getByDoc({ cid: id, coll: collection.id })
       return rs
-      // resolve(doc.data())
     }
   })
-  // .catch((err) => {
-  // message.error(err)
-  // reject(err)
-  // })
-  // .finally(() => { })
-  // })
 }
 
 export function add(params) {
@@ -55,25 +47,25 @@ export function add(params) {
 }
 
 export async function edit(params) {
-  // Get a new write batch
-  var batch = db.batch();
+  // // Get a new write batch
+  // var batch = db.batch();
 
-  // Set the value of 'NYC'
-  var nycRef = db.collection("cities").doc("NYC");
-  batch.set(nycRef, { name: "New York City" });
+  // // Set the value of 'NYC'
+  // var nycRef = db.collection("cities").doc("NYC");
+  // batch.set(nycRef, { name: "New York City" });
 
-  // Update the population of 'SF'
-  var sfRef = db.collection("cities").doc("SF");
-  batch.update(sfRef, { "population": 1000000 });
+  // // Update the population of 'SF'
+  // var sfRef = db.collection("cities").doc("SF");
+  // batch.update(sfRef, { "population": 1000000 });
 
-  // Delete the city 'LA'
-  var laRef = db.collection("cities").doc("LA");
-  batch.delete(laRef);
+  // // Delete the city 'LA'
+  // var laRef = db.collection("cities").doc("LA");
+  // batch.delete(laRef);
 
-  // Commit the batch
-  batch.commit().then(function() {
-    // ...
-  });
+  // // Commit the batch
+  // batch.commit().then(function() {
+  //   // ...
+  // });
   await collection.doc(params.id).update(params.data)
   return await logs.updateType({ coll: collection.id, cid: params.id })
 }
@@ -82,11 +74,15 @@ export function trash(params) {
   return new Promise(async (resolve, reject) => {
     const result = []
     try {
-      for await (const item of params) {
+      for (const item of params) {
         await collection.doc(item.id).update({ flag: item.flag === 0 ? 1 : 0 })
-          .then(doc => {
+          .then(async doc => {
+            if (item.flag === 1) {
+              await logs.trashType({ coll: collection.id, cid: item.id })
+            } else {
+              await logs.recoverType({ coll: collection.id, cid: item.id })
+            }
             result.push(item)
-            logs.trashType({ coll: collection.id, cid: item.id })
           })
           .catch((err) => {
             throw err

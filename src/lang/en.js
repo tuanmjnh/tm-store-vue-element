@@ -69,6 +69,7 @@ export default {
     profile: 'Profile',
     template: 'Template',
     template_list: 'List',
+    template_edit: 'Edit',
     template_add: 'Add',
     template_trash: 'Trash'
   },
@@ -79,6 +80,7 @@ export default {
     publish: 'Publish',
     drafts: 'Drafts',
     trash: 'Trash',
+    recover: 'Recover',
     insert: 'Insert',
     edit: 'Edit',
     update: 'Update',

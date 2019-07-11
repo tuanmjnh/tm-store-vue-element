@@ -50,6 +50,9 @@ export function add(data) {
       docRef.get().then((doc) => {
         resolve(doc.data())
       })
+    }).catch((err) => {
+      resolve(null)
+      console.log(err)
     })
   })
 }
@@ -70,23 +73,23 @@ export async function recoverType(data) {
   data.action = 'recover'
   return await add(data)
 }
-export function getTimeLine(data) {
-  // let rs = {
-  //   size: data.type === 'insert' ? 'large' : 'normal',
-  //   icon
-  // }
-  // if (data.type === 'insert') rs.type = 'primary'
-  // else if (data.type === 'update') rs.type = 'warning'
-  // else if (data.type === 'trash') rs.type = 'danger'
-  // else rs.type = 'info'
-  // return rs
-  //     content: `${this.$t('global.created_by')}: ${x.created_by}`,
-  //     timestamp: x.created_at ? this.$moment(x.created_at.toDate()).format('DD/MM/YYYY hh:mm') : '',
-  //     size: 'large',
-  //     type: 'primary',
-  //     icon: 'el-icon-plus',
-  //     color: '#1890FF'
-}
+// export function getTimeLine(data) {
+// let rs = {
+//   size: data.type === 'insert' ? 'large' : 'normal',
+//   icon
+// }
+// if (data.type === 'insert') rs.type = 'primary'
+// else if (data.type === 'update') rs.type = 'warning'
+// else if (data.type === 'trash') rs.type = 'danger'
+// else rs.type = 'info'
+// return rs
+//     content: `${this.$t('global.created_by')}: ${x.created_by}`,
+//     timestamp: x.created_at ? this.$moment(x.created_at.toDate()).format('DD/MM/YYYY hh:mm') : '',
+//     size: 'large',
+//     type: 'primary',
+//     icon: 'el-icon-plus',
+//     color: '#1890FF'
+// }
 
 export function del(params) {
   collection.doc(params.item.id).delete()
