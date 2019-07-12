@@ -1,7 +1,9 @@
 import db from './index'
 import store from '@/store'
 import localIP from '@/utils/local-ip'
-const collectionLogs = db.firestore().collection('logs')
+const collectionLogs = 'logs'
+
+// console.log(db.firestore.Timestamp.now().toDate(), db.firestore.FieldValue.serverTimestamp().toString())
 
 const dataLog = async ({ coll, cid, action }) => {
   return {
@@ -15,13 +17,17 @@ const dataLog = async ({ coll, cid, action }) => {
   }
 }
 
+function getDocumentId(batch) {
+  return batch._mutations[0].key.path.segments[1]
+}
+
 function getLogId(batch) {
   return batch._mutations[1].key.path.segments[1]
 }
 
 export function getLogById(id) {
   return new Promise((resolve, reject) => {
-    collectionLogs.doc(id).get().then(async doc => {
+    db.firestore().collection(collectionLogs).doc(id).get().then(async doc => {
       if (doc.exists) {
         resolve(doc.data())
       } else {
@@ -44,13 +50,13 @@ export function getDocumentById({ collection, id }) {
 }
 
 export function getLogByUid(params) {
-  let qry = collectionLogs.where('flag', '==', params.flag) // .orderBy('created_at', 'desc')
+  let qry = db.firestore().collection(collectionLogs).where('flag', '==', params.flag) // .orderBy('created_at', 'desc')
   if (params.search) {
     qry = qry.where('name', '>=', 'test').where('name', '<=', 'test' + '\uf8ff')
   }
   return qry.get().then((docs) => {
     const items = []
-    docs.forEach(function (doc) {
+    docs.forEach(function(doc) {
       items.push({ ...{ id: doc.id }, ...doc.data() })
     })
     return items
@@ -58,13 +64,13 @@ export function getLogByUid(params) {
 }
 
 export function getLogByDoc(params) {
-  return collectionLogs
+  return db.firestore().collection(collectionLogs)
     .where('cid', '==', params.cid)
-    .where('coll', '==', params.coll)
+    .where('coll', '==', params.collection)
     .orderBy('at', 'desc')
     .get().then((docs) => {
       const items = []
-      docs.forEach(function (doc) {
+      docs.forEach(function(doc) {
         items.push(doc.data())
       })
       return items
@@ -72,19 +78,17 @@ export function getLogByDoc(params) {
 }
 
 export function addLog(data) {
-  return new Promise((resolve, reject) => {
-    data.uid = store.state.auth.uid
-    data.by = store.state.auth.profile.email
-    data.at = db.firestore.FieldValue.serverTimestamp()
-    data.ip = ''
-    collectionLogs.add(data).then((docRef) => {
-      docRef.get().then((doc) => {
-        resolve(doc.data())
+  return new Promise(async (resolve, reject) => {
+    db.firestore().collection(collectionLogs)
+      .add(await dataLog({ coll: data.collection, cid: data.id, action: data.action }))
+      .then(docRef => {
+        docRef.onSnapshot(doc => {
+          if (doc.exists) resolve(doc.data())
+          else resolve(null)
+        })
+      }).catch((err) => {
+        reject(err)
       })
-    }).catch((err) => {
-      resolve(null)
-      console.log(err)
-    })
   })
 }
 export async function addLogInsert(data) {
@@ -104,31 +108,111 @@ export async function addLogRecover(data) {
   return await addLog(data)
 }
 
-// console.log(store.getters.useLogs)
-export function add({ collections, items, resolve, reject }) {
-
+export function add({ collection, data }) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const doc = await collection.add(data)
+      if (store.getters.useLogs) {
+        db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: doc.id, action: 'insert' })).then(docRef => {
+          docRef.onSnapshot(doc => {
+            if (doc.exists) resolve(doc.data())
+            else resolve(null)
+          })
+        })
+      } else resolve(true)
+    } catch (err) {
+      reject(err)
+    }
+  })
 }
 
-export function update({ collection, params }) {
+export function update({ collection, id, data }) {
   return new Promise(async (resolve, reject) => {
-    if (store.getters.useLogs) {
-      // // Get a new write batch
-      const batch = db.firestore().batch()
-      // Update data
-      batch.update(collection.doc(params.id), params.data)
-      // Add Log
-      batch.set(collectionLogs.doc(), await dataLog({ coll: collection.id, cid: params.id, action: 'update' }))
-      // Commit the batch
-      batch.commit().then(async () => {
-        const result = await getDocumentById({ collection: collection, id: params.id })
-        const log = await getLogById(getLogId(batch))
-        if (log) result.log.push(log)
-        resolve(result)
-      }).catch((err) => {
-        reject(err)
-      })
-    } else {
-      collection.doc(params.id).update(params.data)
+    try {
+      await collection.doc(id).update(data)
+      if (store.getters.useLogs) {
+        db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: id, action: 'update' })).then(docRef => {
+          docRef.onSnapshot(doc => {
+            if (doc.exists) resolve(doc.data())
+            else resolve(null)
+          })
+        })
+      } else resolve(true)
+    } catch (err) {
+      reject(err)
+    }
+    // if (store.getters.useLogs) {
+    //   // // Get a new write batch
+    //   const batch = db.firestore().batch()
+    //   // Update data
+    //   batch.update(collection.doc(id), data)
+    //   // Add Log
+    //   batch.set(collectionLogs.doc(), await dataLog({ coll: collection.id, cid: id, action: 'update' }))
+    //   // Commit the batch
+    //   batch.commit().then(async () => {
+    //     // const result = await getDocumentById({ collection: collection, id: params.id })
+    //     const log = await getLogById(getLogId(batch))
+    //     resolve(log)
+    //   }).catch((err) => {
+    //     reject(err)
+    //   })
+    // } else {
+    //   collection.doc(id).update(data)
+    //   resolve(true)
+    // }
+  })
+}
+
+export function trash({ collection, id, data }) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await collection.doc(id).update(data)
+      if (store.getters.useLogs) {
+        db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: id, action: 'trash' })).then(docRef => {
+          docRef.onSnapshot(doc => {
+            if (doc.exists) resolve(doc.data())
+            else resolve(null)
+          })
+        })
+      } else resolve(true)
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
+export function recover({ collection, id, data }) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await collection.doc(id).update(data)
+      if (store.getters.useLogs) {
+        db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: id, action: 'recover' })).then(docRef => {
+          docRef.onSnapshot(doc => {
+            if (doc.exists) resolve(doc.data())
+            else resolve(null)
+          })
+        })
+      } else resolve(true)
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
+export function remove({ collection, id }) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await collection.doc(id).delete()
+      if (store.getters.useLogs) {
+        db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: id, action: 'delete' })).then(docRef => {
+          docRef.onSnapshot(doc => {
+            if (doc.exists) resolve(doc.data())
+            else resolve(null)
+          })
+        })
+      } else resolve(true)
+    } catch (err) {
+      reject(err)
     }
   })
 }

@@ -1,6 +1,4 @@
 import firebase from './index'
-import store from '@/store'
-import * as logs from './logs'
 import * as actions from './extend-action'
 const collection = firebase.firestore().collection('template')
 
@@ -34,24 +32,24 @@ export function find(id) {
       const rs = doc.data()
       rs.start_date = rs.start_date ? rs.start_date.toDate() : null
       rs.end_date = rs.end_date ? rs.end_date.toDate() : null
-      rs.log = await logs.getByDoc({ cid: id, coll: collection.id })
+      rs.log = await actions.getLogByDoc({ cid: id, collection: collection.id })
       return rs
     }
   })
 }
 
 export function add(params) {
-  return collection.add(params.data)
-    .then(doc => {
-      logs.insertType({ coll: collection.id, cid: doc.id })
-    })
+  return actions.add({ collection: collection, data: params.data })
+  // return collection.add(params.data)
+  //   .then(doc => {
+  //     logs.insertType({ coll: collection.id, cid: doc.id })
+  //   })
 }
 
 export function edit(params) {
+  return actions.update({ collection: collection, id: params.id, data: params.data })
   // await collection.doc(params.id).update(params.data)
   // return await logs.updateType({ coll: collection.id, cid: params.id })
-
-  return actions.update({ collection: collection, params: params })
 }
 
 export function trash(params) {
@@ -59,18 +57,24 @@ export function trash(params) {
     const result = []
     try {
       for (const item of params) {
-        await collection.doc(item.id).update({ flag: item.flag === 0 ? 1 : 0 })
-          .then(async doc => {
-            if (item.flag === 1) {
-              await logs.trashType({ coll: collection.id, cid: item.id })
-            } else {
-              await logs.recoverType({ coll: collection.id, cid: item.id })
-            }
-            result.push(item)
-          })
-          .catch((err) => {
-            throw err
-          })
+        if (item.flag === 1) {
+          actions.trash({ id: item.id, collection: collection, data: { flag: 0 } })
+        } else {
+          actions.recover({ id: item.id, collection: collection, data: { flag: 1 } })
+        }
+        result.push(item)
+        // await collection.doc(item.id).update({ flag: item.flag === 0 ? 1 : 0 })
+        //   .then(async doc => {
+        //     if (item.flag === 1) {
+        //       await logs.trashType({ coll: collection.id, cid: item.id })
+        //     } else {
+        //       await logs.recoverType({ coll: collection.id, cid: item.id })
+        //     }
+        //     result.push(item)
+        //   })
+        //   .catch((err) => {
+        //     throw err
+        //   })
       }
       resolve(result)
     } catch (err) {

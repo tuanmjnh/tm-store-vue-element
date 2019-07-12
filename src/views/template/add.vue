@@ -190,7 +190,8 @@ export default {
             this.loading_add = true
             this.form.flag = 1
             api.edit({ id: this.$route.params.id, data: this.form }).then((x) => {
-              if (x) this.form = x
+              if (x) this.form.log.unshift(x)
+              console.log(x)
               this.$message.success(this.$t('success.update'))
             }).catch((err) => {
               this.$message.error(this.$t(err.message))

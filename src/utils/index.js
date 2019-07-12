@@ -458,11 +458,11 @@ export function pushIfNotExist({ data, element, comparer }) {
   return data
 }
 
-module.exports.RandomDate = function(start, end) {
+export function RandomDate(start, end) {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
 }
 
-module.exports.NewGuid = function() {
+export function NewGuid() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
