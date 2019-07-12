@@ -30,11 +30,10 @@ export function getByDoc(params) {
       return items
     })
 }
-
 export function add(data) {
   // params.data = {
   //   action: params.action,
-  //   collection: params.collection,
+  //   coll: params.collection,
   //   cid: params.cid,
   //   uid: store.state.auth.uid,
   //   by: store.state.auth.profile.email,

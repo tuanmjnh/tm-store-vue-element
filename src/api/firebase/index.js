@@ -16,7 +16,7 @@ var config = {
   clientId: '45492650401-84j1lpnseu0lgn2k0cgs4hchks18cahn.apps.googleusercontent.com'
 }
 if (!firebase.apps.length) firebase.initializeApp(config)
-const functions = require('firebase-functions')
+// const functions = require('firebase-functions')
 // export const GoogleAuthProvider = new firebase.auth.GoogleAuthProvider()
 // export const auth = firebase.auth()
 // export const storage = firebase.storage()
@@ -78,20 +78,5 @@ export function docChanges({ collections, items, resolve, reject }) {
     }
   )
 }
-
-export function add({ collections, items, resolve, reject }) {
-
-}
-
-functions.firestore
-  .document('template')
-  .onWrite((change, context) => {
-    console.log(change, context)
-  })
-functions.firestore
-  .document('template')
-  .onUpdate((change, context) => {
-    console.log(change, context)
-  })
 
 export default firebase

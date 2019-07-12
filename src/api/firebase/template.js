@@ -1,6 +1,7 @@
 import firebase from './index'
 import store from '@/store'
 import * as logs from './logs'
+import * as actions from './extend-action'
 const collection = firebase.firestore().collection('template')
 
 export function get(params) {
@@ -46,28 +47,11 @@ export function add(params) {
     })
 }
 
-export async function edit(params) {
-  // // Get a new write batch
-  // var batch = db.batch();
+export function edit(params) {
+  // await collection.doc(params.id).update(params.data)
+  // return await logs.updateType({ coll: collection.id, cid: params.id })
 
-  // // Set the value of 'NYC'
-  // var nycRef = db.collection("cities").doc("NYC");
-  // batch.set(nycRef, { name: "New York City" });
-
-  // // Update the population of 'SF'
-  // var sfRef = db.collection("cities").doc("SF");
-  // batch.update(sfRef, { "population": 1000000 });
-
-  // // Delete the city 'LA'
-  // var laRef = db.collection("cities").doc("LA");
-  // batch.delete(laRef);
-
-  // // Commit the batch
-  // batch.commit().then(function() {
-  //   // ...
-  // });
-  await collection.doc(params.id).update(params.data)
-  return await logs.updateType({ coll: collection.id, cid: params.id })
+  return actions.update({ collection: collection, params: params })
 }
 
 export function trash(params) {
