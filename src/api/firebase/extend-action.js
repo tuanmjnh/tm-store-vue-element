@@ -14,6 +14,63 @@ const dataLog = async ({ coll, cid, action }) => {
     action: action
   }
 }
+
+function getLogId(batch) {
+  return batch._mutations[1].key.path.segments[1]
+}
+
+export function getLogById(id) {
+  return new Promise((resolve, reject) => {
+    collectionLogs.doc(id).get().then(async doc => {
+      if (doc.exists) {
+        resolve(doc.data())
+      } else {
+        resolve(null)
+      }
+    })
+  })
+}
+
+export function getDocumentById({ collection, id }) {
+  return new Promise((resolve, reject) => {
+    collection.doc(id).get().then(async doc => {
+      if (doc.exists) {
+        resolve(doc.data())
+      } else {
+        resolve(null)
+      }
+    })
+  })
+}
+
+export function getLogByUid(params) {
+  let qry = collectionLogs.where('flag', '==', params.flag) // .orderBy('created_at', 'desc')
+  if (params.search) {
+    qry = qry.where('name', '>=', 'test').where('name', '<=', 'test' + '\uf8ff')
+  }
+  return qry.get().then((docs) => {
+    const items = []
+    docs.forEach(function (doc) {
+      items.push({ ...{ id: doc.id }, ...doc.data() })
+    })
+    return items
+  })
+}
+
+export function getLogByDoc(params) {
+  return collectionLogs
+    .where('cid', '==', params.cid)
+    .where('coll', '==', params.coll)
+    .orderBy('at', 'desc')
+    .get().then((docs) => {
+      const items = []
+      docs.forEach(function (doc) {
+        items.push(doc.data())
+      })
+      return items
+    })
+}
+
 export function addLog(data) {
   return new Promise((resolve, reject) => {
     data.uid = store.state.auth.uid
@@ -62,10 +119,16 @@ export function update({ collection, params }) {
       // Add Log
       batch.set(collectionLogs.doc(), await dataLog({ coll: collection.id, cid: params.id, action: 'update' }))
       // Commit the batch
-      batch.commit().then(function() {
-        console.log(batch)
-        resolve(true)
+      batch.commit().then(async () => {
+        const result = await getDocumentById({ collection: collection, id: params.id })
+        const log = await getLogById(getLogId(batch))
+        if (log) result.log.push(log)
+        resolve(result)
+      }).catch((err) => {
+        reject(err)
       })
+    } else {
+      collection.doc(params.id).update(params.data)
     }
   })
 }
