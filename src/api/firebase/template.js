@@ -2,16 +2,35 @@ import firebase from './index'
 import * as actions from './extend-action'
 const collection = firebase.firestore().collection('template')
 
-export function get(params) {
-  let qry = collection.where('flag', '==', params.flag) // .orderBy('created_at', 'desc')
+export function getAll(params) {
+  // Filter data
+  let qry = collection.where('flag', '==', params.flag).orderBy('name', 'asc') // .orderBy('created_at', 'desc')
   if (params.search) {
     qry = qry.where('name', '>=', 'test').where('name', '<=', 'test' + '\uf8ff')
   }
-  return qry.get().then((docs) => {
+  // Return data
+  return qry.get().then((rs) => {
     const items = []
-    docs.forEach(function(doc) {
-      items.push({ ...{ id: doc.id }, ...doc.data() })
-    })
+    rs.forEach((doc) => { items.push({ ...{ id: doc.id }, ...doc.data() }) })
+    return items
+  })
+}
+
+export async function getPaginate(params) {
+  let first = collection.orderBy('name', 'asc') // .orderBy('created_at', 'desc')
+  // Filter data
+  params.conditions.forEach(e => { first = first.where(e.key, e.operation, e.value) })
+  // Search data
+  if (params.search) {
+    first = first.where('name', '>=', 'test').where('name', '<=', 'test' + '\uf8ff')
+  }
+  // Get all documents
+  const documentSnapshots = await first.get()
+  params.totalItems = documentSnapshots.docs.length
+  // Return data
+  return first.startAt(documentSnapshots.docs[params.pageSize * (params.currentPage - 1)]).limit(params.pageSize).get().then((rs) => {
+    const items = []
+    rs.forEach(doc => { items.push({ ...{ id: doc.id }, ...doc.data() }) })
     return items
   })
 }

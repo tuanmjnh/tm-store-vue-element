@@ -94,6 +94,12 @@
         </template>
       </el-table-column>
     </el-table>
+    <p>
+      <el-pagination :page-size.sync="params.pageSize" :pager-count="params.pagerCount"
+        layout="sizes, prev, pager, next" :page-sizes="params.pageSizes" :total="params.totalItems" align="right"
+        :current-page.sync="params.currentPage" @current-change="onPaginationChange">
+      </el-pagination>
+    </p>
   </div>
 </template>
 
@@ -111,10 +117,15 @@ export default {
       dialogFilter: false,
       dialogConfirmTrash: false,
       params: {
-        start_date: this.$moment().format('DD-MM-YYYY'),
-        end_date: this.$moment().format('DD-MM-YYYY'),
         search: '',
-        flag: 1
+        currentPage: 1,
+        pageSize: 3,
+        pagerCount: 9,
+        totalItems: 0,
+        pageSizes: [3, 10, 100, 200, 300, 400],
+        conditions: [{ key: 'flag', value: 1, operation: '==' }],
+        start_date: this.$moment().format('DD-MM-YYYY'),
+        end_date: this.$moment().format('DD-MM-YYYY')
       }
     }
   },
@@ -124,13 +135,17 @@ export default {
   methods: {
     getItems() {
       this.loading = true
-      api.get(this.params).then((x) => {
+      api.getPaginate(this.params).then((x) => {
         this.items = x
       }).catch((err) => {
         this.$message.error(this.$t(err.message))
       }).finally(() => {
         this.loading = false
       })
+    },
+    onPaginationChange(val) {
+      this.getItems()
+      console.log(val)
     },
     // onSelection(val) {
     //   this.selected = val
