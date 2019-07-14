@@ -13,7 +13,7 @@
         </div>
         <div class="row">
           <el-input v-model="params.search" :placeholder="$t('global.search')" class="input-with-select">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
         </div>
       </span>
@@ -40,13 +40,17 @@
       <div class="spacer" />
       <!-- <el-button-group> -->
       <el-tooltip effect="dark" :content="$t('global.filter')" placement="bottom">
-        <el-button @click="dialog_filter=true">
+        <el-button @click="dialogFilter=true">
           <svg-icon icon-class="filter" />
         </el-button>
       </el-tooltip>
-      <el-tooltip v-if="$refs.table&&$refs.table.selection.length>0" effect="dark" :content="$t('global.delete')"
-        placement="bottom">
+      <el-tooltip v-if="$refs.table&&$refs.table.selection.length>0&&$route.meta.flag===1" effect="dark"
+        :content="$t('global.delete')" placement="bottom">
         <el-button type="danger" icon="el-icon-delete" @click="dialogConfirmTrash=true" />
+      </el-tooltip>
+      <el-tooltip v-if="$refs.table&&$refs.table.selection.length>0&&$route.meta.flag===0" effect="dark"
+        :content="$t('global.deleted_forever')" placement="bottom">
+        <el-button type="danger" icon="el-icon-remove" @click="dialogConfirmTrash=true" />
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('global.add')" placement="bottom">
         <el-button type="primary" icon="el-icon-plus" @click="$router.push('/template/add')" />
@@ -84,12 +88,19 @@
           <el-input v-model="params.search" :d-val="scope" :placeholder="$t('global.search')" @change="getItems()" />
         </template>
         <template slot-scope="scope">
-          <el-tooltip effect="dark" :content="$t('global.edit')" placement="bottom">
+          <el-tooltip v-if="$route.meta.flag===1" effect="dark" :content="$t('global.edit')" placement="bottom">
             <el-button type="warning" size="mini" icon="el-icon-edit-outline"
               @click="$router.push(`/template/edit/${scope.row.id}`)" />
           </el-tooltip>
-          <el-tooltip effect="dark" :content="$t('global.delete')" placement="bottom">
+          <el-tooltip v-if="$route.meta.flag===1" effect="dark" :content="$t('global.delete')" placement="bottom">
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="onTrash(scope.row)" />
+          </el-tooltip>
+          <el-tooltip v-if="$route.meta.flag===0" effect="dark" :content="$t('global.recover')" placement="bottom">
+            <el-button type="success" size="mini" icon="el-icon-refresh" @click="onTrash(scope.row)" />
+          </el-tooltip>
+          <el-tooltip v-if="$route.meta.flag===0" effect="dark" :content="$t('global.deleted_forever')"
+            placement="bottom">
+            <el-button type="info" size="mini" icon="el-icon-remove" @click="onTrash(scope.row)" />
           </el-tooltip>
         </template>
       </el-table-column>
@@ -97,7 +108,8 @@
     <p>
       <el-pagination :page-size.sync="params.pageSize" :pager-count="params.pagerCount"
         layout="sizes, prev, pager, next" :page-sizes="params.pageSizes" :total="params.totalItems" align="right"
-        :current-page.sync="params.currentPage" @current-change="onPaginationChange">
+        :current-page.sync="params.currentPage" @current-change="onPaginationChange"
+        @size-change="onSizePaginationChange">
       </el-pagination>
     </p>
   </div>
@@ -116,14 +128,15 @@ export default {
       // selected: [],
       dialogFilter: false,
       dialogConfirmTrash: false,
+      confirmContent: '',
       params: {
         search: '',
         currentPage: 1,
-        pageSize: 3,
+        pageSize: 10,
         pagerCount: 9,
         totalItems: 0,
-        pageSizes: [3, 10, 100, 200, 300, 400],
-        conditions: [{ key: 'flag', value: 1, operation: '==' }],
+        pageSizes: [10, 20, 50, 100],
+        conditions: [{ key: 'flag', value: this.$route.meta.flag, operation: '==' }],
         start_date: this.$moment().format('DD-MM-YYYY'),
         end_date: this.$moment().format('DD-MM-YYYY')
       }
@@ -131,11 +144,12 @@ export default {
   },
   created() {
     this.getItems()
+    // console.log(this.$route.meta.flag)
   },
   methods: {
     getItems() {
       this.loading = true
-      api.getPaginate(this.params).then((x) => {
+      api.getPagination(this.params).then((x) => {
         this.items = x
       }).catch((err) => {
         this.$message.error(this.$t(err.message))
@@ -145,7 +159,9 @@ export default {
     },
     onPaginationChange(val) {
       this.getItems()
-      console.log(val)
+    },
+    onSizePaginationChange(val) {
+      this.getItems()
     },
     // onSelection(val) {
     //   this.selected = val
@@ -172,9 +188,8 @@ export default {
       // console.log(this.$refs.table.selection)
     },
     onDialogFilter() {
+      this.dialogFilter = false
       this.getItems()
-      this.dialog_filter = false
-      console.log(this.items)
     }
   }
 }

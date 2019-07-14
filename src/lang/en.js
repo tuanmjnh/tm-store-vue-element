@@ -86,6 +86,7 @@ export default {
     update: 'Update',
     delete: 'Delete',
     deleted: 'Deleted',
+    deleted_forever: 'Deleted forever',
     accept: 'Accept',
     confirm: 'Confirm',
     cancel: 'Cancel',

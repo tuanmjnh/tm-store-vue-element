@@ -140,7 +140,7 @@ export const asyncRoutes = [
         path: 'list',
         component: () => import('@/views/template/list'),
         name: 'template-list',
-        meta: { title: 'template_list', icon: 'list', noCache: true }
+        meta: { title: 'template_list', icon: 'list', noCache: true, flag: 1 }
       },
       {
         path: 'add',
@@ -157,9 +157,9 @@ export const asyncRoutes = [
       },
       {
         path: 'trash',
-        component: () => import('@/views/template/trash'),
+        component: () => import('@/views/template/list'),
         name: 'template-trash',
-        meta: { title: 'template_trash', icon: 'trash', noCache: true }
+        meta: { title: 'template_trash', icon: 'trash', noCache: true, flag: 0 }
       }
     ]
   },

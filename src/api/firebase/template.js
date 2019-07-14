@@ -16,7 +16,7 @@ export function getAll(params) {
   })
 }
 
-export async function getPaginate(params) {
+export async function getPagination(params) {
   let first = collection.orderBy('name', 'asc') // .orderBy('created_at', 'desc')
   // Filter data
   params.conditions.forEach(e => { first = first.where(e.key, e.operation, e.value) })
@@ -26,13 +26,16 @@ export async function getPaginate(params) {
   }
   // Get all documents
   const documentSnapshots = await first.get()
+  const offset = documentSnapshots.docs[params.pageSize * (params.currentPage - 1)]
   params.totalItems = documentSnapshots.docs.length
   // Return data
-  return first.startAt(documentSnapshots.docs[params.pageSize * (params.currentPage - 1)]).limit(params.pageSize).get().then((rs) => {
-    const items = []
-    rs.forEach(doc => { items.push({ ...{ id: doc.id }, ...doc.data() }) })
-    return items
-  })
+  if (offset) {
+    return first.startAt(offset).limit(params.pageSize).get().then((rs) => {
+      const items = []
+      rs.forEach(doc => { items.push({ ...{ id: doc.id }, ...doc.data() }) })
+      return items
+    })
+  } else return []
 }
 
 export function getSnapshot(params) {
