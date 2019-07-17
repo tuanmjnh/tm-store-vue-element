@@ -4,11 +4,12 @@
     <el-dialog :title="$t('global.filter')" :visible.sync="dialogFilter" width="30%">
       <span>
         <div class="row-flex">
-          <el-date-picker v-model="params.start_at" type="date" format="dd-MM-yyyy"
-            :default-value="new Date(2019,10,10)" :placeholder="$t('global.start_date')">
+          <el-date-picker v-model="params.start_date" type="date" format="dd-MM-yyyy"
+            :placeholder="$t('global.start_date')">
           </el-date-picker>
           <div class="spacer"></div>
-          <el-date-picker v-model="params.end_at" type="date" :placeholder="$t('global.end_date')">
+          <el-date-picker v-model="params.end_date" type="date" format="dd-MM-yyyy"
+            :placeholder="$t('global.end_date')">
           </el-date-picker>
         </div>
         <div class="row">
@@ -26,9 +27,9 @@
     <el-dialog :title="$t('message_box.warning')" width="30%" :visible.sync="dialogConfirmTrash"
       @closed="onConfirmTrashClose">
       <span>
-        <div class="row">
-          {{ $t('message_box.trash') }}
-        </div>
+        <div v-if="confirmType==='recover'" class="row">{{ $t('message_box.recover') }}</div>
+        <div v-else-if="confirmType==='delete'" class="row">{{ $t('message_box.delete') }}</div>
+        <div v-else class="row">{{ $t('message_box.trash') }}</div>
       </span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="onConfirmTrashOk">{{ $t('global.accept') }}</el-button>
@@ -46,11 +47,15 @@
       </el-tooltip>
       <el-tooltip v-if="$refs.table&&$refs.table.selection.length>0&&$route.meta.flag===1" effect="dark"
         :content="$t('global.delete')" placement="bottom">
-        <el-button type="danger" icon="el-icon-delete" @click="dialogConfirmTrash=true" />
+        <el-button type="danger" icon="el-icon-delete" @click="onConfirm('trash')" />
+      </el-tooltip>
+      <el-tooltip v-if="$refs.table&&$refs.table.selection.length>0&&$route.meta.flag===0" effect="dark"
+        :content="$t('global.recover')" placement="bottom">
+        <el-button type="success" icon="el-icon-refresh" @click="onConfirm('recover')" />
       </el-tooltip>
       <el-tooltip v-if="$refs.table&&$refs.table.selection.length>0&&$route.meta.flag===0" effect="dark"
         :content="$t('global.deleted_forever')" placement="bottom">
-        <el-button type="danger" icon="el-icon-remove" @click="dialogConfirmTrash=true" />
+        <el-button type="danger" icon="el-icon-remove" @click="onConfirm('delete')" />
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('global.add')" placement="bottom">
         <el-button type="primary" icon="el-icon-plus" @click="$router.push('/template/add')" />
@@ -93,14 +98,14 @@
               @click="$router.push(`/template/edit/${scope.row.id}`)" />
           </el-tooltip>
           <el-tooltip v-if="$route.meta.flag===1" effect="dark" :content="$t('global.delete')" placement="bottom">
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="onTrash(scope.row)" />
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="onTrash('trash', scope.row)" />
           </el-tooltip>
           <el-tooltip v-if="$route.meta.flag===0" effect="dark" :content="$t('global.recover')" placement="bottom">
-            <el-button type="success" size="mini" icon="el-icon-refresh" @click="onTrash(scope.row)" />
+            <el-button type="success" size="mini" icon="el-icon-refresh" @click="onTrash('recover', scope.row)" />
           </el-tooltip>
           <el-tooltip v-if="$route.meta.flag===0" effect="dark" :content="$t('global.deleted_forever')"
             placement="bottom">
-            <el-button type="info" size="mini" icon="el-icon-remove" @click="onTrash(scope.row)" />
+            <el-button type="info" size="mini" icon="el-icon-remove" @click="onTrash('delete', scope.row)" />
           </el-tooltip>
         </template>
       </el-table-column>
@@ -128,7 +133,7 @@ export default {
       // selected: [],
       dialogFilter: false,
       dialogConfirmTrash: false,
-      confirmContent: '',
+      confirmType: '',
       params: {
         search: '',
         currentPage: 1,
@@ -137,8 +142,8 @@ export default {
         totalItems: 0,
         pageSizes: [10, 20, 50, 100],
         conditions: [{ key: 'flag', value: this.$route.meta.flag, operation: '==' }],
-        start_date: this.$moment().format('DD-MM-YYYY'),
-        end_date: this.$moment().format('DD-MM-YYYY')
+        start_date: new Date(),
+        end_date: new Date()
       }
     }
   },
@@ -166,26 +171,42 @@ export default {
     // onSelection(val) {
     //   this.selected = val
     // },
-    onTrash(val) {
+    onTrash(type, val) {
       this.$refs.table.clearSelection()
       this.$refs.table.selection.push(val)
+      this.confirmType = type
       this.dialogConfirmTrash = true
+    },
+    onConfirm(type) {
+      this.dialogConfirmTrash = true
+      this.confirmType = type
     },
     onConfirmTrashOk(val) {
       this.loading = true
       this.dialogConfirmTrash = false
-      api.trash(this.$refs.table.selection).then((rs) => {
-        remove({ data: this.items, element: rs, key: 'id' })
-        this.$message.success(this.$t('success.trash'))
-      }).catch((err) => {
-        this.$message.error(this.$t(err.message))
-      }).finally(() => {
-        this.loading = false
-      })
+      if (this.confirmType === 'delete') {
+        api.remove(this.$refs.table.selection).then((rs) => {
+          remove({ data: this.items, element: rs, key: 'id' })
+          this.$message.success(this.$t('success.delete'))
+        }).catch((err) => {
+          this.$message.error(this.$t(err.message))
+        }).finally(() => {
+          this.loading = false
+        })
+      } else {
+        api.trash(this.$refs.table.selection).then((rs) => {
+          remove({ data: this.items, element: rs, key: 'id' })
+          if (this.confirmType === 'recover') this.$message.success(this.$t('success.recover'))
+          else this.$message.success(this.$t('success.trash'))
+        }).catch((err) => {
+          this.$message.error(this.$t(err.message))
+        }).finally(() => {
+          this.loading = false
+        })
+      }
     },
     onConfirmTrashClose() {
       this.$refs.table.clearSelection()
-      // console.log(this.$refs.table.selection)
     },
     onDialogFilter() {
       this.dialogFilter = false

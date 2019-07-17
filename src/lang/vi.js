@@ -107,7 +107,8 @@ export default {
     insert: 'Thêm mới bản ghi thành công',
     update: 'Cập nhật bản ghi thành công',
     trash: 'Chuyển bản ghi đến thùng rác thành công',
-    delete: 'Xóa bản ghi thành công'
+    delete: 'Xóa bản ghi thành công',
+    recover: 'Khôi phục bản ghi thành công'
   },
   tabs: {
     main: 'Thông tin chính',
@@ -116,7 +117,9 @@ export default {
   message_box: {
     title: 'Thông báo',
     warning: 'Cảnh báo',
-    trash: 'Các bản ghi này sẽ được chuyển vào thùng rác. Bạn có muốn tiếp tục không?'
+    trash: 'Các bản ghi này sẽ được chuyển vào thùng rác. Bạn có chắc chắn muốn tiếp tục không?',
+    recover: 'Bạn có chắc chắn muốn khôi phục bản các bản ghi này không?',
+    remove: 'Bạn có chắc chắn muốn xóa các bản ghi này mãi mãi không?'
   },
   navbar: {
     dashboard: 'Dashboard',

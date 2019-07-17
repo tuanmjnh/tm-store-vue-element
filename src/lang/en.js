@@ -109,7 +109,8 @@ export default {
     insert: 'Insert record success',
     update: 'Update record success',
     trash: 'Move record to recycle bin success',
-    delete: 'Delete record success'
+    delete: 'Delete record success',
+    recover: 'Recover record success'
   },
   tabs: {
     main: 'Main information',
@@ -118,7 +119,9 @@ export default {
   message_box: {
     title: 'Message box',
     warning: 'Warning',
-    trash: 'The items will move to trash. Do you want to continue?'
+    trash: 'The action will move the items to trash. Are you sure you want to continue?',
+    recover: 'Are you sure you want to recover the items?',
+    delete: 'This action will delete the items forever. Are you sure you want to continue?'
   },
   navbar: {
     dashboard: 'Dashboard',

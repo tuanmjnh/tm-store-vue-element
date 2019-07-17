@@ -1,12 +1,14 @@
-import firebase from './index'
+import db from './index'
 import * as actions from './extend-action'
-const collection = firebase.firestore().collection('template')
+const collection = db.firestore().collection('template')
 
 export function getAll(params) {
+  let qry = collection.orderBy('created_at', 'desc')
   // Filter data
-  let qry = collection.where('flag', '==', params.flag).orderBy('name', 'asc') // .orderBy('created_at', 'desc')
+  params.conditions.forEach(e => { qry = qry.where(e.key, e.operation, e.value) })
+  // Search data
   if (params.search) {
-    qry = qry.where('name', '>=', 'test').where('name', '<=', 'test' + '\uf8ff')
+    qry = qry.where('name', '>=', params.search).where('name', '<=', params.search + '\uf8ff')
   }
   // Return data
   return qry.get().then((rs) => {
@@ -17,20 +19,20 @@ export function getAll(params) {
 }
 
 export async function getPagination(params) {
-  let first = collection.orderBy('name', 'asc') // .orderBy('created_at', 'desc')
+  let qry = collection.orderBy('name', 'asc')// .orderBy('created_at', 'desc')
   // Filter data
-  params.conditions.forEach(e => { first = first.where(e.key, e.operation, e.value) })
+  params.conditions.forEach(e => { qry = qry.where(e.key, e.operation, e.value) })
   // Search data
-  if (params.search) {
-    first = first.where('name', '>=', 'test').where('name', '<=', 'test' + '\uf8ff')
-  }
+  if (params.search) qry = qry.where('name', '>=', params.search).where('name', '<=', params.search + '\uf8ff')
+  // if (params.start_date) qry = qry.where('start_date', '>=', db.firestore.Timestamp.fromDate(params.start_date))
+  // if (params.end_date) qry = qry.where('end_date', '<=', db.firestore.Timestamp.fromDate(params.end_date))
   // Get all documents
-  const documentSnapshots = await first.get()
+  const documentSnapshots = await qry.get()
   const offset = documentSnapshots.docs[params.pageSize * (params.currentPage - 1)]
   params.totalItems = documentSnapshots.docs.length
   // Return data
   if (offset) {
-    return first.startAt(offset).limit(params.pageSize).get().then((rs) => {
+    return qry.startAt(offset).limit(params.pageSize).get().then((rs) => {
       const items = []
       rs.forEach(doc => { items.push({ ...{ id: doc.id }, ...doc.data() }) })
       return items
@@ -61,6 +63,7 @@ export function find(id) {
 }
 
 export function add(params) {
+  params.data.created_at = db.firestore.FieldValue.serverTimestamp()
   return actions.add({ collection: collection, data: params.data })
   // return collection.add(params.data)
   //   .then(doc => {
@@ -105,17 +108,17 @@ export function trash(params) {
   })
 }
 
-export function del(params) {
-  new Promise((resolve, reject) => {
-    collection.doc(params.item.id).delete()
-      .then(doc => {
-        // message.success({ message: 'success.trash' })
-        resolve(doc)
-      })
-      .catch((err) => {
-        // message.error(err)
-        reject(err)
-      })
-      .finally(() => { })
+export function remove(params) {
+  return new Promise(async (resolve, reject) => {
+    const result = []
+    try {
+      for (const item of params) {
+        actions.remove({ id: item.id, collection: collection })
+        result.push(item)
+      }
+      resolve(result)
+    } catch (err) {
+      reject(err)
+    }
   })
 }
