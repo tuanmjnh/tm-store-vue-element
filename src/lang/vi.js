@@ -160,7 +160,7 @@ export default {
   },
   roles: {
     title: 'Quyền',
-    key: 'Khóa quyền',
+    key: 'Mã quyền',
     name: 'Tên quyền',
     list: 'Danh sách quyền'
   },

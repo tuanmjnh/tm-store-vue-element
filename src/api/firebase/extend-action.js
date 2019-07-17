@@ -111,15 +111,20 @@ export async function addLogRecover(data) {
 export function add({ collection, data }) {
   return new Promise(async (resolve, reject) => {
     try {
-      const doc = await collection.add(data)
-      if (store.getters.useLogs) {
-        db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: doc.id, action: 'insert' })).then(docRef => {
-          docRef.onSnapshot(doc => {
-            if (doc.exists) resolve(doc.data())
-            else resolve(null)
-          })
+      let result = {}
+      await collection.add(data).then(async docs => {
+        await docs.onSnapshot(async doc => {
+          if (doc.exists) result = { ...{ id: doc.id }, ...doc.data() }
+          if (store.getters.useLogs) {
+            await db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: result.id, action: 'insert' })).then(async docs => {
+              await docs.onSnapshot(doc => {
+                if (doc.exists) result.log = { ...{ id: doc.id }, ...doc.data() }
+                resolve(result)
+              })
+            })
+          }
         })
-      } else resolve(true)
+      })
     } catch (err) {
       reject(err)
     }

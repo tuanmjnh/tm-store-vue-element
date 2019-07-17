@@ -1,300 +1,215 @@
 <template>
   <div class="app-container">
-    <div class="al-right row">
-      <el-tooltip effect="dark" :content="$t('global.add')" placement="left-start">
-        <el-button type="primary" size="small" @click="onAddRole">
-          <i class="el-icon-plus" />
+    <!-- Filter Dialog -->
+    <el-dialog :title="$t('global.filter')" :visible.sync="dialogFilter" width="30%">
+      <span>
+        <div class="row-flex">
+          <el-date-picker v-model="params.start_date" type="date" format="dd-MM-yyyy"
+            :placeholder="$t('global.start_date')">
+          </el-date-picker>
+          <div class="spacer"></div>
+          <el-date-picker v-model="params.end_date" type="date" format="dd-MM-yyyy"
+            :placeholder="$t('global.end_date')">
+          </el-date-picker>
+        </div>
+        <div class="row">
+          <el-input v-model="params.search" :placeholder="$t('global.search')" class="input-with-select">
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          </el-input>
+        </div>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="onDialogFilter">{{ $t('global.accept') }}</el-button>
+        <!-- <el-button @click="dialog_filter=false">{{ $t('global.cancel') }}</el-button> -->
+      </span>
+    </el-dialog>
+    <!-- Confirm Dialog -->
+    <el-dialog :title="$t('message_box.warning')" width="30%" :visible.sync="dialogConfirmTrash"
+      @closed="onConfirmTrashClose">
+      <span>
+        <div v-if="confirmType==='recover'" class="row">{{ $t('message_box.recover') }}</div>
+        <div v-else-if="confirmType==='delete'" class="row">{{ $t('message_box.delete') }}</div>
+        <div v-else class="row">{{ $t('message_box.trash') }}</div>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="onConfirmTrashOk">{{ $t('global.accept') }}</el-button>
+        <el-button @click="dialogConfirmTrash=false">{{ $t('global.cancel') }}</el-button>
+      </span>
+    </el-dialog>
+    <!-- add -->
+    <el-dialog :title="$t('global.add')" width="60%" :visible.sync="dialogAdd">
+      <template-add :roleid.sync="roleID" :dialog.sync="dialogAdd" :items.sync="items" />
+    </el-dialog>
+    <div class="row-flex">
+      <label class="title">{{ $t('roles.list') }}</label>
+      <div class="spacer" />
+      <!-- <el-button-group> -->
+      <el-tooltip effect="dark" :content="$t('global.filter')" placement="bottom">
+        <el-button @click="dialogFilter=true">
+          <svg-icon icon-class="filter" />
         </el-button>
       </el-tooltip>
+      <el-tooltip v-if="$refs.table&&$refs.table.selection.length>0&&$route.meta.flag===1" effect="dark"
+        :content="$t('global.delete')" placement="bottom">
+        <el-button type="danger" icon="el-icon-delete" @click="onConfirm('trash')" />
+      </el-tooltip>
+      <el-tooltip v-if="$refs.table&&$refs.table.selection.length>0&&$route.meta.flag===0" effect="dark"
+        :content="$t('global.recover')" placement="bottom">
+        <el-button type="success" icon="el-icon-refresh" @click="onConfirm('recover')" />
+      </el-tooltip>
+      <el-tooltip v-if="$refs.table&&$refs.table.selection.length>0&&$route.meta.flag===0" effect="dark"
+        :content="$t('global.deleted_forever')" placement="bottom">
+        <el-button type="danger" icon="el-icon-remove" @click="onConfirm('delete')" />
+      </el-tooltip>
+      <el-tooltip effect="dark" :content="$t('global.add')" placement="bottom">
+        <el-button type="primary" icon="el-icon-plus" @click="onDialogAdd" />
+      </el-tooltip>
+      <!-- </el-button-group> -->
     </div>
-
-    <el-table :data="rolesList" border>
-      <el-table-column align="center" :label="$t('roles.key')" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.key }}
-        </template>
+    <hr class="hr">
+    <!-- <loading-content v-if="loading"></loading-content> -->
+    <el-table ref="table" v-loading="loading" :data="items">
+      <el-table-column type="selection" width="55">
       </el-table-column>
-      <el-table-column align="center" :label="$t('roles.name')" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
+      <el-table-column prop="key" :label="$t('roles.key')">
       </el-table-column>
-      <el-table-column align="header-center" :label="$t('global.desc')">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
+      <el-table-column prop="name" :label="$t('roles.name')">
       </el-table-column>
-      <el-table-column align="center" label="#">
+      <el-table-column prop="desc" :label="$t('global.desc')">
+      </el-table-column>
+      <el-table-column label="#" width="180" align="center">
+        <template slot="header" slot-scope="scope">
+          <el-input v-model="params.search" :d-val="scope" :placeholder="$t('global.search')" @change="getItems()" />
+        </template>
         <template slot-scope="scope">
-          <el-tooltip effect="dark" :content="$t('global.edit')" placement="top-start">
-            <el-button type="primary" size="mini" @click="onEdit(scope)">
-              <svg-icon icon-class="edit" />
-              <!-- {{ $t('permission.editPermission') }} -->
-            </el-button>
+          <el-tooltip effect="dark" :content="$t('global.edit')" placement="bottom">
+            <el-button type="warning" size="mini" icon="el-icon-edit-outline" @click="onEdit(scope.row.id)" />
           </el-tooltip>
-          <el-tooltip class="item" effect="dark" :content="$t('global.delete')" placement="top-start">
-            <el-button type="danger" size="mini" @click="onDelete(scope)">
-              <!-- {{ $t('permission.delete') }} -->
-              <i class="el-icon-delete" />
-            </el-button>
+          <el-tooltip v-if="$route.meta.flag===1" effect="dark" :content="$t('global.delete')" placement="bottom">
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="onTrash('trash', scope.row)" />
+          </el-tooltip>
+          <el-tooltip v-if="$route.meta.flag===0" effect="dark" :content="$t('global.recover')" placement="bottom">
+            <el-button type="success" size="mini" icon="el-icon-refresh" @click="onTrash('recover', scope.row)" />
+          </el-tooltip>
+          <el-tooltip v-if="$route.meta.flag===0" effect="dark" :content="$t('global.deleted_forever')"
+            placement="bottom">
+            <el-button type="info" size="mini" icon="el-icon-remove" @click="onTrash('delete', scope.row)" />
           </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
-
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?$t('global.edit'):$t('global.add')">
-      <el-form :model="role" label-width="120px" label-position="left">
-        <!-- <el-form-item :label="$t('roles.name')"> -->
-        <div class="row">
-          <label class="form-label">{{ $t('roles.name') }}</label>
-          <el-input v-model="role.name" :placeholder="$t('roles.name')" label="tuanmjnh" />
-        </div>
-        <!-- </el-form-item> -->
-        <!-- <el-form-item :label="$t('global.desc')"> -->
-        <div class="row">
-          <el-tooltip class="item" :content="$t('global.desc')" placement="top">
-            <el-input v-model="role.description" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" :placeholder="$t('global.desc')" />
-          </el-tooltip>
-        </div>
-        <!-- </el-form-item> -->
-        <!-- <el-form-item :label="$t('roles.list')"> -->
-        <!-- <div class="row"> -->
-        <label class="form-label">{{ $t('roles.list') }}</label>
-        <el-tree ref="tree" :check-strictly="checkStrictly" :data="routesData" :props="defaultProps" show-checkbox
-          node-key="path" class="permission-tree" />
-        <!-- </div> -->
-        <!-- </el-form-item> -->
-      </el-form>
-      <hr class="hr">
-      <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="dialogVisible=false">
-          {{ $t('global.cancel') }}
-        </el-button>
-        <el-button type="primary" @click="confirmRole">
-          {{ $t('global.confirm') }}
-        </el-button>
-      </div>
-    </el-dialog>
+    <p>
+      <el-pagination :page-size.sync="params.pageSize" :pager-count="params.pagerCount"
+        layout="sizes, prev, pager, next" :page-sizes="params.pageSizes" :total="params.totalItems" align="right"
+        :current-page.sync="params.currentPage" @current-change="onPaginationChange"
+        @size-change="onSizePaginationChange">
+      </el-pagination>
+    </p>
   </div>
 </template>
 
 <script>
-import path from 'path'
-import { deepClone } from '@/utils'
-import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
-import i18n from '@/lang'
-
-const defaultRole = {
-  key: '',
-  name: '',
-  description: '',
-  routes: []
-}
-
+import add from './add'
+import * as api from '@/api/firebase/roles'
+import { remove } from '@/utils'
 export default {
+  components: { 'template-add': add },
   data() {
     return {
-      role: Object.assign({}, defaultRole),
-      routes: [],
-      rolesList: [],
-      dialogVisible: false,
-      dialogType: 'new',
-      checkStrictly: false,
-      defaultProps: {
-        children: 'children',
-        label: 'title'
+      loading: false,
+      items: [],
+      // selected: [],
+      dialogFilter: false,
+      dialogConfirmTrash: false,
+      dialogAdd: false,
+      confirmType: '',
+      roleID: '',
+      params: {
+        search: '',
+        currentPage: 1,
+        pageSize: 10,
+        pagerCount: 9,
+        totalItems: 0,
+        pageSizes: [10, 20, 50, 100]
       }
-    }
-  },
-  computed: {
-    routesData() {
-      return this.routes
     }
   },
   created() {
-    // Mock: get all routes and roles list from server
-    this.getRoutes()
-    this.getRoles()
+    this.getItems()
+    // console.log(this.$route.meta.flag)
   },
   methods: {
-    async getRoutes() {
-      const res = await getRoutes()
-      this.serviceRoutes = res.data
-      const routes = this.generateRoutes(res.data)
-      this.routes = this.i18n(routes)
-    },
-    async getRoles() {
-      const res = await getRoles()
-      this.rolesList = res.data
-    },
-    i18n(routes) {
-      const app = routes.map(route => {
-        route.title = i18n.t(`route.${route.title}`)
-        if (route.children) {
-          route.children = this.i18n(route.children)
-        }
-        return route
-      })
-      return app
-    },
-    // Reshape the routes structure so that it looks the same as the sidebar
-    generateRoutes(routes, basePath = '/') {
-      const res = []
-
-      for (let route of routes) {
-        // skip some route
-        if (route.hidden) { continue }
-
-        const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
-
-        if (route.children && onlyOneShowingChild && !route.alwaysShow) {
-          route = onlyOneShowingChild
-        }
-
-        const data = {
-          path: path.resolve(basePath, route.path),
-          title: route.meta && route.meta.title
-
-        }
-
-        // recursive child routes
-        if (route.children) {
-          data.children = this.generateRoutes(route.children, data.path)
-        }
-        res.push(data)
-      }
-      return res
-    },
-    generateArr(routes) {
-      let data = []
-      routes.forEach(route => {
-        data.push(route)
-        if (route.children) {
-          const temp = this.generateArr(route.children)
-          if (temp.length > 0) {
-            data = [...data, ...temp]
-          }
-        }
-      })
-      return data
-    },
-    onAddRole() {
-      this.role = Object.assign({}, defaultRole)
-      if (this.$refs.tree) {
-        this.$refs.tree.setCheckedNodes([])
-      }
-      this.dialogType = 'new'
-      this.dialogVisible = true
-    },
-    onEdit(scope) {
-      this.dialogType = 'edit'
-      this.dialogVisible = true
-      this.checkStrictly = true
-      this.role = deepClone(scope.row)
-      this.$nextTick(() => {
-        const routes = this.generateRoutes(this.role.routes)
-        this.$refs.tree.setCheckedNodes(this.generateArr(routes))
-        // set checked state of a node not affects its father and child nodes
-        this.checkStrictly = false
+    getItems() {
+      this.loading = true
+      api.getPagination(this.params).then((x) => {
+        this.items = x
+      }).catch((err) => {
+        this.$message.error(this.$t(err.message))
+      }).finally(() => {
+        this.loading = false
       })
     },
-    onDelete({ $index, row }) {
-      this.$confirm('Confirm to remove the role?', 'Warning', {
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
-        type: 'warning'
-      })
-        .then(async () => {
-          await deleteRole(row.key)
-          this.rolesList.splice($index, 1)
-          this.$message({
-            type: 'success',
-            message: 'Delete succed!'
-          })
+    onPaginationChange(val) {
+      this.getItems()
+    },
+    onSizePaginationChange(val) {
+      this.getItems()
+    },
+    // onSelection(val) {
+    //   this.selected = val
+    // },
+    onTrash(type, val) {
+      this.$refs.table.clearSelection()
+      this.$refs.table.selection.push(val)
+      this.confirmType = type
+      this.dialogConfirmTrash = true
+    },
+    onConfirm(type) {
+      this.dialogConfirmTrash = true
+      this.confirmType = type
+    },
+    onConfirmTrashOk(val) {
+      this.loading = true
+      this.dialogConfirmTrash = false
+      if (this.confirmType === 'delete') {
+        api.remove(this.$refs.table.selection).then((rs) => {
+          remove({ data: this.items, element: rs, key: 'id' })
+          this.$message.success(this.$t('success.delete'))
+        }).catch((err) => {
+          this.$message.error(this.$t(err.message))
+        }).finally(() => {
+          this.loading = false
         })
-        .catch(err => { console.error(err) })
-    },
-    generateTree(routes, basePath = '/', checkedKeys) {
-      const res = []
-
-      for (const route of routes) {
-        const routePath = path.resolve(basePath, route.path)
-
-        // recursive child routes
-        if (route.children) {
-          route.children = this.generateTree(route.children, routePath, checkedKeys)
-        }
-
-        if (checkedKeys.includes(routePath) || (route.children && route.children.length >= 1)) {
-          res.push(route)
-        }
-      }
-      return res
-    },
-    async confirmRole() {
-      const isEdit = this.dialogType === 'edit'
-
-      const checkedKeys = this.$refs.tree.getCheckedKeys()
-      this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
-
-      if (isEdit) {
-        await updateRole(this.role.key, this.role)
-        for (let index = 0; index < this.rolesList.length; index++) {
-          if (this.rolesList[index].key === this.role.key) {
-            this.rolesList.splice(index, 1, Object.assign({}, this.role))
-            break
-          }
-        }
       } else {
-        const { data } = await addRole(this.role)
-        this.role.key = data.key
-        this.rolesList.push(this.role)
+        api.trash(this.$refs.table.selection).then((rs) => {
+          remove({ data: this.items, element: rs, key: 'id' })
+          if (this.confirmType === 'recover') this.$message.success(this.$t('success.recover'))
+          else this.$message.success(this.$t('success.trash'))
+        }).catch((err) => {
+          this.$message.error(this.$t(err.message))
+        }).finally(() => {
+          this.loading = false
+        })
       }
-
-      const { description, key, name } = this.role
-      this.dialogVisible = false
-      this.$notify({
-        title: 'Success',
-        dangerouslyUseHTMLString: true,
-        message: `
-            <div>Role Key: ${key}</div>
-            <div>Role Nmae: ${name}</div>
-            <div>Description: ${description}</div>
-          `,
-        type: 'success'
-      })
     },
-    // reference: src/view/layout/components/Sidebar/SidebarItem.vue
-    onlyOneShowingChild(children = [], parent) {
-      let onlyOneChild = null
-      const showingChildren = children.filter(item => !item.hidden)
-
-      // When there is only one child route, the child route is displayed by default
-      if (showingChildren.length === 1) {
-        onlyOneChild = showingChildren[0]
-        onlyOneChild.path = path.resolve(parent.path, onlyOneChild.path)
-        return onlyOneChild
-      }
-
-      // Show parent if there are no child route to display
-      if (showingChildren.length === 0) {
-        onlyOneChild = { ...parent, path: '', noShowingChildren: true }
-        return onlyOneChild
-      }
-
-      return false
+    onConfirmTrashClose() {
+      this.$refs.table.clearSelection()
+    },
+    onDialogFilter() {
+      this.dialogFilter = false
+      this.getItems()
+    },
+    onDialogAdd() {
+      this.dialogAdd = true
+    },
+    onEdit(id) {
+      console.log(id)
+      this.dialogAdd = true
+      this.roleID = id
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.app-container {
-  .roles-table {
-    margin-top: 30px;
-  }
-  .permission-tree {
-    margin-left: 30px;
-  }
-}
+<style>
 </style>

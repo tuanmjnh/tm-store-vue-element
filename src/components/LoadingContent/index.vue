@@ -42,6 +42,7 @@ export default {
   position: fixed;
   top: 30%;
   left: 50%;
+  z-index: 2;
 }
 .loading-1 {
   svg {

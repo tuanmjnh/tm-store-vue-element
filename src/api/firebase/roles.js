@@ -1,9 +1,9 @@
 import db from './index'
 import * as actions from './extend-action'
-const collection = db.firestore().collection('template')
+const collection = db.firestore().collection('roles')
 
 export function getAll(params) {
-  let qry = collection.orderBy('created_at', 'desc')
+  let qry = collection.orderBy('name', 'asc')
   // Filter data
   if (params.conditions && params.conditions.length > 0) {
     params.conditions.forEach(e => { qry = qry.where(e.key, e.operation, e.value) })
@@ -21,15 +21,13 @@ export function getAll(params) {
 }
 
 export async function getPagination(params) {
-  let qry = collection.orderBy('name', 'asc')// .orderBy('created_at', 'desc')
+  let qry = collection.orderBy('name', 'asc')
   // Filter data
   if (params.conditions && params.conditions.length > 0) {
     params.conditions.forEach(e => { qry = qry.where(e.key, e.operation, e.value) })
   }
   // Search data
   if (params.search) qry = qry.where('name', '>=', params.search).where('name', '<=', params.search + '\uf8ff')
-  // if (params.start_date) qry = qry.where('start_date', '>=', db.firestore.Timestamp.fromDate(params.start_date))
-  // if (params.end_date) qry = qry.where('end_date', '<=', db.firestore.Timestamp.fromDate(params.end_date))
   // Get all documents
   const documentSnapshots = await qry.get()
   const offset = documentSnapshots.docs[params.pageSize * (params.currentPage - 1)]
@@ -45,22 +43,10 @@ export async function getPagination(params) {
   } else return []
 }
 
-export function getSnapshot(params) {
-  return collection.orderBy('created_at', 'asc')
-    .onSnapshot((snapshot) => {
-      const items = []
-      snapshot.forEach((doc) => {
-        items.push({ ...{ id: doc.id }, ...doc.data() })
-      })
-      return items
-    })
-}
 export function find(id) {
   return collection.doc(id).get().then(async doc => {
     if (doc.exists) {
       const rs = doc.data()
-      rs.start_date = rs.start_date ? rs.start_date.toDate() : null
-      rs.end_date = rs.end_date ? rs.end_date.toDate() : null
       rs.log = await actions.getLogByDoc({ cid: id, collection: collection.id })
       return rs
     }
@@ -68,18 +54,11 @@ export function find(id) {
 }
 
 export function add(params) {
-  params.data.created_at = db.firestore.FieldValue.serverTimestamp()
   return actions.add({ collection: collection, data: params.data })
-  // return collection.add(params.data)
-  //   .then(doc => {
-  //     logs.insertType({ coll: collection.id, cid: doc.id })
-  //   })
 }
 
 export function edit(params) {
   return actions.update({ collection: collection, id: params.id, data: params.data })
-  // await collection.doc(params.id).update(params.data)
-  // return await logs.updateType({ coll: collection.id, cid: params.id })
 }
 
 export function trash(params) {
@@ -93,18 +72,6 @@ export function trash(params) {
           actions.recover({ id: item.id, collection: collection, data: { flag: 1 } })
         }
         result.push(item)
-        // await collection.doc(item.id).update({ flag: item.flag === 0 ? 1 : 0 })
-        //   .then(async doc => {
-        //     if (item.flag === 1) {
-        //       await logs.trashType({ coll: collection.id, cid: item.id })
-        //     } else {
-        //       await logs.recoverType({ coll: collection.id, cid: item.id })
-        //     }
-        //     result.push(item)
-        //   })
-        //   .catch((err) => {
-        //     throw err
-        //   })
       }
       resolve(result)
     } catch (err) {

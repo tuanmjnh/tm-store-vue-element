@@ -12,7 +12,7 @@
         </el-tooltip>
         <el-tooltip v-else effect="dark" :content="$t('global.add')" placement="bottom">
           <el-button type="primary" :loading="loading_add" :disabled="loading_drafts" @click="onSubmit('add')">
-            <svg-icon icon-class="add-file" />
+            <svg-icon icon-class="add" />
           </el-button>
         </el-tooltip>
         <el-tooltip v-if="!$route.params.id" effect="dark" :content="$t('global.drafts')" placement="bottom">
@@ -87,7 +87,7 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane :label="$t('tabs.updated')" name="secondary" class="details">
+      <el-tab-pane v-if="$route.params.id" :label="$t('tabs.updated')" name="secondary" class="details">
         <el-timeline :reverse="true">
           <el-timeline-item v-for="(item, index) in form.log" :key="index" :icon="item.icon" :type="item.type"
             :color="item.color" :size="item.size"
@@ -129,7 +129,6 @@
 <script>
 import LoadingContent from '@/components/LoadingContent'
 import * as api from '@/api/firebase/template'
-import * as users from '@/api/firebase/users'
 export default {
   components: { LoadingContent },
   data() {
@@ -188,10 +187,8 @@ export default {
         this.$refs.form.validate(valid => {
           if (valid) {
             this.loading_add = true
-            this.form.flag = 1
             api.edit({ id: this.$route.params.id, data: this.form }).then((x) => {
               if (x) this.form.log.unshift(x)
-              console.log(x)
               this.$message.success(this.$t('success.update'))
             }).catch((err) => {
               this.$message.error(this.$t(err.message))

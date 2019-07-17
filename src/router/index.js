@@ -146,7 +146,7 @@ export const asyncRoutes = [
         path: 'add',
         component: () => import('@/views/template/add'),
         name: 'template-add',
-        meta: { title: 'template_add', icon: 'add', noCache: true }
+        meta: { title: 'template_add', icon: 'edit', noCache: true }
       },
       {
         path: 'edit/:id',
