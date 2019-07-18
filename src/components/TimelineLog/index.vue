@@ -18,18 +18,18 @@ export default {
   methods: {
     getColor(action) {
       switch (action) {
-        case 'insert': return '#1890FF'
-          break
-        case 'update': return '#DCD005'
-          break
-        case 'trash': return '#13C2C2'
-          break
-        case 'recover': return '#11A983'
-          break
-        case 'delete': return '#F5222D'
-          break
-        default: return '#6959CD'
-          break
+        case 'insert':
+          return '#1890FF'
+        case 'update':
+          return '#DCD005'
+        case 'trash':
+          return '#13C2C2'
+        case 'recover':
+          return '#11A983'
+        case 'delete':
+          return '#F5222D'
+        default:
+          return '#6959CD'
       }
     }
   }

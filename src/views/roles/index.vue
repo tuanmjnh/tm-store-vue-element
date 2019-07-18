@@ -25,7 +25,7 @@
     </el-dialog>
     <!-- Confirm Dialog -->
     <el-dialog :title="$t('message_box.warning')" width="30%" :visible.sync="dialogConfirmTrash"
-      @closed="onConfirmTrashClose">
+      :close-on-click-modal="false" @closed="onConfirmTrashClose">
       <span>
         <div v-if="confirmType==='recover'" class="row">{{ $t('message_box.recover') }}</div>
         <div v-else-if="confirmType==='delete'" class="row">{{ $t('message_box.delete') }}</div>
@@ -37,7 +37,8 @@
       </span>
     </el-dialog>
     <!-- add -->
-    <el-dialog :title="item?$t('global.edit'):$t('global.add')" width="60%" :visible.sync="dialogAdd">
+    <el-dialog :title="item?$t('global.edit'):$t('global.add')" width="60%" :visible.sync="dialogAdd"
+      :close-on-click-modal="false">
       <template-add :dialog.sync="dialogAdd" :item.sync="item" :items.sync="items" />
     </el-dialog>
     <div class="row-flex">

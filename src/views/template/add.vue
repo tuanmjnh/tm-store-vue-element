@@ -29,7 +29,7 @@
     </div>
     <!-- <hr class="hr"> -->
     <el-tabs v-model="tabs">
-      <el-tab-pane :label="$t('tabs.main')" name="primary">
+      <el-tab-pane :label="$t('tabs.main')" name="one">
         <el-form ref="form" :model="form" label-width="120px">
           <el-form-item prop="name" label="Activity name" :rules="[
       {required: true, message: $t('login.msg_required_username'), trigger: 'change'},
@@ -87,7 +87,7 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane v-if="$route.params.id" :label="$t('tabs.updated')" name="secondary" class="details">
+      <el-tab-pane v-if="$route.params.id" :label="$t('tabs.updated')" name="two" class="details">
         <time-line-log :items.sync="form.log" />
       </el-tab-pane>
       <!-- <el-tab-pane :label="$t('tabs.updated')" name="secondary" class="details">
@@ -130,7 +130,7 @@ export default {
       loading: false,
       loading_add: false,
       loading_drafts: false,
-      tabs: 'primary',
+      tabs: 'one',
       form: {},
       default: {
         name: '',

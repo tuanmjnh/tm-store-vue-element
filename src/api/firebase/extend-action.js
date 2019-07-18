@@ -1,6 +1,7 @@
 import db from './index'
 import store from '@/store'
-import localIP from '@/utils/local-ip'
+// import localIP from '@/utils/local-ip'
+import ip from 'ip'
 const collectionLogs = 'logs'
 
 // console.log(db.firestore.Timestamp.now().toDate(), db.firestore.FieldValue.serverTimestamp().toString())
@@ -11,7 +12,7 @@ const dataLog = async ({ cid, did, action }) => {
     cid: cid, // Collection id
     did: did, // Document id
     action: action, // Action name
-    ip: await localIP(), // Local IP
+    ip: ip.address(), // await localIP(), // Local IP
     by: store.state.auth.profile.email, // Email or username
     at: db.firestore.FieldValue.serverTimestamp() // Server time
   }

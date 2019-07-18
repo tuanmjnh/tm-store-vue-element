@@ -7,7 +7,8 @@
           <el-form-item prop="key" :label="$t('roles.key')" :rules="[
             {required: true, message: $t('login.msg_required_username'), trigger: 'change'},
             {min:4, message: $t('login.msg_min_username',{min:4}), trigger: 'change'}]">
-            <el-input v-model="form.key" type="text" @blur="form.key=form.key.toLowerCase()"></el-input>
+            <el-input v-model="form.key" type="text" @blur="()=>{if(form.key)form.key=form.key.toLowerCase()}">
+            </el-input>
           </el-form-item>
           <el-form-item prop="name" :label="$t('roles.name')"
             :rules="[{required: true, message: $t('login.msg_required_username'), trigger: 'change'}]">
@@ -62,7 +63,7 @@ export default {
   components: { 'time-line-log': TimelineLog },
   props: {
     dialog: { type: Boolean, default: true },
-    item: {},
+    item: { type: Object, default: () => { } },
     items: { type: Array, default: () => [] }
   },
   data() {
@@ -70,7 +71,7 @@ export default {
       loading: false,
       loading_add: false,
       loading_drafts: false,
-      tabs: 'primary',
+      tabs: 'one',
       form: {},
       routes: [],
       defaultProps: {
@@ -89,6 +90,7 @@ export default {
   watch: {
     dialog: {
       handler(val) {
+        this.reset()
         if (this.item) {
           this.form = { ...this.item }
           this.loading = true
@@ -101,14 +103,18 @@ export default {
               }
             })
             .finally(() => { this.loading = false })
-          this.$nextTick(() => {
-            const routes = this.generateRoutes(this.form.routes)
-            this.$refs.tree.setCheckedNodes(this.generateArr(routes))
-            // set checked state of a node not affects its father and child nodes
-            this.checkStrictly = false
-          })
         }
-        if (!val) this.reset()
+        // this.checkStrictly = true
+        this.$nextTick(() => {
+          // const routes = this.generateRoutes(this.form.routes)
+          // this.$refs.tree.setCheckedNodes(this.generateArr(routes))
+          // console.log(this.form.routes)
+          this.$refs.tree.setCheckedKeys(this.form.routes)
+          // set checked state of a node not affects its father and child nodes
+          this.checkStrictly = false
+        })
+        // if (!val) this.reset()
+        // console.log(val, this.form)
       },
       deep: true,
       immediate: true
@@ -256,7 +262,7 @@ export default {
     },
     reset() {
       this.form = { ...this.default }
-      this.$emit('update:item', null)
+      if (!this.dialog) this.$emit('update:item', null)
       if (this.$refs.form) this.$refs.form.resetFields()
       // this.loading_add = false
       // this.loading_drafts = false

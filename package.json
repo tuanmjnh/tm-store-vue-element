@@ -50,6 +50,7 @@
     "firebase-admin": "^8.2.0",
     "firebase-functions": "^3.0.2",
     "fuse.js": "3.4.5",
+    "ip": "^1.1.5",
     "js-cookie": "2.2.0",
     "jsonlint": "1.6.3",
     "jszip": "3.2.1",

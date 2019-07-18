@@ -55,7 +55,7 @@ const actions = {
           })
           // commit('SET_TOKEN', doc.user.refreshToken)
           // dispatch('getUser', { uid: doc.user.uid })
-          console.log(doc.user.uid)
+          // console.log(doc.user.uid)
           resolve(doc)
         })
         .catch((err) => {
