@@ -112,6 +112,9 @@ export default {
     delete: 'Delete record success',
     recover: 'Recover record success'
   },
+  error: {
+    not_exist: 'Data do not exist. Please try again!'
+  },
   tabs: {
     main: 'Main information',
     updated: 'Updated information'
@@ -164,7 +167,8 @@ export default {
     title: 'Roles',
     key: 'Role key',
     name: 'Role name',
-    list: 'Roles list'
+    list: 'Roles list',
+    menus: 'Menu list'
   },
   guide: {
     description: 'The guide page is useful for some people who entered the project for the first time. You can briefly introduce the features of the project. Demo is based on ',

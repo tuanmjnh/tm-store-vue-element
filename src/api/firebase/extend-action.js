@@ -5,15 +5,15 @@ const collectionLogs = 'logs'
 
 // console.log(db.firestore.Timestamp.now().toDate(), db.firestore.FieldValue.serverTimestamp().toString())
 
-const dataLog = async ({ coll, cid, action }) => {
+const dataLog = async ({ cid, did, action }) => {
   return {
-    uid: store.state.auth.uid,
-    by: store.state.auth.profile.email,
-    at: db.firestore.FieldValue.serverTimestamp(),
-    ip: await localIP(),
-    coll: coll,
-    cid: cid,
-    action: action
+    uid: store.state.auth.uid, // User id
+    cid: cid, // Collection id
+    did: did, // Document id
+    action: action, // Action name
+    ip: await localIP(), // Local IP
+    by: store.state.auth.profile.email, // Email or username
+    at: db.firestore.FieldValue.serverTimestamp() // Server time
   }
 }
 
@@ -28,18 +28,6 @@ function getLogId(batch) {
 export function getLogById(id) {
   return new Promise((resolve, reject) => {
     db.firestore().collection(collectionLogs).doc(id).get().then(async doc => {
-      if (doc.exists) {
-        resolve(doc.data())
-      } else {
-        resolve(null)
-      }
-    })
-  })
-}
-
-export function getDocumentById({ collection, id }) {
-  return new Promise((resolve, reject) => {
-    collection.doc(id).get().then(async doc => {
       if (doc.exists) {
         resolve(doc.data())
       } else {
@@ -66,7 +54,7 @@ export function getLogByUid(params) {
 export function getLogByDoc(params) {
   return db.firestore().collection(collectionLogs)
     .where('cid', '==', params.cid)
-    .where('coll', '==', params.collection)
+    .where('did', '==', params.did)
     .orderBy('at', 'desc')
     .get().then((docs) => {
       const items = []
@@ -80,7 +68,7 @@ export function getLogByDoc(params) {
 export function addLog(data) {
   return new Promise(async (resolve, reject) => {
     db.firestore().collection(collectionLogs)
-      .add(await dataLog({ coll: data.collection, cid: data.id, action: data.action }))
+      .add(await dataLog({ cid: data.cid, did: data.did, action: data.action }))
       .then(docRef => {
         docRef.onSnapshot(doc => {
           if (doc.exists) resolve(doc.data())
@@ -116,12 +104,14 @@ export function add({ collection, data }) {
         await docs.onSnapshot(async doc => {
           if (doc.exists) result = { ...{ id: doc.id }, ...doc.data() }
           if (store.getters.useLogs) {
-            await db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: result.id, action: 'insert' })).then(async docs => {
-              await docs.onSnapshot(doc => {
-                if (doc.exists) result.log = { ...{ id: doc.id }, ...doc.data() }
-                resolve(result)
+            await db.firestore().collection(collectionLogs)
+              .add(await dataLog({ cid: collection.id, did: result.id, action: 'insert' }))
+              .then(async docs => {
+                await docs.onSnapshot(doc => {
+                  if (doc.exists) result.log = [{ ...{ id: doc.id }, ...doc.data() }]
+                  resolve(result)
+                })
               })
-            })
           }
         })
       })
@@ -134,14 +124,18 @@ export function add({ collection, data }) {
 export function update({ collection, id, data }) {
   return new Promise(async (resolve, reject) => {
     try {
-      await collection.doc(id).update(data)
+      const _data = { ...data }
+      if (_data.log) delete _data.log
+      await collection.doc(id).update(_data)
       if (store.getters.useLogs) {
-        db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: id, action: 'update' })).then(docRef => {
-          docRef.onSnapshot(doc => {
-            if (doc.exists) resolve(doc.data())
-            else resolve(null)
+        db.firestore().collection(collectionLogs)
+          .add(await dataLog({ cid: collection.id, did: id, action: 'update' }))
+          .then(docRef => {
+            docRef.onSnapshot(doc => {
+              if (doc.exists) resolve(doc.data())
+              else resolve(null)
+            })
           })
-        })
       } else resolve(true)
     } catch (err) {
       reject(err)
@@ -152,7 +146,7 @@ export function update({ collection, id, data }) {
     //   // Update data
     //   batch.update(collection.doc(id), data)
     //   // Add Log
-    //   batch.set(collectionLogs.doc(), await dataLog({ coll: collection.id, cid: id, action: 'update' }))
+    //   batch.set(collectionLogs.doc(), await dataLog({ cid: collection.id, did: id, action: 'update' }))
     //   // Commit the batch
     //   batch.commit().then(async () => {
     //     // const result = await getDocumentById({ collection: collection, id: params.id })
@@ -173,12 +167,14 @@ export function trash({ collection, id, data }) {
     try {
       await collection.doc(id).update(data)
       if (store.getters.useLogs) {
-        db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: id, action: 'trash' })).then(docRef => {
-          docRef.onSnapshot(doc => {
-            if (doc.exists) resolve(doc.data())
-            else resolve(null)
+        db.firestore().collection(collectionLogs)
+          .add(await dataLog({ cid: collection.id, did: id, action: 'trash' }))
+          .then(docRef => {
+            docRef.onSnapshot(doc => {
+              if (doc.exists) resolve(doc.data())
+              else resolve(null)
+            })
           })
-        })
       } else resolve(true)
     } catch (err) {
       reject(err)
@@ -191,12 +187,14 @@ export function recover({ collection, id, data }) {
     try {
       await collection.doc(id).update(data)
       if (store.getters.useLogs) {
-        db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: id, action: 'recover' })).then(docRef => {
-          docRef.onSnapshot(doc => {
-            if (doc.exists) resolve(doc.data())
-            else resolve(null)
+        db.firestore().collection(collectionLogs)
+          .add(await dataLog({ cid: collection.id, did: id, action: 'recover' }))
+          .then(docRef => {
+            docRef.onSnapshot(doc => {
+              if (doc.exists) resolve(doc.data())
+              else resolve(null)
+            })
           })
-        })
       } else resolve(true)
     } catch (err) {
       reject(err)
@@ -209,12 +207,14 @@ export function remove({ collection, id }) {
     try {
       await collection.doc(id).delete()
       if (store.getters.useLogs) {
-        db.firestore().collection(collectionLogs).add(await dataLog({ coll: collection.id, cid: id, action: 'delete' })).then(docRef => {
-          docRef.onSnapshot(doc => {
-            if (doc.exists) resolve(doc.data())
-            else resolve(null)
+        db.firestore().collection(collectionLogs)
+          .add(await dataLog({ cid: collection.id, did: id, action: 'delete' }))
+          .then(docRef => {
+            docRef.onSnapshot(doc => {
+              if (doc.exists) resolve(doc.data())
+              else resolve(null)
+            })
           })
-        })
       } else resolve(true)
     } catch (err) {
       reject(err)

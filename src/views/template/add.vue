@@ -1,5 +1,5 @@
 <template>
-  <loading-content v-if="loading"></loading-content>
+  <el-table v-if="loading" v-loading="loading" empty-text=" " />
   <el-form v-else class="app-container">
     <div class="row-flex">
       <label class="title">{{ $route.params.id ? $t('global.details') : $t('global.add') }}</label>
@@ -88,13 +88,7 @@
         </el-form>
       </el-tab-pane>
       <el-tab-pane v-if="$route.params.id" :label="$t('tabs.updated')" name="secondary" class="details">
-        <el-timeline :reverse="true">
-          <el-timeline-item v-for="(item, index) in form.log" :key="index" :icon="item.icon" :type="item.type"
-            :color="item.color" :size="item.size"
-            :timestamp="item.at?$moment(item.at.toDate()).format('DD/MM/YYYY hh:mm'):$t('global.updating')">
-            {{ $t(`global.${item.action}`) }}: {{ item.by }}
-          </el-timeline-item>
-        </el-timeline>
+        <time-line-log :items.sync="form.log" />
       </el-tab-pane>
       <!-- <el-tab-pane :label="$t('tabs.updated')" name="secondary" class="details">
         <div class="el-col el-col-6 el-col-xs-12 el-col-sm-12">
@@ -127,10 +121,10 @@
 </template>
 
 <script>
-import LoadingContent from '@/components/LoadingContent'
+import TimelineLog from '@/components/TimelineLog'
 import * as api from '@/api/firebase/template'
 export default {
-  components: { LoadingContent },
+  components: { 'time-line-log': TimelineLog },
   data() {
     return {
       loading: false,
@@ -155,7 +149,8 @@ export default {
     if (this.$route.params.id) {
       this.loading = true
       api.find(this.$route.params.id).then((x) => {
-        this.form = x
+        if (x) this.form = x
+        else this.$router.push('/404')
         // console.log(x)
         // this.item_log = [
         //   {

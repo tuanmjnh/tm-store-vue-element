@@ -37,8 +37,8 @@
       </span>
     </el-dialog>
     <!-- add -->
-    <el-dialog :title="$t('global.add')" width="60%" :visible.sync="dialogAdd">
-      <template-add :roleid.sync="roleID" :dialog.sync="dialogAdd" :items.sync="items" />
+    <el-dialog :title="item?$t('global.edit'):$t('global.add')" width="60%" :visible.sync="dialogAdd">
+      <template-add :dialog.sync="dialogAdd" :item.sync="item" :items.sync="items" />
     </el-dialog>
     <div class="row-flex">
       <label class="title">{{ $t('roles.list') }}</label>
@@ -62,7 +62,7 @@
         <el-button type="danger" icon="el-icon-remove" @click="onConfirm('delete')" />
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('global.add')" placement="bottom">
-        <el-button type="primary" icon="el-icon-plus" @click="onDialogAdd" />
+        <el-button type="primary" icon="el-icon-plus" @click.native="onDialogAdd" />
       </el-tooltip>
       <!-- </el-button-group> -->
     </div>
@@ -83,17 +83,10 @@
         </template>
         <template slot-scope="scope">
           <el-tooltip effect="dark" :content="$t('global.edit')" placement="bottom">
-            <el-button type="warning" size="mini" icon="el-icon-edit-outline" @click="onEdit(scope.row.id)" />
+            <el-button type="warning" size="mini" icon="el-icon-edit-outline" @click.native="onEdit(scope.row)" />
           </el-tooltip>
-          <el-tooltip v-if="$route.meta.flag===1" effect="dark" :content="$t('global.delete')" placement="bottom">
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="onTrash('trash', scope.row)" />
-          </el-tooltip>
-          <el-tooltip v-if="$route.meta.flag===0" effect="dark" :content="$t('global.recover')" placement="bottom">
-            <el-button type="success" size="mini" icon="el-icon-refresh" @click="onTrash('recover', scope.row)" />
-          </el-tooltip>
-          <el-tooltip v-if="$route.meta.flag===0" effect="dark" :content="$t('global.deleted_forever')"
-            placement="bottom">
-            <el-button type="info" size="mini" icon="el-icon-remove" @click="onTrash('delete', scope.row)" />
+          <el-tooltip effect="dark" :content="$t('global.delete')" placement="bottom">
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click.native="onTrash('trash', scope.row)" />
           </el-tooltip>
         </template>
       </el-table-column>
@@ -118,12 +111,12 @@ export default {
     return {
       loading: false,
       items: [],
+      item: null,
       // selected: [],
       dialogFilter: false,
       dialogConfirmTrash: false,
       dialogAdd: false,
       confirmType: '',
-      roleID: '',
       params: {
         search: '',
         currentPage: 1,
@@ -171,26 +164,27 @@ export default {
     onConfirmTrashOk(val) {
       this.loading = true
       this.dialogConfirmTrash = false
-      if (this.confirmType === 'delete') {
-        api.remove(this.$refs.table.selection).then((rs) => {
-          remove({ data: this.items, element: rs, key: 'id' })
-          this.$message.success(this.$t('success.delete'))
-        }).catch((err) => {
-          this.$message.error(this.$t(err.message))
-        }).finally(() => {
-          this.loading = false
-        })
-      } else {
-        api.trash(this.$refs.table.selection).then((rs) => {
-          remove({ data: this.items, element: rs, key: 'id' })
-          if (this.confirmType === 'recover') this.$message.success(this.$t('success.recover'))
-          else this.$message.success(this.$t('success.trash'))
-        }).catch((err) => {
-          this.$message.error(this.$t(err.message))
-        }).finally(() => {
-          this.loading = false
-        })
-      }
+      this.loading = false
+      // if (this.confirmType === 'delete') {
+      //   api.remove(this.$refs.table.selection).then((rs) => {
+      //     remove({ data: this.items, element: rs, key: 'id' })
+      //     this.$message.success(this.$t('success.delete'))
+      //   }).catch((err) => {
+      //     this.$message.error(this.$t(err.message))
+      //   }).finally(() => {
+      //     this.loading = false
+      //   })
+      // } else {
+      //   api.trash(this.$refs.table.selection).then((rs) => {
+      //     remove({ data: this.items, element: rs, key: 'id' })
+      //     if (this.confirmType === 'recover') this.$message.success(this.$t('success.recover'))
+      //     else this.$message.success(this.$t('success.trash'))
+      //   }).catch((err) => {
+      //     this.$message.error(this.$t(err.message))
+      //   }).finally(() => {
+      //     this.loading = false
+      //   })
+      // }
     },
     onConfirmTrashClose() {
       this.$refs.table.clearSelection()
@@ -202,10 +196,9 @@ export default {
     onDialogAdd() {
       this.dialogAdd = true
     },
-    onEdit(id) {
-      console.log(id)
+    onEdit(row) {
       this.dialogAdd = true
-      this.roleID = id
+      this.item = row
     }
   }
 }

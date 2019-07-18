@@ -58,7 +58,9 @@ export function add(params) {
 }
 
 export function edit(params) {
-  return actions.update({ collection: collection, id: params.id, data: params.data })
+  const data = { ...params.data }
+  if (data.id) delete data.id
+  return actions.update({ collection: collection, id: params.id, data: data })
 }
 
 export function trash(params) {
@@ -93,4 +95,8 @@ export function remove(params) {
       reject(err)
     }
   })
+}
+
+export function getLog(id) {
+  return actions.getLogByDoc({ cid: collection.id, did: id })
 }

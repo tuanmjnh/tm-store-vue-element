@@ -365,7 +365,7 @@ export function indexOfArray(data, element) {
 export function update({ data, element, key }) {
   if (key) {
     if (Array.isArray(element)) {
-      return data.forEach(source => {
+      data.forEach(source => {
         var destination = element.find(x => x[key] === source[key])
         if (destination) {
           Object.keys(source).forEach(function(keyobj, index) {
@@ -377,11 +377,13 @@ export function update({ data, element, key }) {
         }
       })
     } else {
-      return data.forEach(source => {
+      data.forEach(source => {
         if (source[key] === element[key]) {
           Object.keys(source).forEach(function(keyobj, index) {
             // if (typeof source[keyobj] !== 'object')
-            if (element[keyobj] !== undefined) source[keyobj] === element[keyobj]
+            if (element[keyobj] !== undefined) {
+              source[keyobj] = element[keyobj]
+            }
           })
         }
       })

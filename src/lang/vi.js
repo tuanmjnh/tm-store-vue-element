@@ -110,6 +110,9 @@ export default {
     delete: 'Xóa bản ghi thành công',
     recover: 'Khôi phục bản ghi thành công'
   },
+  error: {
+    not_exist: 'Dữ liệu không tồn tại. Vui lòng thử lại!'
+  },
   tabs: {
     main: 'Thông tin chính',
     updated: 'Thông tin cập nhật'
@@ -162,7 +165,8 @@ export default {
     title: 'Quyền',
     key: 'Mã quyền',
     name: 'Tên quyền',
-    list: 'Danh sách quyền'
+    list: 'Danh sách quyền',
+    menus: 'Danh sách Menus'
   },
   guide: {
     description: 'The guide page is useful for some people who entered the project for the first time. You can briefly introduce the features of the project. Demo is based on ',

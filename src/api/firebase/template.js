@@ -61,7 +61,7 @@ export function find(id) {
       const rs = doc.data()
       rs.start_date = rs.start_date ? rs.start_date.toDate() : null
       rs.end_date = rs.end_date ? rs.end_date.toDate() : null
-      rs.log = await actions.getLogByDoc({ cid: id, collection: collection.id })
+      rs.log = await actions.getLogByDoc({ cid: collection.id, did: id })
       return rs
     }
   })
