@@ -32,12 +32,12 @@
       <el-tab-pane :label="$t('tabs.main')" name="one">
         <el-form ref="form" :model="form" label-width="120px">
           <el-form-item prop="name" label="Activity name" :rules="[
-      {required: true, message: $t('login.msg_required_username'), trigger: 'change'},
-      {min:4, message: $t('login.msg_min_username',{min:4}), trigger: 'change'}]">
-            <el-input v-model="form.name" type="text"></el-input>
+            {required: true, message: $t('error.required'), trigger: 'change'},
+            {min:4, message: $t('error.min_length',{min:4}), trigger: 'change'}]">
+            <el-input v-model.trim="form.name" type="text"></el-input>
           </el-form-item>
           <el-form-item prop="region" label="Activity zone"
-            :rules="[{required: true, message: $t('login.msg_required_username'), trigger: 'change'}]">
+            :rules="[{required: true, message: $t('error.required'), trigger: 'change'}]">
             <el-select v-model="form.region" placeholder="please select your zone">
               <el-option label="Zone one" value="shanghai"></el-option>
               <el-option label="Zone two" value="beijing"></el-option>
@@ -47,8 +47,8 @@
             <div class="el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-11 el-col-lg-8 el-col-xl-8">
               <!-- <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8"> -->
               <el-form-item prop="start_date"
-                :rules="[{required: true, message: $t('login.msg_required_username'), trigger: 'change'}]">
-                <el-date-picker v-model="form.start_date" type="date" placeholder="Pick a date" style="width: 100%;">
+                :rules="[{required: true, message: $t('error.required'), trigger: 'change'}]">
+                <el-date-picker v-model.trim="form.start_date" type="date" placeholder="Pick a date" style="width: 100%;">
                 </el-date-picker>
               </el-form-item>
               <!-- </el-col> -->
@@ -56,8 +56,8 @@
             <div class="el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-11 el-col-lg-8 el-col-xl-8">
               <!-- <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8"> -->
               <el-form-item prop="end_date"
-                :rules="[{required: true, message: $t('login.msg_required_username'), trigger: 'change'}]">
-                <el-time-picker v-model="form.end_date" placeholder="Pick a time" style="width: 100%;">
+                :rules="[{required: true, message: $t('error.required'), trigger: 'change'}]">
+                <el-time-picker v-model.trim="form.end_date" placeholder="Pick a time" style="width: 100%;">
                 </el-time-picker>
               </el-form-item>
               <!-- </el-col> -->
@@ -67,7 +67,7 @@
             <el-switch v-model="form.delivery"></el-switch>
           </el-form-item>
           <el-form-item prop="type" label="Activity type"
-            :rules="[{required: true, message: $t('login.msg_required_username'), trigger: 'change'}]">
+            :rules="[{required: true, message: $t('error.required'), trigger: 'change'}]">
             <el-checkbox-group v-model="form.type">
               <el-checkbox label="Online activities" name="type"></el-checkbox>
               <el-checkbox label="Promotion activities" name="type"></el-checkbox>
@@ -76,14 +76,14 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item prop="resource" label="Resources"
-            :rules="[{required: true, message: $t('login.msg_required_username'), trigger: 'change'}]">
+            :rules="[{required: true, message: $t('error.required'), trigger: 'change'}]">
             <el-radio-group v-model="form.resource">
               <el-radio label="Sponsor"></el-radio>
               <el-radio label="Venue"></el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="Activity form">
-            <el-input v-model="form.desc" type="textarea"></el-input>
+            <el-input v-model.trim="form.desc" type="textarea"></el-input>
           </el-form-item>
         </el-form>
       </el-tab-pane>

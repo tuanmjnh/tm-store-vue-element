@@ -114,7 +114,7 @@ export const asyncRoutes = [
         path: 'users',
         component: () => import('@/views/users/index'),
         name: 'users',
-        meta: { title: 'users', icon: 'user', noCache: true }
+        meta: { title: 'users', icon: 'user', noCache: true, flag: 1 }
       },
       {
         path: 'roles',

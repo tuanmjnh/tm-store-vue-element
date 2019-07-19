@@ -113,7 +113,10 @@ export default {
     recover: 'Recover record success'
   },
   error: {
-    not_exist: 'Data do not exist. Please try again!'
+    not_exist: 'Data do not exist. Please try again!',
+    required: 'The field is required',
+    min_length: 'The field can not be less than {min} digits',
+    email: 'Please input correct email addres'
   },
   tabs: {
     main: 'Main information',
@@ -153,6 +156,13 @@ export default {
     auth_wrong_password: 'The password is invalid!',
     auth_too_many_requests: 'Too many unsuccessful login attempts. Please include reCaptcha verification or try again later!',
     network_request_failed: 'A network error. Please try again!'
+  },
+  users: {
+    password: 'Password',
+    first_name: 'First name',
+    last_name: 'Last name',
+    avatar: 'Avatar',
+    note: 'Introduction'
   },
   documentation: {
     documentation: 'Documentation',

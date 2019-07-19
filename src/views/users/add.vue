@@ -1,27 +1,52 @@
 <template>
-  <el-form>
+  <el-form autocomplete="off">
     <!-- <hr class="hr"> -->
     <el-tabs v-model="tabs">
       <el-tab-pane :label="$t('tabs.main')" name="one">
         <el-form ref="form" :model="form" label-width="120px">
-          <el-form-item prop="key" :label="$t('roles.key')" :rules="[
+          <el-form-item prop="email" label="Email" :rules="[
             {required: true, message: $t('error.required'), trigger: 'change'},
-            {min:4, message: $t('error.min_length',{min:4}), trigger: 'change'}]">
-            <el-input v-model.trim="form.key" type="text" @blur="()=>{if(form.key)form.key=form.key.toLowerCase()}">
+            {type: 'email', message: $t('error.email'), trigger: 'change'}]">
+            <el-input v-model.trim="form.email" type="text" autocomplete="off"
+              @blur="()=>{if(form.email)form.email=form.email.toLowerCase()}" />
+          </el-form-item>
+          <el-tooltip v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
+            <el-form-item prop="password" :label="$t('users.password')" :rules="[
+            {required: true, message: $t('error.required'), trigger: 'change'},
+            {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'change'}]">
+              <el-input v-model.trim="form.password" :type="passwordType" autocomplete="off"
+                @keyup.native="checkCapslock" @blur="capsTooltip=false" />
+              <el-tooltip class="show-pwd" effect="dark" :content="$t('login.show_password')" placement="top-start">
+                <!-- <span class="show-pwd" @click="showPwd"> -->
+                <svg-icon :icon-class="passwordType==='password'?'eye':'eye-open'"
+                  @click="passwordType=(passwordType==='password'?'text':'password')" />
+                <!-- </span> -->
+              </el-tooltip>
+            </el-form-item>
+          </el-tooltip>
+          <el-form-item prop="fname" :label="$t('users.first_name')"
+            :rules="[{required: true, message: $t('error.required'), trigger: 'change'}]">
+            <el-input v-model.trim="form.fname" type="text" autocomplete="off" />
+          </el-form-item>
+          <el-form-item prop="lname" :label="$t('users.last_name')"
+            :rules="[{required: true, message: $t('error.required'), trigger: 'change'}]">
+            <el-input v-model.trim="form.lname" type="text" />
+          </el-form-item>
+          <el-form-item :label="$t('users.note')">
+            <el-input v-model.trim="form.note" type="textarea" />
+          </el-form-item>
+          <el-form-item :label="$t('users.avatar')">
+            <el-input :placeholder="$t('users.avatar')" v-model.trim="form.avatar">
+              <el-button slot="append" icon="el-icon-more-outline"></el-button>
             </el-input>
           </el-form-item>
-          <el-form-item prop="name" :label="$t('roles.name')"
-            :rules="[{required: true, message: $t('error.required'), trigger: 'change'}]">
-            <el-input v-model.trim="form.name" type="text"></el-input>
-          </el-form-item>
-          <el-form-item :label="$t('global.desc')">
-            <el-input v-model.trim="form.desc" type="textarea"></el-input>
+          <el-form-item>
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane :label="$t('roles.menus')" name="two">
-        <el-tree ref="tree" :check-strictly="checkStrictly" :data="routes" :props="defaultProps" show-checkbox
-          node-key="path" class="permission-tree" />
+      <el-tab-pane :label="$t('roles.title')" name="two">
+        <el-tree ref="tree" :check-strictly="checkStrictly" :data="roles" :props="defaultProps" show-checkbox
+          node-key="key" class="permission-tree" />
       </el-tab-pane>
       <el-tab-pane v-if="item" :label="$t('tabs.updated')" name="three" class="details">
         <el-table v-if="loading" v-loading="loading" empty-text=" " />
@@ -52,13 +77,10 @@
 </template>
 
 <script>
-import path from 'path'
-import i18n from '@/lang'
+import * as api from '@/api/firebase/users'
+import * as roles from '@/api/firebase/roles'
+import { update } from '@/utils'
 import TimelineLog from '@/components/TimelineLog'
-import * as api from '@/api/firebase/roles'
-import { update, deepClone } from '@/utils'
-import { constantRoutes, asyncRoutes } from '@/router'
-const routes = deepClone([...constantRoutes, ...asyncRoutes])
 export default {
   components: { 'time-line-log': TimelineLog },
   props: {
@@ -73,17 +95,21 @@ export default {
       loading_drafts: false,
       tabs: 'one',
       form: {},
-      routes: [],
+      roles: [],
+      passwordType: 'password',
+      capsTooltip: false,
       defaultProps: {
         children: 'children',
-        label: 'title'
+        label: 'name'
       },
       checkStrictly: false,
       default: {
-        key: '',
-        name: '',
-        desc: '',
-        routes: []
+        email: '',
+        password: '',
+        fname: '',
+        lname: '',
+        note: '',
+        avatar: ''
       }
     }
   },
@@ -106,10 +132,7 @@ export default {
         }
         // this.checkStrictly = true
         this.$nextTick(() => {
-          // const routes = this.generateRoutes(this.form.routes)
-          // this.$refs.tree.setCheckedNodes(this.generateArr(routes))
-          // console.log(this.form.routes)
-          this.$refs.tree.setCheckedKeys(this.form.routes)
+          // this.$refs.tree.setCheckedKeys(this.form.routes)
           // set checked state of a node not affects its father and child nodes
           this.checkStrictly = false
         })
@@ -123,101 +146,13 @@ export default {
   created() {
     // this.form = { ...this.default }
     // console.log(this.routes)
-    this.getRoutes()
+    this.getRoles()
   },
   methods: {
-    // Generate Routes
-    async getRoutes() {
-      const _routes = this.generateRoutes(routes)
-      this.routes = this.i18n(_routes)
-    },
-    i18n(routes) {
-      const app = routes.map(route => {
-        route.title = i18n.t(`route.${route.title}`)
-        if (route.children) {
-          route.children = this.i18n(route.children)
-        }
-        return route
-      })
-      return app
-    },
-    // Reshape the routes structure so that it looks the same as the sidebar
-    generateRoutes(routes, basePath = '/') {
-      const res = []
-
-      for (let route of routes) {
-        // skip some route
-        if (route.hidden) { continue }
-
-        const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
-
-        if (route.children && onlyOneShowingChild && !route.alwaysShow) {
-          route = onlyOneShowingChild
-        }
-
-        const data = {
-          path: path.resolve(basePath, route.path),
-          title: route.meta && route.meta.title
-
-        }
-
-        // recursive child routes
-        if (route.children) {
-          data.children = this.generateRoutes(route.children, data.path)
-        }
-        res.push(data)
-      }
-      return res
-    },
-    generateArr(routes) {
-      let data = []
-      routes.forEach(route => {
-        data.push(route)
-        if (route.children) {
-          const temp = this.generateArr(route.children)
-          if (temp.length > 0) {
-            data = [...data, ...temp]
-          }
-        }
-      })
-      return data
-    },
-    // reference: src/view/layout/components/Sidebar/SidebarItem.vue
-    onlyOneShowingChild(children = [], parent) {
-      let onlyOneChild = null
-      const showingChildren = children.filter(item => !item.hidden)
-
-      // When there is only one child route, the child route is displayed by default
-      if (showingChildren.length === 1) {
-        onlyOneChild = showingChildren[0]
-        onlyOneChild.path = path.resolve(parent.path, onlyOneChild.path)
-        return onlyOneChild
-      }
-
-      // Show parent if there are no child route to display
-      if (showingChildren.length === 0) {
-        onlyOneChild = { ...parent, path: '', noShowingChildren: true }
-        return onlyOneChild
-      }
-
-      return false
-    },
-    generateTree(routes, basePath = '/', checkedKeys) {
-      const res = []
-
-      for (const route of routes) {
-        const routePath = path.resolve(basePath, route.path)
-
-        // recursive child routes
-        if (route.children) {
-          route.children = this.generateTree(route.children, routePath, checkedKeys)
-        }
-
-        if (checkedKeys.includes(routePath) || (route.children && route.children.length >= 1)) {
-          res.push(route)
-        }
-      }
-      return res
+    getRoles() {
+      roles.getAll()
+        .then((x) => { this.roles = x })
+        .catch((err) => { this.$message.error(this.$t(err.message)) })
     },
     onSubmit(action) {
       // const checkedKeys = this.$refs.tree.getCheckedKeys()
@@ -246,7 +181,7 @@ export default {
             } else {
               this.loading_drafts = true
             }
-            api.add({ data: this.form }).then((x) => {
+            api.add(this.form).then((x) => {
               this.$emit('update:items', [...this.items, ...[x]])
               this.reset()
               this.$message.success(this.$t('success.insert'))
@@ -258,6 +193,18 @@ export default {
             })
           }
         })
+      }
+    },
+    checkCapslock({ shiftKey, key } = {}) {
+      if (key && key.length === 1) {
+        if (shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')) {
+          this.capsTooltip = true
+        } else {
+          this.capsTooltip = false
+        }
+      }
+      if (key === 'CapsLock' && this.capsTooltip === true) {
+        this.capsTooltip = false
       }
     },
     reset() {
@@ -272,12 +219,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.app-container {
-  .roles-table {
-    margin-top: 30px;
-  }
-  .permission-tree {
-    margin-left: 30px;
-  }
+.show-pwd {
+  position: absolute;
+  right: 10px;
+  top: 11px;
+  font-size: 16px;
+  color: #889aa4;
+  cursor: pointer;
+  user-select: none;
 }
 </style>

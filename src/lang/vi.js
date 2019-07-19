@@ -111,7 +111,10 @@ export default {
     recover: 'Khôi phục bản ghi thành công'
   },
   error: {
-    not_exist: 'Dữ liệu không tồn tại. Vui lòng thử lại!'
+    not_exist: 'Dữ liệu không tồn tại. Vui lòng thử lại!',
+    required: 'Thông tin không được bỏ trống',
+    min_length: 'Thông tin tối phiểu phải từ {min} ký tự',
+    email: 'Vui lòng nhập đúng định dạng Email'
   },
   tabs: {
     main: 'Thông tin chính',
@@ -151,6 +154,13 @@ export default {
     auth_wrong_password: 'Mật khẩu không đúng!',
     auth_too_many_requests: 'Quá nhiều lần thử đăng nhập không thành công. Vui lòng xác minh reCaptcha hoặc thử lại sau!',
     network_request_failed: 'Lỗi kết nối mạng. Vui lòng thử lại!'
+  },
+  users: {
+    password: 'Mật khẩu',
+    first_name: 'Tên',
+    last_name: 'Họ',
+    avatar: 'Avatar',
+    note: 'Introduction'
   },
   documentation: {
     documentation: 'Tài liệu',

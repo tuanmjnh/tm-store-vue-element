@@ -5,12 +5,14 @@ const collection = db.firestore().collection('roles')
 export function getAll(params) {
   let qry = collection.orderBy('name', 'asc')
   // Filter data
-  if (params.conditions && params.conditions.length > 0) {
-    params.conditions.forEach(e => { qry = qry.where(e.key, e.operation, e.value) })
-  }
-  // Search data
-  if (params.search) {
-    qry = qry.where('name', '>=', params.search).where('name', '<=', params.search + '\uf8ff')
+  if (params) {
+    if (params.conditions && params.conditions.length > 0) {
+      params.conditions.forEach(e => { qry = qry.where(e.key, e.operation, e.value) })
+    }
+    // Search data
+    if (params && params.search) {
+      qry = qry.where('name', '>=', params.search).where('name', '<=', params.search + '\uf8ff')
+    }
   }
   // Return data
   return qry.get().then((rs) => {
@@ -23,11 +25,11 @@ export function getAll(params) {
 export async function getPagination(params) {
   let qry = collection.orderBy('name', 'asc')
   // Filter data
-  if (params.conditions && params.conditions.length > 0) {
+  if (params && params.conditions && params.conditions.length > 0) {
     params.conditions.forEach(e => { qry = qry.where(e.key, e.operation, e.value) })
   }
   // Search data
-  if (params.search) qry = qry.where('name', '>=', params.search).where('name', '<=', params.search + '\uf8ff')
+  if (params && params.search) qry = qry.where('name', '>=', params.search).where('name', '<=', params.search + '\uf8ff')
   // Get all documents
   const documentSnapshots = await qry.get()
   const offset = documentSnapshots.docs[params.pageSize * (params.currentPage - 1)]
@@ -47,7 +49,7 @@ export function find(id) {
   return collection.doc(id).get().then(async doc => {
     if (doc.exists) {
       const rs = doc.data()
-      rs.log = await actions.getLogByDoc({ cid: id, collection: collection.id })
+      rs.log = await actions.getLogByDoc({ cid: collection.id, did: id })
       return rs
     }
   })

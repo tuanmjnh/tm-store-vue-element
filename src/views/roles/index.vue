@@ -36,11 +36,12 @@
         <el-button @click="dialogConfirmTrash=false">{{ $t('global.cancel') }}</el-button>
       </span>
     </el-dialog>
-    <!-- add -->
+    <!-- dialog add -->
     <el-dialog :title="item?$t('global.edit'):$t('global.add')" width="60%" :visible.sync="dialogAdd"
       :close-on-click-modal="false">
       <template-add :dialog.sync="dialogAdd" :item.sync="item" :items.sync="items" />
     </el-dialog>
+    <!-- header -->
     <div class="row-flex">
       <label class="title">{{ $t('roles.list') }}</label>
       <div class="spacer" />
@@ -113,7 +114,6 @@ export default {
       loading: false,
       items: [],
       item: null,
-      // selected: [],
       dialogFilter: false,
       dialogConfirmTrash: false,
       dialogAdd: false,

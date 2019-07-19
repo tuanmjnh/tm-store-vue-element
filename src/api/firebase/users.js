@@ -1,138 +1,135 @@
-import firebase from './index'
-import message from '@/utils/message'
-import store from '@/store'
-const collection = firebase.firestore().collection('users')
+import db from './index'
+// import * as admin from 'firebase-admin'
+import * as actions from './extend-action'
+const collection = db.firestore().collection('users')
 
-export function get(params) {
-  return new Promise((resolve, reject) => {
-    let qry = collection.where('flag', '==', params.flag) // .orderBy('created_at', 'desc')
-    if (params.search) {
-      qry = qry.where('name', '>=', 'test').where('name', '<=', 'test' + '\uf8ff')
-    }
-    qry.get().then(docs => {
-      const items = []
-      docs.forEach(function(doc) {
-        // console.log(doc.id, ' => ', doc.data())
-        items.push({ ...{ id: doc.id }, ...doc.data() })
-      })
-      resolve(items)
-    })
-      .catch((err) => {
-        message.error(err)
-        reject(err)
-      })
-      .finally(() => { })
+export function getAll(params) {
+  let qry = collection.orderBy('created_at', 'desc')
+  // Filter data
+  if (params.conditions && params.conditions.length > 0) {
+    params.conditions.forEach(e => { qry = qry.where(e.key, e.operation, e.value) })
+  }
+  // Search data
+  if (params.search) {
+    qry = qry.where('name', '>=', params.search).where('name', '<=', params.search + '\uf8ff')
+  }
+  // Return data
+  return qry.get().then((rs) => {
+    const items = []
+    rs.forEach((doc) => { items.push({ ...{ id: doc.id }, ...doc.data() }) })
+    return items
   })
+}
+
+export async function getPagination(params) {
+  let qry = collection// .orderBy('profile', 'asc')// .orderBy('created_at', 'desc')
+  // Filter data
+  if (params.conditions && params.conditions.length > 0) {
+    params.conditions.forEach(e => { qry = qry.where(e.key, e.operation, e.value) })
+  }
+  // Search data
+  if (params.search) qry = qry.where('profile', '>=', params.search).where('profile', '<=', params.search + '\uf8ff')
+  // if (params.start_date) qry = qry.where('start_date', '>=', db.firestore.Timestamp.fromDate(params.start_date))
+  // if (params.end_date) qry = qry.where('end_date', '<=', db.firestore.Timestamp.fromDate(params.end_date))
+  // Get all documents
+  const documentSnapshots = await qry.get()
+  const offset = documentSnapshots.docs[params.pageSize * (params.currentPage - 1)]
+  params.totalItems = documentSnapshots.docs.length
+  // Return data
+  if (offset) {
+    return qry.startAt(offset).limit(params.pageSize).get().then((rs) => {
+      // console.log(rs.docs[0].data())
+      const items = []
+      rs.forEach(doc => { items.push({ ...{ id: doc.id }, ...doc.data() }) })
+      return items
+    })
+  } else return []
 }
 
 export function getSnapshot(params) {
-  return new Promise((resolve, reject) => {
-    collection.orderBy('created_at', 'asc')
-      .onSnapshot((snapshot) => {
-        const items = []
-        snapshot.forEach((doc) => {
-          items.push({ ...{ id: doc.id }, ...doc.data() })
-        })
-        resolve(items)
+  return collection.orderBy('profile', 'asc')
+    .onSnapshot((snapshot) => {
+      const items = []
+      snapshot.forEach((doc) => {
+        items.push({ ...{ id: doc.id }, ...doc.data() })
       })
-      .catch((err) => {
-        message.error(err)
-        reject(err)
-      })
-      .finally(() => { })
-  })
+      return items
+    })
 }
 
 export function find(id) {
-  return new Promise((resolve, reject) => {
-    collection.doc(id).get().then(doc => {
-      if (doc.exists) {
-        resolve(doc.data())
-      }
-    })
-      .catch((err) => {
-        message.error(err)
-        reject(err)
-      })
-      .finally(() => { })
+  return collection.doc(id).get().then(async doc => {
+    if (doc.exists) {
+      const rs = doc.data()
+      rs.start_date = rs.start_date ? rs.start_date.toDate() : null
+      rs.end_date = rs.end_date ? rs.end_date.toDate() : null
+      rs.log = await actions.getLogByDoc({ cid: collection.id, did: id })
+      return rs
+    }
   })
 }
 
 export function add(params) {
-  return new Promise((resolve, reject) => {
-    params.data.created_by = store.state.auth.uid
-    params.data.created_at = firebase.firestore.FieldValue.serverTimestamp()
-    params.data.created_ip = ''
-    collection.add(params.data)
-      .then(doc => {
-        message.success({ message: 'success.insert' })
-        resolve(doc)
-      })
-      .catch((err) => {
-        message.error(err)
-        reject(err)
-      })
-      .finally(() => { })
+  return new Promise(async (resolve, reject) => {
+    try {
+      // params.data.created_at = db.firestore.FieldValue.serverTimestamp()
+      const user = await db.auth().createUserWithEmailAndPassword(params.email, params.password)
+      const data = await actions.add({ collection: collection, data: params.data })
+      resolve({ user: user, data: data })
+    } catch (err) {
+      reject(err)
+    }
   })
 }
 
 export function edit(params) {
-  return new Promise((resolve, reject) => {
-    params.data.updated_by = store.state.auth.uid
-    params.data.updated_at = firebase.firestore.FieldValue.serverTimestamp()
-    params.data.updated_ip = ''
-    collection.doc(params.id).update(params.data)
-      .then(doc => {
-        message.success({ message: 'success.update' })
-        resolve(doc)
-      })
-      .catch((err) => {
-        message.error(err)
-        reject(err)
-      })
-      .finally(() => { })
-  })
+  return actions.update({ collection: collection, id: params.id, data: params.data })
+  // await collection.doc(params.id).update(params.data)
+  // return await logs.updateType({ coll: collection.id, cid: params.id })
 }
 
 export function trash(params) {
   return new Promise(async (resolve, reject) => {
     const result = []
     try {
-      for await (const item of params) {
-        const data = {
-          deleted_by: store.state.auth.uid,
-          deleted_at: firebase.firestore.FieldValue.serverTimestamp(),
-          deleted_ip: '',
-          flag: item.flag === 0 ? 1 : 0
+      for (const item of params) {
+        if (item.flag === 1) {
+          actions.trash({ id: item.id, collection: collection, data: { flag: 0 } })
+        } else {
+          actions.recover({ id: item.id, collection: collection, data: { flag: 1 } })
         }
-        await collection.doc(item.id).update(data)
-          .then(doc => {
-            result.push({ ...{ id: item.id }, ...data })
-          })
-          .catch((err) => {
-            throw err
-          })
+        result.push(item)
+        // await collection.doc(item.id).update({ flag: item.flag === 0 ? 1 : 0 })
+        //   .then(async doc => {
+        //     if (item.flag === 1) {
+        //       await logs.trashType({ coll: collection.id, cid: item.id })
+        //     } else {
+        //       await logs.recoverType({ coll: collection.id, cid: item.id })
+        //     }
+        //     result.push(item)
+        //   })
+        //   .catch((err) => {
+        //     throw err
+        //   })
       }
-      message.success({ message: 'success.trash' })
       resolve(result)
     } catch (err) {
-      message.error(err)
       reject(err)
     }
   })
 }
 
-export function del(params) {
-  new Promise((resolve, reject) => {
-    collection.doc(params.item.id).delete()
-      .then(doc => {
-        message.success({ message: 'success.trash' })
-        resolve(doc)
-      })
-      .catch((err) => {
-        message.error(err)
-        reject(err)
-      })
-      .finally(() => { })
+export function remove(params) {
+  return new Promise(async (resolve, reject) => {
+    const result = []
+    try {
+      for (const item of params) {
+        actions.remove({ id: item.id, collection: collection })
+        result.push(item)
+      }
+      resolve(result)
+    } catch (err) {
+      reject(err)
+    }
   })
 }

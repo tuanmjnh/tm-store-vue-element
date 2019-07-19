@@ -1,11 +1,20 @@
 import * as firebase from 'firebase/app'
+// import * as admin from 'firebase-admin'
 import 'firebase/auth'
 import 'firebase/storage'
 import 'firebase/firestore'
 // import 'firebase/database'
 // import 'firebase/messaging'
 import 'firebase/functions'
-// Initialize Firebase
+// import 'firebase-admin'
+
+// Initialize Server Firebase
+// admin.initializeApp({
+//   credential: admin.credential.applicationDefault(),
+//   databaseURL: 'https://tm-store-4576e.firebaseio.com'
+// })
+
+// Initialize Client Firebase
 var config = {
   apiKey: 'AIzaSyAwMnmy7tyvDjIt283Tnp1-u9T7OubwDhs',
   authDomain: 'tm-store-4576e.firebaseapp.com',
@@ -16,6 +25,7 @@ var config = {
   clientId: '45492650401-84j1lpnseu0lgn2k0cgs4hchks18cahn.apps.googleusercontent.com'
 }
 if (!firebase.apps.length) firebase.initializeApp(config)
+
 // const functions = require('firebase-functions')
 // export const GoogleAuthProvider = new firebase.auth.GoogleAuthProvider()
 // export const auth = firebase.auth()
@@ -78,5 +88,28 @@ export function docChanges({ collections, items, resolve, reject }) {
     }
   )
 }
+
+// export function listAllUsers(nextPageToken) {
+//   return new Promise((resolve, reject) => {
+//     const rs = []
+//     // List batch of users, 1000 at a time.
+//     admin.auth().listUsers(1000, nextPageToken)
+//       .then((listUsersResult) => {
+//         listUsersResult.users.forEach((userRecord) => {
+//           rs.push(userRecord.toJSON())
+//           console.log('user', userRecord.toJSON())
+//         })
+//         if (listUsersResult.pageToken) {
+//           // List next batch of users.
+//           listAllUsers(listUsersResult.pageToken)
+//         }
+//       })
+//       .catch((err) => {
+//         reject(err)
+//       })
+//     resolve(rs)
+//   })
+// }
+// listAllUsers()
 
 export default firebase
