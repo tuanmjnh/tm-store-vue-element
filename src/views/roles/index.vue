@@ -64,7 +64,7 @@
         <el-button type="danger" icon="el-icon-remove" @click="onConfirm('delete')" />
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('global.add')" placement="bottom">
-        <el-button type="primary" icon="el-icon-plus" @click.native="onDialogAdd" />
+        <el-button type="primary" icon="el-icon-plus" @click.native="dialogAdd=true" />
       </el-tooltip>
       <!-- </el-button-group> -->
     </div>
@@ -193,9 +193,6 @@ export default {
     onDialogFilter() {
       this.dialogFilter = false
       this.getItems()
-    },
-    onDialogAdd() {
-      this.dialogAdd = true
     },
     onEdit(row) {
       this.dialogAdd = true

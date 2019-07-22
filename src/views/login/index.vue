@@ -10,8 +10,8 @@
       </div>
 
       <el-form-item prop="username" :rules="[
-      {required: true, message: $t('login.msg_required_username'), trigger: 'change'},
-      {min:4, message: $t('login.msg_min_username',{min:4}), trigger: 'change'}]">
+      {required: true, message: $t('login.msg_required_username'), trigger: 'blur'},
+      {min:4, message: $t('login.msg_min_username',{min:4}), trigger: 'blur'}]">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
@@ -21,8 +21,8 @@
 
       <el-tooltip v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
         <el-form-item prop="password" :rules="[
-      {required: true, message: $t('login.msg_required_password'), trigger: 'change'},
-      {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'change'}]">
+      {required: true, message: $t('login.msg_required_password'), trigger: 'blur'},
+      {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'blur'}]">
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>

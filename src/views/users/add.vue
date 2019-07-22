@@ -5,15 +5,15 @@
       <el-tab-pane :label="$t('tabs.main')" name="one">
         <el-form ref="form" :model="form" label-width="120px">
           <el-form-item prop="email" label="Email" :rules="[
-            {required: true, message: $t('error.required'), trigger: 'change'},
-            {type: 'email', message: $t('error.email'), trigger: 'change'}]">
+            {required: true, message: $t('error.required'), trigger: 'blur'},
+            {type: 'email', message: $t('error.email'), trigger: 'blur'}]">
             <el-input v-model.trim="form.email" type="text" autocomplete="off"
               @blur="()=>{if(form.email)form.email=form.email.toLowerCase()}" />
           </el-form-item>
           <el-tooltip v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
             <el-form-item prop="password" :label="$t('users.password')" :rules="[
-            {required: true, message: $t('error.required'), trigger: 'change'},
-            {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'change'}]">
+            {required: true, message: $t('error.required'), trigger: 'blur'},
+            {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'blur'}]">
               <el-input v-model.trim="form.password" :type="passwordType" autocomplete="off"
                 @keyup.native="checkCapslock" @blur="capsTooltip=false" />
               <el-tooltip class="show-pwd" effect="dark" :content="$t('login.show_password')" placement="top-start">
@@ -25,18 +25,18 @@
             </el-form-item>
           </el-tooltip>
           <el-form-item prop="fname" :label="$t('users.first_name')"
-            :rules="[{required: true, message: $t('error.required'), trigger: 'change'}]">
+            :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
             <el-input v-model.trim="form.fname" type="text" autocomplete="off" />
           </el-form-item>
           <el-form-item prop="lname" :label="$t('users.last_name')"
-            :rules="[{required: true, message: $t('error.required'), trigger: 'change'}]">
+            :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
             <el-input v-model.trim="form.lname" type="text" />
           </el-form-item>
           <el-form-item :label="$t('users.note')">
             <el-input v-model.trim="form.note" type="textarea" />
           </el-form-item>
           <el-form-item :label="$t('users.avatar')">
-            <el-input :placeholder="$t('users.avatar')" v-model.trim="form.avatar">
+            <el-input v-model.trim="form.avatar" :placeholder="$t('users.avatar')">
               <el-button slot="append" icon="el-icon-more-outline"></el-button>
             </el-input>
           </el-form-item>
@@ -157,7 +157,7 @@ export default {
     onSubmit(action) {
       // const checkedKeys = this.$refs.tree.getCheckedKeys()
       // const _routes = this.generateTree(routes, '/', checkedKeys)
-      this.form.routes = this.$refs.tree.getCheckedKeys()
+      this.form.roles = this.$refs.tree.getCheckedKeys()
       if (this.item) {
         this.$refs.form.validate(valid => {
           if (valid) {
@@ -182,7 +182,7 @@ export default {
               this.loading_drafts = true
             }
             api.add(this.form).then((x) => {
-              this.$emit('update:items', [...this.items, ...[x]])
+              this.$emit('update:items', [...this.items, ...[x.data]])
               this.reset()
               this.$message.success(this.$t('success.insert'))
             }).catch((err) => {

@@ -73,35 +73,25 @@
     <el-table ref="table" v-loading="loading" :data="items">
       <el-table-column type="selection" width="55">
       </el-table-column>
-      <el-table-column prop="name" label="Name" width="140">
+      <el-table-column prop="email" label="Email">
       </el-table-column>
-      <el-table-column prop="region" label="Region" width="120">
-      </el-table-column>
-      <el-table-column prop="resource" label="Resource">
-      </el-table-column>
-      <el-table-column :label="$t('global.start_date')">
+      <el-table-column :label="$t('users.full_name')">
         <template slot-scope="scope">
-          {{ scope.row.start_date ? scope.row.start_date.toDate().toLocaleDateString() : '' }}
+          {{ `${scope.row.fname} ${scope.row.lname}` }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('global.end_date')">
+      <el-table-column :label="$t('roles.title')">
         <template slot-scope="scope">
-          {{ scope.row.end_date ? scope.row.end_date.toDate().toLocaleTimeString() : '' }}
+          {{ scope.row.roles.join(', ').trim() }}
         </template>
       </el-table-column>
-      <!-- <el-table-column label="Created At">
-        <template slot-scope="scope">
-          {{ scope.row.created_at ? scope.row.created_at.toDate().toLocaleString() : '' }}
-        </template>
-      </el-table-column> -->
       <el-table-column label="#" width="180" align="center">
         <template slot="header" slot-scope="scope">
           <el-input v-model="params.search" :d-val="scope" :placeholder="$t('global.search')" @change="getItems()" />
         </template>
         <template slot-scope="scope">
           <el-tooltip v-if="$route.meta.flag===1" effect="dark" :content="$t('global.edit')" placement="bottom">
-            <el-button type="warning" size="mini" icon="el-icon-edit-outline"
-              @click="$router.push(`/template/edit/${scope.row.id}`)" />
+            <el-button type="warning" size="mini" icon="el-icon-edit-outline" @click.native="onEdit(scope.row)" />
           </el-tooltip>
           <el-tooltip v-if="$route.meta.flag===1" effect="dark" :content="$t('global.delete')" placement="bottom">
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="onTrash('trash', scope.row)" />
@@ -148,7 +138,7 @@ export default {
         pagerCount: 9,
         totalItems: 0,
         pageSizes: [10, 20, 50, 100],
-        conditions: [{ key: 'flag', value: this.$route.meta.flag, operation: '==' }],
+        // conditions: [{ key: 'flag', value: this.$route.meta.flag, operation: '==' }],
         start_date: new Date(),
         end_date: new Date()
       }
@@ -219,6 +209,10 @@ export default {
     onDialogFilter() {
       this.dialogFilter = false
       this.getItems()
+    },
+    onEdit(row) {
+      this.dialogAdd = true
+      this.item = row
     }
   }
 }

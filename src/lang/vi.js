@@ -159,8 +159,9 @@ export default {
     password: 'Mật khẩu',
     first_name: 'Tên',
     last_name: 'Họ',
-    avatar: 'Avatar',
-    note: 'Introduction'
+    full_name: 'Họ tên',
+    avatar: 'Ảnh đại diện',
+    note: 'Gới thiệu'
   },
   documentation: {
     documentation: 'Tài liệu',

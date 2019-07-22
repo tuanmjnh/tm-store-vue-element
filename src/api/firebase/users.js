@@ -28,7 +28,7 @@ export async function getPagination(params) {
     params.conditions.forEach(e => { qry = qry.where(e.key, e.operation, e.value) })
   }
   // Search data
-  if (params.search) qry = qry.where('profile', '>=', params.search).where('profile', '<=', params.search + '\uf8ff')
+  if (params.search) qry = qry.where('email', '>=', params.search).where('email', '<=', params.search + '\uf8ff')
   // if (params.start_date) qry = qry.where('start_date', '>=', db.firestore.Timestamp.fromDate(params.start_date))
   // if (params.end_date) qry = qry.where('end_date', '<=', db.firestore.Timestamp.fromDate(params.end_date))
   // Get all documents
@@ -73,9 +73,10 @@ export function add(params) {
   return new Promise(async (resolve, reject) => {
     try {
       // params.data.created_at = db.firestore.FieldValue.serverTimestamp()
-      const user = await db.auth().createUserWithEmailAndPassword(params.email, params.password)
-      const data = await actions.add({ collection: collection, data: params.data })
-      resolve({ user: user, data: data })
+      const auth = await db.auth().createUserWithEmailAndPassword(params.email, params.password)
+      delete params.password
+      const data = await actions.set({ collection: collection, id: auth.user.uid, data: params })
+      resolve({ user: auth.user, data: data })
     } catch (err) {
       reject(err)
     }
@@ -132,4 +133,8 @@ export function remove(params) {
       reject(err)
     }
   })
+}
+
+export function getLog(id) {
+  return actions.getLogByDoc({ cid: collection.id, did: id })
 }

@@ -5,13 +5,13 @@
       <el-tab-pane :label="$t('tabs.main')" name="one">
         <el-form ref="form" :model="form" label-width="120px">
           <el-form-item prop="key" :label="$t('roles.key')" :rules="[
-            {required: true, message: $t('error.required'), trigger: 'change'},
-            {min:4, message: $t('error.min_length',{min:4}), trigger: 'change'}]">
+            {required: true, message: $t('error.required'), trigger: 'blur'},
+            {min:4, message: $t('error.min_length',{min:4}), trigger: 'blur'}]">
             <el-input v-model.trim="form.key" type="text" @blur="()=>{if(form.key)form.key=form.key.toLowerCase()}">
             </el-input>
           </el-form-item>
           <el-form-item prop="name" :label="$t('roles.name')"
-            :rules="[{required: true, message: $t('error.required'), trigger: 'change'}]">
+            :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
             <el-input v-model.trim="form.name" type="text"></el-input>
           </el-form-item>
           <el-form-item :label="$t('global.desc')">

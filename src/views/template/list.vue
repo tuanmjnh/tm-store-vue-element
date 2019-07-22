@@ -67,9 +67,9 @@
     <el-table ref="table" v-loading="loading" :data="items">
       <el-table-column type="selection" width="55">
       </el-table-column>
-      <el-table-column prop="name" label="Name" width="140">
+      <el-table-column prop="name" label="Name">
       </el-table-column>
-      <el-table-column prop="region" label="Region" width="120">
+      <el-table-column prop="region" label="Region">
       </el-table-column>
       <el-table-column prop="resource" label="Resource">
       </el-table-column>

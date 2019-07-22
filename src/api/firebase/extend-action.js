@@ -122,6 +122,29 @@ export function add({ collection, data }) {
   })
 }
 
+export function set({ collection, id, data }) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let result = {}
+      await collection.doc(id).set(data).then(async () => {
+        result = { ...{ id: id }, ...data }
+        if (store.getters.useLogs) {
+          await db.firestore().collection(collectionLogs)
+            .add(await dataLog({ cid: collection.id, did: result.id, action: 'insert' }))
+            .then(async docs => {
+              await docs.onSnapshot(doc => {
+                if (doc.exists) result.log = [{ ...{ id: doc.id }, ...doc.data() }]
+                resolve(result)
+              })
+            })
+        }
+      })
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
 export function update({ collection, id, data }) {
   return new Promise(async (resolve, reject) => {
     try {
