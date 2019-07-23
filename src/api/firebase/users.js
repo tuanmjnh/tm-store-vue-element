@@ -1,6 +1,7 @@
 import db from './index'
 // import * as admin from 'firebase-admin'
 import * as actions from './extend-action'
+import http from '@/utils/http-client'
 const collection = db.firestore().collection('users')
 
 export function getAll(params) {
@@ -137,4 +138,15 @@ export function remove(params) {
 
 export function getLog(id) {
   return actions.getLogByDoc({ cid: collection.id, did: id })
+}
+
+export function test() {
+  // return new Promise(async (resolve, reject) => {
+  //   resolve(db.functions().httpsCallable('api/user')({ text: 'abc' }))
+  // })
+  return new Promise(async (resolve, reject) => {
+    http.post('/user', { text: 'abc' }).then((x) => {
+      resolve(x)
+    })
+  })
 }

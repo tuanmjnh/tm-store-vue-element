@@ -3,6 +3,7 @@ import { getToken, setToken, removeToken, getUserSetting, setUserSetting, remove
 import message from '@/utils/message'
 import router, { resetRouter } from '@/router'
 const collection = firebase.firestore().collection('users')
+
 const state = {
   uid: '',
   profile: {},

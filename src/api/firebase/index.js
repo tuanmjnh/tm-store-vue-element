@@ -1,4 +1,4 @@
-import * as firebase from 'firebase/app'
+import firebase from 'firebase/app'
 // import * as admin from 'firebase-admin'
 import 'firebase/auth'
 import 'firebase/storage'

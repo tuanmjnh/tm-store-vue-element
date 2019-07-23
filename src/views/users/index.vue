@@ -146,6 +146,9 @@ export default {
   },
   created() {
     this.getItems()
+    api.test().then((x) => {
+      console.log(x)
+    })
     // api.listAllUsers()
     // console.log(this.$route.meta.flag)
   },
