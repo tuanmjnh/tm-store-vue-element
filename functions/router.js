@@ -6,6 +6,10 @@ const users = require('./controllers/users');
 
 // Routers
 // --users
-router.route('/user').post(users.getUser);
+router.route('/user')
+.get(users.get)
+.post(users.post)
+.put(users.put)
+.delete(users.delete);
 
 module.exports = router;

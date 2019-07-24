@@ -28,7 +28,7 @@ vnptbkn.interceptors.request.use(
     // let each request carry token
     // ['X-Token'] is a custom headers key
     // please modify it according to the actual situation
-    const authToken = await firebase.auth().currentUser.getIdToken()
+    const authToken = await firebase.auth().currentUser.getIdToken(true)
     config.headers['authorization'] = `Bearer ${authToken}`
     config.headers['local-ip'] = await getLocalIP()
     // }

@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 'use strict';
-
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-admin.initializeApp();
+const firebase = require('./config/firebase');
 const express = require('express');
 const cookieParser = require('cookie-parser')();
 const cors = require('cors')({ origin: true });
@@ -56,8 +53,8 @@ const validateFirebaseIdToken = async (req, res, next) => {
   }
 
   try {
-    const decodedIdToken = await admin.auth().verifyIdToken(idToken);
-    console.log('ID Token correctly decoded', decodedIdToken);
+    const decodedIdToken = await firebase.admin.auth().verifyIdToken(idToken);
+    // console.log('ID Token correctly decoded', decodedIdToken);
     req.user = decodedIdToken;
     next();
     return;
@@ -100,4 +97,4 @@ app.use('/', router);
 // This HTTPS endpoint can only be accessed by your Firebase Users.
 // Requests need to be authorized by providing an `Authorization` HTTP header
 // with value `Bearer <Firebase ID Token>`.
-exports.api = functions.https.onRequest(app);
+exports.api = firebase.functions.https.onRequest(app);

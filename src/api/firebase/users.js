@@ -145,8 +145,11 @@ export function test() {
   //   resolve(db.functions().httpsCallable('api/user')({ text: 'abc' }))
   // })
   return new Promise(async (resolve, reject) => {
-    http.post('/user', { text: 'abc' }).then((x) => {
+    http.get('/user').then((x) => {
       resolve(x)
     })
+    // http.get('/user', { params: { id: 'Od1BT0R7NtVylCIt16HvzDS0wEB2', by: 'uid' } }).then((x) => {
+    //   resolve(x)
+    // })
   })
 }
