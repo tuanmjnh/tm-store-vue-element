@@ -5,21 +5,7 @@ import http from '@/utils/http-client'
 const collection = db.firestore().collection('users')
 
 export function getAll(params) {
-  let qry = collection.orderBy('created_at', 'desc')
-  // Filter data
-  if (params.conditions && params.conditions.length > 0) {
-    params.conditions.forEach(e => { qry = qry.where(e.key, e.operation, e.value) })
-  }
-  // Search data
-  if (params.search) {
-    qry = qry.where('name', '>=', params.search).where('name', '<=', params.search + '\uf8ff')
-  }
-  // Return data
-  return qry.get().then((rs) => {
-    const items = []
-    rs.forEach((doc) => { items.push({ ...{ id: doc.id }, ...doc.data() }) })
-    return items
-  })
+  return http.get('/user')
 }
 
 export async function getPagination(params) {

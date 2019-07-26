@@ -82,7 +82,7 @@
       </el-table-column>
       <el-table-column :label="$t('roles.title')">
         <template slot-scope="scope">
-          {{ scope.row.roles.join(', ').trim() }}
+          {{ scope.row.roles?scope.row.roles.join(', ').trim():'' }}
         </template>
       </el-table-column>
       <el-table-column label="#" width="180" align="center">
@@ -145,14 +145,22 @@ export default {
     }
   },
   created() {
-    this.getItems()
-    api.test().then((x) => {
-      console.log(x)
-    })
-    // api.listAllUsers()
+    this.getAll()
+    // this.getItems()
     // console.log(this.$route.meta.flag)
   },
   methods: {
+    getAll() {
+      this.loading = true
+      api.getAll(this.params).then((x) => {
+        this.items = x.data
+        console.log(x)
+      }).catch((err) => {
+        this.$message.error(this.$t(err.message))
+      }).finally(() => {
+        this.loading = false
+      })
+    },
     getItems() {
       this.loading = true
       api.getPagination(this.params).then((x) => {

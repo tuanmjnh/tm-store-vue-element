@@ -33,28 +33,32 @@ module.exports.get = (req, res, next) => {
       });
     }
   } else {
-    var allUsers = [];
-    return firebase.admin.auth().listUsers().then((listUsersResult) => {
-      listUsersResult.users.forEach((userRecord) => {
-        // For each user
-        var userData = userRecord.toJSON();
-        allUsers.push(userData);
-      });
-      res.status(200).json({ data: allUsers });
-      return;
-    }).catch((error) => {
-      console.log("Error listing users:", error);
-      res.status(500).json({ error: error });
-      return;
-    });
-
-    // dbapi.getAll().then((result) => {
-    //   res.json({ data: result });
+    // var allUsers = [];
+    // return firebase.admin.auth(1000).listUsers().then((listUsersResult) => {
+    //   listUsersResult.users.forEach((userRecord) => {
+    //     // For each user
+    //     var userData = userRecord.toJSON();
+    //     allUsers.push(userData);
+    //     if (listUsersResult.pageToken) {
+    //       // List next batch of users.
+    //       listAllUsers(listUsersResult.pageToken);
+    //     }
+    //   });
+    //   res.status(200).json({ data: allUsers });
     //   return;
     // }).catch((error) => {
-    //   res.json({ error: error });
+    //   console.log("Error listing users:", error);
+    //   res.status(500).json({ error: error });
     //   return;
     // });
+
+    dbapi.getAll().then((result) => {
+      res.json({ data: result });
+      return;
+    }).catch((error) => {
+      res.json({ error: error });
+      return;
+    });
 
     // firebase.admin.auth().listUsers(1000).then((xx) => {
     //   res.json({ data: xx.users });

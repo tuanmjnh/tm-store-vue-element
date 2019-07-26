@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+// const admin = require('firebase-admin');
 
 // function getAccessToken() {
 //   return new Promise(function(resolve, reject) {
@@ -14,9 +15,11 @@ const admin = require('firebase-admin');
 //   })
 // }
 
-admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-});
+// admin.initializeApp({
+//   credential: admin.credential.applicationDefault(),
+// });
+
+admin.initializeApp(functions.config().firebase);
 
 module.exports.functions = functions;
 module.exports.admin = admin;

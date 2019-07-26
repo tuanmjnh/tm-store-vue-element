@@ -1,41 +1,44 @@
 const firebase = require('../config/firebase');
 
-// function listAllUsers(nextPageToken) {
-//   // List batch of users, 1000 at a time.
-//   firebase.admin.auth().listUsers(1000, nextPageToken).then((listUsersResult) => {
-//     listUsersResult.users.forEach((userRecord) => {
-//       console.log('user', userRecord.toJSON());
-//     });
-//     if (listUsersResult.pageToken) {
-//       // List next batch of users.
-//       listAllUsers(listUsersResult.pageToken);
-//     }
-//   }).catch((error) => {
-//     console.log('Error listing users:', error);
-//     return;
-//   });
-// }
-
-const listAllUsers = async function(nextPageToken) {
+function listAllUsers(nextPageToken) {
+  const result = [];
   // List batch of users, 1000 at a time.
-  const result = await firebase.admin.auth().listUsers(1000, nextPageToken).users;
-  // firebase.admin.auth().listUsers(1000, nextPageToken).then((listUsersResult) => {
-  //   console.log(listUsersResult)
-  //   return;
-  // }).catch(error => {
-  //   console.log(error)
-  //   return;
-  // })
-  // listUsersResult.users.forEach((userRecord) => {
-  //   console.log('user', userRecord.toJSON());y
-  // });
-  // if (result.pageToken) {
-  //   // List next batch of users.
-  //   const _result = await listAllUsers(result.pageToken);
-  //   result.push(_result);
-  // }
-  return result;
-};
+  return firebase.admin.auth().listUsers(1000, nextPageToken).then((listUsersResult) => {
+    listUsersResult.users.forEach((userRecord) => {
+      result.push(userRecord.toJSON());
+      // console.log('user', userRecord.toJSON());
+    });
+    if (listUsersResult.pageToken) {
+      // List next batch of users.
+      listAllUsers(listUsersResult.pageToken);
+    }
+    return result;
+  }).catch((error) => {
+    console.log('Error listing users:', error);
+    return;
+  });
+}
+
+// const listAllUsers = async function(nextPageToken) {
+//   // List batch of users, 1000 at a time.
+//   const result = await firebase.admin.auth().listUsers(1000, nextPageToken).users;
+//   // firebase.admin.auth().listUsers(1000, nextPageToken).then((listUsersResult) => {
+//   //   console.log(listUsersResult)
+//   //   return;
+//   // }).catch(error => {
+//   //   console.log(error)
+//   //   return;
+//   // })
+//   // listUsersResult.users.forEach((userRecord) => {
+//   //   console.log('user', userRecord.toJSON());y
+//   // });
+//   // if (result.pageToken) {
+//   //   // List next batch of users.
+//   //   const _result = await listAllUsers(result.pageToken);
+//   //   result.push(_result);
+//   // }
+//   return result;
+// };
 module.exports.getAll = () => {
   // firebase.admin.auth().listUsers(1000).then((userRecords) => {
   //   userRecords.users.forEach((user) => console.log(user.toJSON()));
