@@ -55,6 +55,7 @@ vnptbkn.interceptors.response.use(
    */
   response => {
     const res = response.data
+    // console.log(res)
     // if the custom code is not 20000, it is judged as an error.
     if (response.status !== 200 && response.status !== 201) {
       Message({
@@ -84,7 +85,7 @@ vnptbkn.interceptors.response.use(
   error => {
     console.log('err' + error) // for debug
     Message({
-      message: error.message,
+      message: error.response.data.error && error.response.data.error.message ? error.response.data.error.message : error.message,
       type: 'error',
       duration: 5 * 1000
     })

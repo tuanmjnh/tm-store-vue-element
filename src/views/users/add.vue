@@ -3,14 +3,14 @@
     <!-- <hr class="hr"> -->
     <el-tabs v-model="tabs">
       <el-tab-pane :label="$t('tabs.main')" name="one">
-        <el-form ref="form" :model="form" label-width="120px">
+        <el-form ref="form" :model="form" label-width="150px">
           <el-form-item prop="email" label="Email" :rules="[
             {required: true, message: $t('error.required'), trigger: 'blur'},
             {type: 'email', message: $t('error.email'), trigger: 'blur'}]">
             <el-input v-model.trim="form.email" type="text" autocomplete="off"
               @blur="()=>{if(form.email)form.email=form.email.toLowerCase()}" />
           </el-form-item>
-          <el-tooltip v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
+          <el-tooltip v-if="!item" v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
             <el-form-item prop="password" :label="$t('users.password')" :rules="[
             {required: true, message: $t('error.required'), trigger: 'blur'},
             {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'blur'}]">
@@ -32,15 +32,26 @@
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
             <el-input v-model.trim="form.lname" type="text" />
           </el-form-item>
+          <el-form-item prop="phoneNumber" :label="$t('users.phone_number')"
+            :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
+            <el-input v-model="form.phoneNumber" type="text" autocomplete="off" />
+          </el-form-item>
           <el-form-item :label="$t('users.note')">
             <el-input v-model.trim="form.note" type="textarea" />
           </el-form-item>
           <el-form-item :label="$t('users.avatar')">
-            <el-input v-model.trim="form.avatar" :placeholder="$t('users.avatar')">
+            <el-input v-model.trim="form.photoURL" :placeholder="$t('users.avatar')">
               <el-button slot="append" icon="el-icon-more-outline"></el-button>
             </el-input>
           </el-form-item>
+           <el-form-item :label="$t('users.avatar')">
+            <img src=""/>
+          </el-form-item>
           <el-form-item>
+            <el-switch v-model="form.emailVerified" :active-text="$t('users.email_verified')" disabled>
+            </el-switch>
+            <el-switch v-model="form.disabled" active-color="#ff4949" :active-text="$t('users.disabled')">
+            </el-switch>
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -109,7 +120,10 @@ export default {
         fname: '',
         lname: '',
         note: '',
-        avatar: ''
+        phoneNumber: '',
+        photoURL: '',
+        emailVerified: false,
+        disabled: false
       }
     }
   },
@@ -120,7 +134,7 @@ export default {
         if (this.item) {
           this.form = { ...this.item }
           this.loading = true
-          api.getLog(this.item.id)
+          api.getLog(this.item.uid)
             .then((x) => {
               if (x) this.form.log = x
               else {
@@ -176,13 +190,11 @@ export default {
       } else {
         this.$refs.form.validate(valid => {
           if (valid) {
-            if (action === 'add') {
-              this.loading_add = true
-            } else {
-              this.loading_drafts = true
-            }
+            if (action === 'add') this.loading_add = true
+            else this.loading_drafts = true
             api.add(this.form).then((x) => {
-              this.$emit('update:items', [...this.items, ...[x.data]])
+              this.$emit('update:items', [...this.items, ...[x]])
+              console.log(x)
               this.reset()
               this.$message.success(this.$t('success.insert'))
             }).catch((err) => {

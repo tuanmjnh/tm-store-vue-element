@@ -18,8 +18,12 @@ const admin = require('firebase-admin');
 // admin.initializeApp({
 //   credential: admin.credential.applicationDefault(),
 // });
-
-admin.initializeApp(functions.config().firebase);
+const serviceAccount = require('./key.json');
+admin.initializeApp({
+  projectId: 'tm-store-4576e',
+  credential: admin.credential.cert(serviceAccount)
+}
+);
 
 module.exports.functions = functions;
 module.exports.admin = admin;

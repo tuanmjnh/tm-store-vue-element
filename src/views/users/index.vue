@@ -77,7 +77,7 @@
       </el-table-column>
       <el-table-column :label="$t('users.full_name')">
         <template slot-scope="scope">
-          {{ `${scope.row.fname} ${scope.row.lname}` }}
+          {{ scope.row.displayName?scope.row.displayName:'' }}
         </template>
       </el-table-column>
       <el-table-column :label="$t('roles.title')">
@@ -146,6 +146,9 @@ export default {
   },
   created() {
     this.getAll()
+    // api.find({ id: 'NEjrbAZ3IXYpkS1UzcjcGlN8sOs1' }).then((x) => {
+    //   console.log(x)
+    // })
     // this.getItems()
     // console.log(this.$route.meta.flag)
   },
@@ -153,8 +156,7 @@ export default {
     getAll() {
       this.loading = true
       api.getAll(this.params).then((x) => {
-        this.items = x.data
-        console.log(x)
+        this.items = x
       }).catch((err) => {
         this.$message.error(this.$t(err.message))
       }).finally(() => {

@@ -116,7 +116,8 @@ export default {
     not_exist: 'Data do not exist. Please try again!',
     required: 'The field is required',
     min_length: 'The field can not be less than {min} digits',
-    email: 'Please input correct email addres'
+    email: 'Please input correct email addres',
+    number: 'The field must is number'
   },
   tabs: {
     main: 'Main information',
@@ -162,8 +163,11 @@ export default {
     first_name: 'First name',
     last_name: 'Last name',
     full_name: 'Fullname',
+    phone_number: 'Phone Number',
     avatar: 'Avatar',
-    note: 'Introduction'
+    note: 'Introduction',
+    disabled: 'Locked',
+    email_verified: 'email Verified'
   },
   documentation: {
     documentation: 'Documentation',

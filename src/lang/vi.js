@@ -114,7 +114,8 @@ export default {
     not_exist: 'Dữ liệu không tồn tại. Vui lòng thử lại!',
     required: 'Thông tin không được bỏ trống',
     min_length: 'Thông tin tối phiểu phải từ {min} ký tự',
-    email: 'Vui lòng nhập đúng định dạng Email'
+    email: 'Vui lòng nhập đúng định dạng Email',
+    number: 'Dữ liệu phải là số'
   },
   tabs: {
     main: 'Thông tin chính',
@@ -160,8 +161,11 @@ export default {
     first_name: 'Tên',
     last_name: 'Họ',
     full_name: 'Họ tên',
+    phone_number: 'Phone Number',
     avatar: 'Ảnh đại diện',
-    note: 'Gới thiệu'
+    note: 'Gới thiệu',
+    disabled: 'Đã khóa',
+    email_verified: 'Đã xác thực email'
   },
   documentation: {
     documentation: 'Tài liệu',
