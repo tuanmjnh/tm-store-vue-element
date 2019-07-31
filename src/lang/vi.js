@@ -165,6 +165,7 @@ export default {
     avatar: 'Ảnh đại diện',
     note: 'Gới thiệu',
     disabled: 'Đã khóa',
+    phone_region: 'Mã vùng',
     email_verified: 'Đã xác thực email'
   },
   documentation: {

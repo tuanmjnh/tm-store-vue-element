@@ -105,14 +105,16 @@ export default {
             .finally(() => { this.loading = false })
         }
         // this.checkStrictly = true
-        this.$nextTick(() => {
-          // const routes = this.generateRoutes(this.form.routes)
-          // this.$refs.tree.setCheckedNodes(this.generateArr(routes))
-          // console.log(this.form.routes)
-          this.$refs.tree.setCheckedKeys(this.form.routes)
-          // set checked state of a node not affects its father and child nodes
-          this.checkStrictly = false
-        })
+        if (this.form.routes && this.form.routes.length > 0) {
+          this.$nextTick(() => {
+            // const routes = this.generateRoutes(this.form.routes)
+            // this.$refs.tree.setCheckedNodes(this.generateArr(routes))
+            // console.log(this.form.routes)
+            this.$refs.tree.setCheckedKeys(this.form.routes)
+            // set checked state of a node not affects its father and child nodes
+            this.checkStrictly = false
+          })
+        }
         // if (!val) this.reset()
         // console.log(val, this.form)
       },

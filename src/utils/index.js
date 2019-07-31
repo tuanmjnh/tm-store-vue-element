@@ -485,3 +485,17 @@ export function NewGuid() {
     s4()
   )
 }
+export function trim(obj) {
+  if (Array.isArray(obj)) {
+    for (let index = 0; index < obj.length; index++) {
+      if (typeof obj[index] === 'string') obj[index] = obj[index].trim()
+    }
+  } else if (Object.keys(obj).length > 0) {
+    Object.keys(obj).forEach(e => {
+      if (typeof obj[e] === 'string') obj[e] = obj[e].trim()
+    })
+  } else {
+    if (typeof obj === 'string') obj = obj.trim()
+  }
+  return obj
+}

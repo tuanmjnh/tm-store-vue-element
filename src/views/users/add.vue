@@ -7,15 +7,15 @@
           <el-form-item prop="email" label="Email" :rules="[
             {required: true, message: $t('error.required'), trigger: 'blur'},
             {type: 'email', message: $t('error.email'), trigger: 'blur'}]">
-            <el-input v-model.trim="form.email" type="text" autocomplete="off"
+            <el-input v-model="form.email" type="text" autocomplete="off"
               @blur="()=>{if(form.email)form.email=form.email.toLowerCase()}" />
           </el-form-item>
           <el-tooltip v-if="!item" v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
             <el-form-item prop="password" :label="$t('users.password')" :rules="[
             {required: true, message: $t('error.required'), trigger: 'blur'},
             {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'blur'}]">
-              <el-input v-model.trim="form.password" :type="passwordType" autocomplete="off"
-                @keyup.native="checkCapslock" @blur="capsTooltip=false" />
+              <el-input v-model="form.password" :type="passwordType" autocomplete="off" @keyup.native="checkCapslock"
+                @blur="capsTooltip=false" />
               <el-tooltip class="show-pwd" effect="dark" :content="$t('login.show_password')" placement="top-start">
                 <!-- <span class="show-pwd" @click="showPwd"> -->
                 <svg-icon :icon-class="passwordType==='password'?'eye':'eye-open'"
@@ -24,28 +24,36 @@
               </el-tooltip>
             </el-form-item>
           </el-tooltip>
-          <el-form-item prop="fname" :label="$t('users.first_name')"
+          <el-form-item prop="displayName" :label="$t('users.full_name')"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-            <el-input v-model.trim="form.fname" type="text" autocomplete="off" />
+            <el-input v-model="form.displayName" type="text" autocomplete="off" />
+          </el-form-item>
+          <!-- <el-form-item prop="fname" :label="$t('users.first_name')"
+            :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
+            <el-input v-model="form.fname" type="text" autocomplete="off" />
           </el-form-item>
           <el-form-item prop="lname" :label="$t('users.last_name')"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-            <el-input v-model.trim="form.lname" type="text" />
-          </el-form-item>
+            <el-input v-model="form.lname" type="text" />
+          </el-form-item> -->
           <el-form-item prop="phoneNumber" :label="$t('users.phone_number')"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-            <el-input v-model="form.phoneNumber" type="text" autocomplete="off" />
+            <el-input v-model="form.phoneNumber" type="text" autocomplete="off">
+              <el-select slot="prepend" v-model="form.phoneRegion" placeholder="Select">
+                <el-option v-for="(pr,index) in phoneRegion" :key="index" :label="pr" :value="pr"></el-option>
+              </el-select>
+            </el-input>
           </el-form-item>
           <el-form-item :label="$t('users.note')">
-            <el-input v-model.trim="form.note" type="textarea" />
+            <el-input v-model="form.note" type="textarea" />
           </el-form-item>
           <el-form-item :label="$t('users.avatar')">
-            <el-input v-model.trim="form.photoURL" :placeholder="$t('users.avatar')">
+            <el-input v-model="form.photoURL" :placeholder="$t('users.avatar')">
               <el-button slot="append" icon="el-icon-more-outline"></el-button>
             </el-input>
           </el-form-item>
-           <el-form-item :label="$t('users.avatar')">
-            <img src=""/>
+          <el-form-item :label="$t('users.avatar')">
+            <img src="" />
           </el-form-item>
           <el-form-item>
             <el-switch v-model="form.emailVerified" :active-text="$t('users.email_verified')" disabled>
@@ -90,7 +98,7 @@
 <script>
 import * as api from '@/api/firebase/users'
 import * as roles from '@/api/firebase/roles'
-import { update } from '@/utils'
+import { update, trim } from '@/utils'
 import TimelineLog from '@/components/TimelineLog'
 export default {
   components: { 'time-line-log': TimelineLog },
@@ -119,12 +127,15 @@ export default {
         password: '',
         fname: '',
         lname: '',
+        displayName: '',
         note: '',
+        phoneRegion: '',
         phoneNumber: '',
         photoURL: '',
         emailVerified: false,
         disabled: false
-      }
+      },
+      phoneRegion: ['+84', '+33']
     }
   },
   watch: {
@@ -145,13 +156,13 @@ export default {
             .finally(() => { this.loading = false })
         }
         // this.checkStrictly = true
-        this.$nextTick(() => {
-          // this.$refs.tree.setCheckedKeys(this.form.routes)
-          // set checked state of a node not affects its father and child nodes
-          this.checkStrictly = false
-        })
-        // if (!val) this.reset()
-        // console.log(val, this.form)
+        if (this.form.roles && this.form.roles.length > 0) {
+          this.$nextTick(() => {
+            this.$refs.tree.setCheckedKeys(this.form.roles)
+            // set checked state of a node not affects its father and child nodes
+            // this.checkStrictly = false
+          })
+        }
       },
       deep: true,
       immediate: true
@@ -171,12 +182,13 @@ export default {
     onSubmit(action) {
       // const checkedKeys = this.$refs.tree.getCheckedKeys()
       // const _routes = this.generateTree(routes, '/', checkedKeys)
+      this.form = trim(this.form)
       this.form.roles = this.$refs.tree.getCheckedKeys()
       if (this.item) {
         this.$refs.form.validate(valid => {
           if (valid) {
             this.loading_add = true
-            api.edit({ id: this.item.id, data: this.form }).then((x) => {
+            api.edit({ id: this.item.uid, data: this.form }).then((x) => {
               if (x) this.form.log.unshift(x)
               update({ data: this.items, element: this.form, key: 'id' })
               this.$message.success(this.$t('success.update'))
@@ -192,9 +204,8 @@ export default {
           if (valid) {
             if (action === 'add') this.loading_add = true
             else this.loading_drafts = true
-            api.add(this.form).then((x) => {
+            api.add({ data: this.form }).then((x) => {
               this.$emit('update:items', [...this.items, ...[x]])
-              console.log(x)
               this.reset()
               this.$message.success(this.$t('success.insert'))
             }).catch((err) => {

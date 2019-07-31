@@ -162,11 +162,12 @@ export default {
     password: 'Password',
     first_name: 'First name',
     last_name: 'Last name',
-    full_name: 'Fullname',
+    full_name: 'Full name',
     phone_number: 'Phone Number',
     avatar: 'Avatar',
     note: 'Introduction',
     disabled: 'Locked',
+    phone_region: 'Phone region',
     email_verified: 'email Verified'
   },
   documentation: {

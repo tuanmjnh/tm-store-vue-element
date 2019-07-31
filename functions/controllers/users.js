@@ -100,13 +100,14 @@ module.exports.post = async (req, res, next) => {
   //   return;
   // });
   try {
-    let result = {};
     const auth = await dbapi.create(req.body.data);
     const user = await dbapi.createProfile(auth.uid, {
       roles: req.body.data.roles || [],
-      note: req.body.data.note || ''
+      note: req.body.data.note || '',
+      phoneRegion: req.body.data.phoneRegion || '',
     });
     res.json({ data: { ...auth, ...req.body.data } });
+    return;
   } catch (error) {
     res.status(500).json({ error: error });
     return;
@@ -122,7 +123,7 @@ module.exports.post = async (req, res, next) => {
   // res.json({ data: result });
 };
 
-module.exports.put = (req, res, next) => {
+module.exports.put = async (req, res, next) => {
   if (!req.body.id) {
     res.status(404).json({ error: 'exist', params: 'id' });
     return;
@@ -131,13 +132,20 @@ module.exports.put = (req, res, next) => {
     res.status(404).json({ error: 'exist', params: 'data' });
     return;
   }
-  dbapi.update(req.body.id, req.body.data).then((rs) => {
-    res.json({ data: rs });
+  try {
+    const auth = await dbapi.update(req.body.id, req.body.data);
+    const user = await dbapi.updateProfile(auth.uid, {
+      roles: req.body.data.roles || [],
+      note: req.body.data.note || '',
+      phoneRegion: req.body.data.phoneRegion || '',
+    });
+    console.log(auth);
+    res.json({ data: { ...auth, ...req.body.data } });
     return;
-  }).catch((error) => {
+  } catch (error) {
     res.status(500).json({ error: error });
     return;
-  });
+  }
 };
 
 module.exports.delete = (req, res, next) => {

@@ -64,17 +64,17 @@ export function find({ id, by }) {
 }
 
 export function add(params) {
-  const _collection = db.firestore().collection(collection)
-  const data = { ...params }
+  const data = { ...params.data }
   data.photoURL = data.photoURL ? data.photoURL : 'https://lh3.googleusercontent.com/PxrebWCfpWSe_5ZhUrLyTquHd0zkhOVjL8Ghmu9OHw_-z8QEyQqfnSTt3-VDCTruqJPE_R56RitsCsi0dfDsIOHD6Gm0tAjW2RA7i6hkRsA0MNaZ9EuJmDq8CD37oNaCK4lYI3_cEQ=s200-p-k'
-  data.displayName = `${data.fname} ${data.lname}`
-  data.phoneNumber = `+84${data.phoneNumber}`
+  // if (data.fname && data.lname) data.displayName = `${data.fname} ${data.lname}`
+  if (data.phoneNumber) data.phoneNumber = `+84${data.phoneNumber}`
   return new Promise((resolve, reject) => {
     http.post(`/${collection}`, { data: data }).then((x) => {
       resolve(x.data)
     }).catch(err => {
       reject(err)
     })
+    // const _collection = db.firestore().collection(collection)
     // http.post(`/${collection}`, { data: data }).then(async (x) => {
     //   actions.set({ collection: _collection, id: x.data.uid, data: params }).then((xx) => {
     //     resolve({ ...x.data, ...xx })
@@ -102,8 +102,17 @@ export function add(params) {
 }
 
 export function edit(params) {
-  const _collection = db.firestore().collection(collection)
-  return actions.update({ collection: _collection, id: params.id, data: params.data })
+  const data = { ...params.data }
+  data.photoURL = data.photoURL ? data.photoURL : 'https://lh3.googleusercontent.com/PxrebWCfpWSe_5ZhUrLyTquHd0zkhOVjL8Ghmu9OHw_-z8QEyQqfnSTt3-VDCTruqJPE_R56RitsCsi0dfDsIOHD6Gm0tAjW2RA7i6hkRsA0MNaZ9EuJmDq8CD37oNaCK4lYI3_cEQ=s200-p-k'
+  return new Promise((resolve, reject) => {
+    http.put(`/${collection}`, { id: params.id, data: data }).then((x) => {
+      resolve(x.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+  // const _collection = db.firestore().collection(collection)
+  // return actions.update({ collection: _collection, id: params.id, data: params.data })
   // await collection.doc(params.id).update(params.data)
   // return await logs.updateType({ coll: collection.id, cid: params.id })
 }
