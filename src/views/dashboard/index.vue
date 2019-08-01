@@ -22,7 +22,7 @@ export default {
     // ])
   },
   created() {
-    if (!this.$store.state.auth.roles.includes('admin')) {
+    if (!this.$store.state.auth.user.roles.includes('admin')) {
       this.currentRole = 'editorDashboard'
     }
     // auth.currentUser.updateProfile({

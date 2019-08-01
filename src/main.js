@@ -67,7 +67,7 @@ let app
 firebase.auth().onAuthStateChanged(async (user) => {
   if (!app) {
     if (user) {
-      await store.dispatch('auth/setUserID', { uid: user.uid })
+      await store.commit('auth/SET_AUTH', user)
       await store.dispatch('auth/getUser', { uid: user.uid })
       // const tokenid = await user.getIdToken()
       // console.log(user)

@@ -32,7 +32,7 @@ router.beforeEach(async (to, from, next) => {
       // determine whether the user has obtained his permission roles through getInfo
       // const hasRoles = store.state.auth.user.roles && store.state.auth.user.roles.length > 0
       // console.log(store.state.auth.user.roles)
-      let roles = store.state.auth.roles
+      let roles = store.state.auth.user.roles
       if (roles && roles.length > 0) {
         next()
       } else {
@@ -43,7 +43,7 @@ router.beforeEach(async (to, from, next) => {
           // await store.dispatch('auth/getUser')
           // store.state.auth.user.roles = ['admin']
           // console.log(store.state.auth.uid)
-          const user = await store.dispatch('auth/getUser', { uid: store.state.auth.uid })
+          const user = await store.dispatch('auth/getUser', { uid: store.state.auth.user.uid })
           // store.state.auth.roles = 'admin'
           // const user = { roles: 'admin' }
           roles = user.roles

@@ -5,9 +5,7 @@ import router, { resetRouter } from '@/router'
 const collection = firebase.firestore().collection('users')
 
 const state = {
-  uid: '',
-  profile: {},
-  roles: [],
+  user: {},
   setting: {
     cookie: true,
     show: true,
@@ -21,21 +19,31 @@ const state = {
 }
 
 const mutations = {
-  SET_UID: (state, uid) => {
-    state.uid = uid
-    // setToken(uid)
+  SET_AUTH: (state, user) => {
+    state.user = {
+      uid: user.uid,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      phoneNumber: user.phoneNumber,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      disabled: user.disabled,
+      metadata: user.metadata,
+      providerData: user.providerData,
+      refreshToken: user.refreshToken
+    }
   },
   SET_TOKEN: (state, token) => {
     state.token = token
     setToken(token)
   },
   SET_USER: (state, user) => {
-    state.profile = user.profile
-    state.roles = user.roles
-    if (user.setting.cookie) {
-      state.setting = { ...state.setting, ...user.setting }
+    state.user = { ...state.user, ...user }
+    if (!state.user.setting) state.user.setting = { ...state.setting }
+    if (state.user.setting.cookie) {
+      state.user.setting = { ...state.user.setting, ...getUserSetting() }
     } else {
-      state.setting = { ...state.setting, ...getUserSetting() }
+      state.user.setting = { ...state.user.setting, ...user.setting }
     }
     // console.log(getUserSetting())
   },
@@ -50,7 +58,7 @@ const actions = {
       if (params && params.loading) rootState.$getLoading = true
       firebase.auth().signInWithEmailAndPassword(params.username, params.password)
         .then(doc => {
-          commit('SET_UID', doc.user.uid)
+          commit('SET_AUTH', doc.user)
           doc.user.getIdToken().then((token) => {
             commit('SET_TOKEN', token)
           })
