@@ -139,9 +139,7 @@ module.exports.put = async (req, res, next) => {
       note: req.body.data.note || '',
       phoneRegion: req.body.data.phoneRegion || '',
     });
-    console.log(auth);
     res.json({ data: { ...auth, ...req.body.data } });
-    return;
   } catch (error) {
     res.status(500).json({ error: error });
     return;

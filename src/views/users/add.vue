@@ -39,7 +39,8 @@
           <el-form-item prop="phoneNumber" :label="$t('users.phone_number')"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
             <el-input v-model="form.phoneNumber" type="text" autocomplete="off">
-              <el-select slot="prepend" v-model="form.phoneRegion" placeholder="Select">
+              <el-select slot="prepend" v-model="form.phoneRegion" :placeholder="$t('users.phone_region')"
+                style="width:100px">
                 <el-option v-for="(pr,index) in phoneRegion" :key="index" :label="pr" :value="pr"></el-option>
               </el-select>
             </el-input>
@@ -53,7 +54,7 @@
             </el-input>
           </el-form-item>
           <el-form-item :label="$t('users.avatar')">
-            <img src="" />
+            <img :src="form.photoURL" />
           </el-form-item>
           <el-form-item>
             <el-switch v-model="form.emailVerified" :active-text="$t('users.email_verified')" disabled>
@@ -129,7 +130,8 @@ export default {
         lname: '',
         displayName: '',
         note: '',
-        phoneRegion: '',
+        phone: '',
+        phoneRegion: '+84',
         phoneNumber: '',
         photoURL: '',
         emailVerified: false,
@@ -144,6 +146,7 @@ export default {
         this.reset()
         if (this.item) {
           this.form = { ...this.item }
+          if (this.form.phoneNumber) this.form.phoneNumber = this.form.phoneNumber.replace(this.form.phoneRegion, '')
           this.loading = true
           api.getLog(this.item.uid)
             .then((x) => {
@@ -190,7 +193,7 @@ export default {
             this.loading_add = true
             api.edit({ id: this.item.uid, data: this.form }).then((x) => {
               if (x) this.form.log.unshift(x)
-              update({ data: this.items, element: this.form, key: 'id' })
+              update({ data: this.items, element: this.form, key: 'uid' })
               this.$message.success(this.$t('success.update'))
             }).catch((err) => {
               this.$message.error(this.$t(err.message))
