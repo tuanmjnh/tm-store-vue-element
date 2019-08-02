@@ -15,8 +15,8 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input ref="username" v-model="loginForm.username" :placeholder="$t('login.username')" name="username" type="text"
-          tabindex="1" autocomplete="on" />
+        <el-input ref="username" v-model="loginForm.username" :placeholder="$t('login.username')" name="username"
+          type="text" tabindex="1" autocomplete="on" />
       </el-form-item>
 
       <el-tooltip v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
@@ -26,8 +26,9 @@
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>
-          <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" :placeholder="$t('login.password')"
-            name="password" tabindex="2" autocomplete="on" @keyup.native="checkCapslock" @blur="capsTooltip = false" />
+          <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
+            :placeholder="$t('login.password')" name="password" tabindex="2" autocomplete="on"
+            @keyup.native="checkCapslock" @blur="capsTooltip = false" />
           <el-tooltip class="show-pwd" effect="dark" :content="$t('login.show_password')" placement="top-start">
             <!-- <span class="show-pwd" @click="showPwd"> -->
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" @click="showPwd" />
@@ -126,6 +127,9 @@ export default {
   created() {
     // window.addEventListener('storage', this.afterQRScan)
     // this.$message.error('This is a message.');
+    // window.addEventListener('change', () => {
+    //   console.log('body input[type="text"]')
+    // })
   },
   mounted() {
     const $this = this

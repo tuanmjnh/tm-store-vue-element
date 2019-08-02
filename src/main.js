@@ -19,6 +19,7 @@ import firebase from '@/api/firebase/index'
 import i18n from './lang'
 import './icons' // icon
 import './utils/error-log' // error log
+import * as directives from './directive' // global directive
 import * as filters from './filters' // global filters
 import './permission'
 /**
@@ -54,6 +55,11 @@ Vue.prototype.$moment = moment
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
   i18n: (key, value) => i18n.t(key, value)
+})
+
+// register global utility directive
+Object.keys(directives).forEach(key => {
+  Vue.directive(key, directives[key])
 })
 
 // register global utility filters

@@ -103,7 +103,7 @@ module.exports.update = async (uid, data) => {
 };
 
 module.exports.updateProfile = (id, data) => {
-  return collection.doc(id).set(data);
+  return collection.doc(id).update(data);
 };
 
 module.exports.delete = async (uid) => {

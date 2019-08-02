@@ -40,27 +40,26 @@ export default {
   components: { UserCard, Activity, Timeline, Account },
   data() {
     return {
-      user: {},
+      // user: {},
       activeTab: 'activity'
     }
   },
   computed: {
     ...mapState({
-      profile: state => state.auth.profile,
-      roles: state => state.auth.roles
+      user: state => state.auth.user
     })
   },
   created() {
-    this.getUser()
+    // this.getUser()
   },
   methods: {
     getUser() {
       this.user = {
-        name: `${this.profile.first_name} ${this.profile.last_name}`,
-        role: this.roles.join(' | '),
-        email: this.profile.email,
-        avatar: this.profile.avatar,
-        introduction: this.profile.introduction
+        name: this.authUser.displayName,
+        role: this.authUser.roles.join(' | '),
+        email: this.authUser.email,
+        avatar: this.authUser.photoURL,
+        introduction: this.authUser.note
       }
     }
   }
