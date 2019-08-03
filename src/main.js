@@ -58,9 +58,9 @@ Vue.use(Element, {
 })
 
 // register global utility directive
-// Object.keys(directives).forEach(key => {
-//   Vue.directive(key, directives[key])
-// })
+Object.keys(directives).forEach(key => {
+  Vue.directive(key, directives[key])
+})
 
 // register global utility filters
 Object.keys(filters).forEach(key => {

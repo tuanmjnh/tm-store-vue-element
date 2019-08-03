@@ -67,7 +67,7 @@ export function add(params) {
   const data = { ...params.data }
   data.photoURL = data.photoURL ? data.photoURL : 'https://lh3.googleusercontent.com/PxrebWCfpWSe_5ZhUrLyTquHd0zkhOVjL8Ghmu9OHw_-z8QEyQqfnSTt3-VDCTruqJPE_R56RitsCsi0dfDsIOHD6Gm0tAjW2RA7i6hkRsA0MNaZ9EuJmDq8CD37oNaCK4lYI3_cEQ=s200-p-k'
   // if (data.fname && data.lname) data.displayName = `${data.fname} ${data.lname}`
-  if (data.phoneNumber) data.phoneNumber = `${data.phoneRegion}${data.phoneNumber}`
+  if (data.phoneNumber) data.phoneNumber = `+${data.phoneRegion}${data.phoneNumber}`
   return new Promise((resolve, reject) => {
     http.post(`/${collection}`, { data: data }).then((x) => {
       resolve(x.data)
@@ -104,7 +104,7 @@ export function add(params) {
 export function edit(params) {
   const data = { ...params.data }
   data.photoURL = data.photoURL ? data.photoURL : 'https://lh3.googleusercontent.com/PxrebWCfpWSe_5ZhUrLyTquHd0zkhOVjL8Ghmu9OHw_-z8QEyQqfnSTt3-VDCTruqJPE_R56RitsCsi0dfDsIOHD6Gm0tAjW2RA7i6hkRsA0MNaZ9EuJmDq8CD37oNaCK4lYI3_cEQ=s200-p-k'
-  if (data.phoneNumber) data.phoneNumber = `${data.phoneRegion}${data.phoneNumber}`
+  if (data.phoneNumber) data.phoneNumber = `+${data.phoneRegion}${data.phoneNumber}`
   return new Promise((resolve, reject) => {
     http.put(`/${collection}`, { id: params.id, data: data }).then((x) => {
       resolve(x.data)

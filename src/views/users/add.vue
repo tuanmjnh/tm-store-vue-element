@@ -7,7 +7,7 @@
           <el-form-item prop="email" label="Email" :rules="[
             {required: true, message: $t('error.required'), trigger: 'blur'},
             {type: 'email', message: $t('error.email'), trigger: 'blur'}]">
-            <el-input v-model="form.email" type="text" autocomplete="off"
+            <el-input v-model="form.email" v-trim autocomplete="off"
               @blur="()=>{if(form.email)form.email=form.email.toLowerCase()}" />
           </el-form-item>
           <el-tooltip v-if="!item" v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
@@ -26,7 +26,7 @@
           </el-tooltip>
           <el-form-item prop="displayName" :label="$t('users.full_name')"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-            <el-input v-model="form.displayName" type="text" autocomplete="off" />
+            <el-input v-model="form.displayName" v-trim type="text" autocomplete="off" />
           </el-form-item>
           <!-- <el-form-item prop="fname" :label="$t('users.first_name')"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
@@ -41,15 +41,16 @@
             <el-input v-model="form.phoneNumber" type="text" autocomplete="off">
               <el-select slot="prepend" v-model="form.phoneRegion" :placeholder="$t('users.phone_region')"
                 style="width:100px">
-                <el-option v-for="(pr,index) in phoneRegion" :key="index" :label="pr" :value="pr"></el-option>
+                <el-option v-for="(rg,index) in region" :key="index" :label="`+${rg.phone} - ${rg.name}`"
+                  :value="rg.phone" />
               </el-select>
             </el-input>
           </el-form-item>
           <el-form-item :label="$t('users.note')">
-            <el-input v-model="form.note" type="textarea" />
+            <el-input v-model="form.note" v-trim type="textarea" />
           </el-form-item>
           <el-form-item :label="$t('users.avatar')">
-            <el-input v-model="form.photoURL" :placeholder="$t('users.avatar')">
+            <el-input v-model="form.photoURL" v-trim :placeholder="$t('users.avatar')">
               <el-button slot="append" icon="el-icon-more-outline"></el-button>
             </el-input>
           </el-form-item>
@@ -99,7 +100,8 @@
 <script>
 import * as api from '@/api/firebase/users'
 import * as roles from '@/api/firebase/roles'
-import { update, trim } from '@/utils'
+import region from '@/lang/region'
+import { update } from '@/utils'
 import TimelineLog from '@/components/TimelineLog'
 export default {
   components: { 'time-line-log': TimelineLog },
@@ -131,13 +133,13 @@ export default {
         displayName: '',
         note: '',
         phone: '',
-        phoneRegion: '+84',
+        phoneRegion: '84',
         phoneNumber: '',
         photoURL: '',
         emailVerified: false,
         disabled: false
       },
-      phoneRegion: ['+84', '+33']
+      region: region
     }
   },
   watch: {
@@ -185,7 +187,6 @@ export default {
     onSubmit(action) {
       // const checkedKeys = this.$refs.tree.getCheckedKeys()
       // const _routes = this.generateTree(routes, '/', checkedKeys)
-      this.form = trim(this.form)
       this.form.roles = this.$refs.tree.getCheckedKeys()
       if (this.item) {
         this.$refs.form.validate(valid => {

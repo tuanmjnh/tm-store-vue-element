@@ -40,26 +40,31 @@ export default {
   components: { UserCard, Activity, Timeline, Account },
   data() {
     return {
-      // user: {},
+      user: {},
       activeTab: 'activity'
     }
   },
   computed: {
     ...mapState({
-      user: state => state.auth.user
+      authUser: state => state.auth.user
     })
   },
   created() {
-    // this.getUser()
+    if (this.user.phoneNumber) this.user.phoneNumber = this.user.phoneNumber.replace(this.user.phoneRegion, '')
+    this.getUser()
   },
   methods: {
     getUser() {
       this.user = {
+        id: this.authUser.uid,
+        email: this.authUser.email,
         name: this.authUser.displayName,
         role: this.authUser.roles.join(' | '),
-        email: this.authUser.email,
         avatar: this.authUser.photoURL,
-        introduction: this.authUser.note
+        phone: this.authUser.phoneNumber ? this.authUser.phoneNumber.replace(this.authUser.phoneRegion, '') : '',
+        phoneRegion: this.authUser.phoneRegion,
+        introduction: this.authUser.note,
+        verified: this.authUser.emailVerified
       }
     }
   }
