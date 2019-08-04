@@ -31,6 +31,7 @@ const mutations = {
       metadata: user.metadata,
       providerData: user.providerData,
       refreshToken: user.refreshToken
+      // roles: ['admin']
     }
   },
   SET_TOKEN: (state, token) => {

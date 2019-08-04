@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import UserCard from './components/UserCard'
 import Activity from './components/Activity'
 import Timeline from './components/Timeline'
@@ -40,18 +40,23 @@ export default {
   components: { UserCard, Activity, Timeline, Account },
   data() {
     return {
-      user: {},
+      // user: {},
       activeTab: 'activity'
     }
   },
   computed: {
-    ...mapState({
-      authUser: state => state.auth.user
+    // ...mapState({
+    //   user: state => state.auth.user
+    // })
+    ...mapGetters({
+      user: 'authUser'
     })
   },
   created() {
-    if (this.user.phoneNumber) this.user.phoneNumber = this.user.phoneNumber.replace(this.user.phoneRegion, '')
-    this.getUser()
+    // if (this.user.phoneNumber) this.user.phoneNumber = this.user.phoneNumber.replace(`+${this.user.phoneRegion}`, '')
+    // this.getUser()
+    if (this.user.phoneNumber) this.user.phoneNumber = this.user.phoneNumber.replace(`+${this.user.phoneRegion}`, '')
+    this.user.role = this.user.roles.join(' | ')
   },
   methods: {
     getUser() {
@@ -61,7 +66,7 @@ export default {
         name: this.authUser.displayName,
         role: this.authUser.roles.join(' | '),
         avatar: this.authUser.photoURL,
-        phone: this.authUser.phoneNumber ? this.authUser.phoneNumber.replace(this.authUser.phoneRegion, '') : '',
+        phone: this.authUser.phoneNumber ? this.authUser.phoneNumber.replace(`+${this.authUser.phoneRegion}`, '') : '',
         phoneRegion: this.authUser.phoneRegion,
         introduction: this.authUser.note,
         verified: this.authUser.emailVerified

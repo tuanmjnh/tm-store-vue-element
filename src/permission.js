@@ -16,7 +16,7 @@ const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 router.beforeEach(async (to, from, next) => {
   // set page title
   document.title = getPageTitle(to.meta.title)
-
+  // console.log(store.state.auth.user.roles)
   // determine whether the user has logged in
   // const hasToken = getToken()
   // if (auth.currentUser) {

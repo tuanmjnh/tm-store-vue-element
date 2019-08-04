@@ -3,42 +3,49 @@
     <!-- <hr class="hr"> -->
     <el-tabs v-model="tabs">
       <el-tab-pane :label="$t('tabs.main')" name="one">
-        <el-form ref="form" :model="form" label-width="150px">
-          <el-form-item prop="email" label="Email" :rules="[
-            {required: true, message: $t('error.required'), trigger: 'blur'},
-            {type: 'email', message: $t('error.email'), trigger: 'blur'}]">
-            <el-input v-model="form.email" v-trim autocomplete="off"
-              @blur="()=>{if(form.email)form.email=form.email.toLowerCase()}" />
+        <el-form ref="form" :model="form">
+          <el-form-item prop="email" label="Email"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline"
+            :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}, {type: 'email', message: $t('error.email'), trigger: 'blur'}]">
+            <el-input v-model="form.email" v-trim v-lowercase autocomplete="off" />
           </el-form-item>
-          <el-tooltip v-if="!item" v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
+          <!-- <el-tooltip v-if="!item" v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
             <el-form-item prop="password" :label="$t('users.password')" :rules="[
             {required: true, message: $t('error.required'), trigger: 'blur'},
             {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'blur'}]">
               <el-input v-model="form.password" :type="passwordType" autocomplete="off" @keyup.native="checkCapslock"
                 @blur="capsTooltip=false" />
               <el-tooltip class="show-pwd" effect="dark" :content="$t('login.show_password')" placement="top-start">
-                <!-- <span class="show-pwd" @click="showPwd"> -->
                 <svg-icon :icon-class="passwordType==='password'?'eye':'eye-open'"
                   @click="passwordType=(passwordType==='password'?'text':'password')" />
-                <!-- </span> -->
               </el-tooltip>
+            </el-form-item>
+          </el-tooltip> -->
+          <el-tooltip v-if="!item" v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
+            <el-form-item prop="password" :label="$t('users.password')"
+              class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline"
+              :rules="[{required: true, message: $t('error.required'), trigger: 'blur'},{min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'blur'}]">
+              <el-input v-model="form.password" show-password autocomplete="off" @keyup.native="checkCapslock"
+                @blur="capsTooltip=false" />
             </el-form-item>
           </el-tooltip>
           <el-form-item prop="displayName" :label="$t('users.full_name')"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-            <el-input v-model="form.displayName" v-trim type="text" autocomplete="off" />
+            <el-input v-model="form.displayName" v-trim v-uppercasespace autocomplete="off" />
           </el-form-item>
           <!-- <el-form-item prop="fname" :label="$t('users.first_name')"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-            <el-input v-model="form.fname" type="text" autocomplete="off" />
+            <el-input v-model="form.fname" autocomplete="off" />
           </el-form-item>
           <el-form-item prop="lname" :label="$t('users.last_name')"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-            <el-input v-model="form.lname" type="text" />
+            <el-input v-model="form.lname" />
           </el-form-item> -->
           <el-form-item prop="phoneNumber" :label="$t('users.phone_number')"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-            <el-input v-model="form.phoneNumber" type="text" autocomplete="off">
+            <el-input v-model="form.phoneNumber" autocomplete="off">
               <el-select slot="prepend" v-model="form.phoneRegion" :placeholder="$t('users.phone_region')"
                 style="width:100px">
                 <el-option v-for="(rg,index) in region" :key="index" :label="`+${rg.phone} - ${rg.name}`"
@@ -46,21 +53,26 @@
               </el-select>
             </el-input>
           </el-form-item>
-          <el-form-item :label="$t('users.note')">
+          <el-form-item :label="$t('users.note')"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-xs-nline el-col-sm-nline">
             <el-input v-model="form.note" v-trim type="textarea" />
           </el-form-item>
-          <el-form-item :label="$t('users.avatar')">
+          <el-form-item :label="$t('users.avatar')"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-xs-nline el-col-sm-nline">
             <el-input v-model="form.photoURL" v-trim :placeholder="$t('users.avatar')">
               <el-button slot="append" icon="el-icon-more-outline"></el-button>
             </el-input>
           </el-form-item>
-          <el-form-item :label="$t('users.avatar')">
+          <el-form-item :label="$t('users.avatar')"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-xs-nline el-col-sm-nline">
             <img :src="form.photoURL" />
           </el-form-item>
-          <el-form-item>
-            <el-switch v-model="form.emailVerified" :active-text="$t('users.email_verified')" disabled>
+          <el-form-item class="el-col el-col-xs-24 el-col-sm-24 el-col-xs-nline el-col-sm-nline">
+            <el-switch v-model="form.emailVerified" :active-text="$t('users.email_verified')" disabled
+              class="el-col el-col-xs-12 el-col-sm-12">
             </el-switch>
-            <el-switch v-model="form.disabled" active-color="#ff4949" :active-text="$t('users.disabled')">
+            <el-switch v-model="form.disabled" active-color="#ff4949" :active-text="$t('users.disabled')"
+              class="el-col el-col-xs-12 el-col-sm-12">
             </el-switch>
           </el-form-item>
         </el-form>
@@ -148,7 +160,7 @@ export default {
         this.reset()
         if (this.item) {
           this.form = { ...this.item }
-          if (this.form.phoneNumber) this.form.phoneNumber = this.form.phoneNumber.replace(this.form.phoneRegion, '')
+          if (this.form.phoneNumber) this.form.phoneNumber = this.form.phoneNumber.replace(`+${this.form.phoneRegion}`, '')
           this.loading = true
           api.getLog(this.item.uid)
             .then((x) => {
@@ -246,13 +258,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.show-pwd {
-  position: absolute;
-  right: 10px;
-  top: 11px;
-  font-size: 16px;
-  color: #889aa4;
-  cursor: pointer;
-  user-select: none;
-}
+// .show-pwd {
+//   position: absolute;
+//   right: 10px;
+//   top: 11px;
+//   font-size: 16px;
+//   color: #889aa4;
+//   cursor: pointer;
+//   user-select: none;
+// }
 </style>

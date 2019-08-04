@@ -5,13 +5,13 @@
       :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
       <el-input v-model="user.email" v-trim autocomplete="off" />
     </el-form-item>
-    <el-form-item prop="name" :label="$t('users.full_name')"
+    <el-form-item prop="displayName" :label="$t('users.full_name')"
       :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-      <el-input v-model="user.name" v-trim autocomplete="off" />
+      <el-input v-model="user.displayName" v-trim autocomplete="off" />
     </el-form-item>
-    <el-form-item prop="phone" :label="$t('users.phone_number')"
+    <el-form-item prop="phoneNumber" :label="$t('users.phone_number')"
       :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-      <el-input v-model="user.phone" type="text" autocomplete="off">
+      <el-input v-model="user.phoneNumber" type="text" autocomplete="off">
         <el-select slot="prepend" v-model="user.phoneRegion" :placeholder="$t('users.phone_region')"
           style="width:100px">
           <el-option v-for="(rg,index) in region" :key="index" :label="`+${rg.phone} - ${rg.name}`" :value="rg.phone" />
@@ -19,18 +19,18 @@
       </el-input>
     </el-form-item>
     <el-form-item :label="$t('users.note')">
-      <el-input v-model="user.introduction" v-trim type="textarea" />
+      <el-input v-model="user.note" v-trim type="textarea" />
     </el-form-item>
     <el-form-item :label="$t('users.avatar')">
-      <el-input v-model="user.avatar" v-trim :placeholder="$t('users.avatar')">
+      <el-input v-model="user.photoURL" v-trim :placeholder="$t('users.avatar')">
         <el-button slot="append" icon="el-icon-more-outline"></el-button>
       </el-input>
     </el-form-item>
     <el-form-item :label="$t('users.avatar')">
-      <img :src="user.avatar" />
+      <img :src="user.photoURL" />
     </el-form-item>
     <el-form-item>
-      <el-switch v-model="user.verified" :active-text="$t('users.email_verified')" disabled>
+      <el-switch v-model="user.emailVerified" :active-text="$t('users.email_verified')" disabled>
       </el-switch>
     </el-form-item>
     <el-form-item>
@@ -48,14 +48,15 @@ export default {
       type: Object,
       default: () => {
         return {
-          id: '',
-          name: '',
+          uid: '',
+          displayName: '',
           email: '',
-          avatar: '',
-          phone: '',
+          photoURL: '',
+          phoneNumber: '',
           phoneRegion: '84',
           introduction: '',
-          verified: false
+          verified: false,
+          roles: ['guest']
         }
       }
     }
@@ -71,7 +72,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.loading = true
-          api.edit({ id: this.user.id, data: this.user }).then((x) => {
+          api.edit({ id: this.user.uid, data: this.user }).then((x) => {
             // update({ data: this.items, element: this.form, key: 'uid' })
             this.$message.success(this.$t('success.update'))
           }).catch((err) => {

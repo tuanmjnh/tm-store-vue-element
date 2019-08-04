@@ -8,12 +8,12 @@ const collectionLogs = 'logs'
 
 const dataLog = async ({ cid, did, action }) => {
   return {
-    uid: store.state.auth.uid, // User id
+    uid: store.state.auth.user.uid, // User id
     cid: cid, // Collection id
     did: did, // Document id
     action: action, // Action name
     ip: ip.address(), // await localIP(), // Local IP
-    by: store.state.auth.profile.email, // Email or username
+    by: store.state.auth.user.email, // Email or username
     at: db.firestore.FieldValue.serverTimestamp() // Server time
   }
 }

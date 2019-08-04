@@ -102,8 +102,10 @@ module.exports.update = async (uid, data) => {
   return firebase.admin.auth().updateUser(uid, data);
 };
 
-module.exports.updateProfile = (id, data) => {
-  return collection.doc(id).update(data);
+module.exports.updateProfile = async (id, data) => {
+  const user = await collection.doc(id).get()
+  if (user.exists) return collection.doc(id).update(data);
+  else return collection.doc(id).set(data);
 };
 
 module.exports.delete = async (uid) => {

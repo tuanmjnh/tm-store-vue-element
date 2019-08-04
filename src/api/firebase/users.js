@@ -10,6 +10,7 @@ export async function getAll(params) {
   for await (const user of res.data) {
     const _user = await db.firestore().collection(collection).doc(user.uid).get()
     if (_user.exists) users.push({ ...user, ..._user.data() })
+    else users.push(user)
   }
   return users
 }

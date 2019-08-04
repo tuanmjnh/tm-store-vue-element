@@ -37,8 +37,8 @@
       </span>
     </el-dialog>
     <!-- dialog add -->
-    <el-dialog :title="item?$t('global.edit'):$t('global.add')" width="60%" :visible.sync="dialogAdd"
-      :close-on-click-modal="false">
+    <el-dialog :title="item?$t('global.edit'):$t('global.add')" class="dialog-xs-24"
+      :visible.sync="dialogAdd" :close-on-click-modal="false">
       <template-add :dialog.sync="dialogAdd" :item.sync="item" :items.sync="items" />
     </el-dialog>
     <!-- header -->

@@ -19,10 +19,10 @@
           type="text" tabindex="1" autocomplete="on" />
       </el-form-item>
 
-      <el-tooltip v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
+      <!-- <el-tooltip v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
         <el-form-item prop="password" :rules="[
-      {required: true, message: $t('login.msg_required_password'), trigger: 'blur'},
-      {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'blur'}]">
+          {required: true, message: $t('login.msg_required_password'), trigger: 'blur'},
+          {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'blur'}]">
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>
@@ -30,10 +30,20 @@
             :placeholder="$t('login.password')" name="password" tabindex="2" autocomplete="on"
             @keyup.native="checkCapslock" @blur="capsTooltip = false" />
           <el-tooltip class="show-pwd" effect="dark" :content="$t('login.show_password')" placement="top-start">
-            <!-- <span class="show-pwd" @click="showPwd"> -->
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" @click="showPwd" />
-            <!-- </span> -->
           </el-tooltip>
+        </el-form-item>
+      </el-tooltip> -->
+      <el-tooltip v-model="capsTooltip" :content="$t('login.caps_lock')" placement="right" manual>
+        <el-form-item prop="password" :rules="[
+          {required: true, message: $t('login.msg_required_password'), trigger: 'blur'},
+          {min: 6, message: $t('login.msg_min_password',{min:6}), trigger: 'blur'}]">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input :key="passwordType" ref="password" v-model="loginForm.password" show-password
+            :placeholder="$t('login.password')" name="password" tabindex="2" autocomplete="on"
+            @keyup.native="checkCapslock" @blur="capsTooltip=false" />
         </el-form-item>
       </el-tooltip>
       <el-row type="flex" class="row-bg" justify="end">
@@ -237,7 +247,7 @@ $cursor: #fff;
   .el-input {
     display: inline-block;
     height: 47px;
-    width: 85%;
+    width: 89%;
 
     input {
       background: transparent;
@@ -283,6 +293,10 @@ $light_gray: #eee;
     padding: 160px 35px 0;
     margin: 0 auto;
     overflow: hidden;
+
+    .el-input__suffix {
+      top: 2px !important;
+    }
   }
 
   .tips {

@@ -3,19 +3,20 @@
     <!-- <hr class="hr"> -->
     <el-tabs v-model="tabs">
       <el-tab-pane :label="$t('tabs.main')" name="one">
-        <el-form ref="form" :model="form" label-width="120px">
-          <el-form-item prop="key" :label="$t('roles.key')" :rules="[
-            {required: true, message: $t('error.required'), trigger: 'blur'},
-            {min:4, message: $t('error.min_length',{min:4}), trigger: 'blur'}]">
-            <el-input v-model.trim="form.key" type="text" @blur="()=>{if(form.key)form.key=form.key.toLowerCase()}">
-            </el-input>
+        <el-form ref="form" :model="form">
+          <el-form-item prop="key" :label="$t('roles.key')"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline"
+            :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}, {min:4, message: $t('error.min_length',{min:4}), trigger: 'blur'}]">
+            <el-input v-model="form.key" v-trim v-lowercase />
           </el-form-item>
           <el-form-item prop="name" :label="$t('roles.name')"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-            <el-input v-model.trim="form.name" type="text"></el-input>
+            <el-input v-model="form.name" v-trim v-uppercasefirst type="text" />
           </el-form-item>
-          <el-form-item :label="$t('global.desc')">
-            <el-input v-model.trim="form.desc" type="textarea"></el-input>
+          <el-form-item :label="$t('global.desc')"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline">
+            <el-input v-model="form.desc" v-trim type="textarea" />
           </el-form-item>
         </el-form>
       </el-tab-pane>

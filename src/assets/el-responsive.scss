@@ -1,0 +1,137 @@
+.el-col {
+  padding-right: 20px;
+}
+
+// .el-col .el-col-sm-hide {
+//   float: right;
+// }
+
+.el-col .el-form-item__content {
+  display: flex;
+}
+
+.el-col {
+  .el-radio-group,
+  .el-switch {
+    top: 10px;
+    position: relative;
+  }
+}
+
+@media only screen and (min-width: 1920px) {
+  // .el-col-xl-12 {
+  //     width: 50%;
+  // }
+  .el-col.el-col-xl-nline {
+    // padding-right: 0px;
+    // .el-form-item__label {
+    // width: 100%;
+    // }
+    .el-form-item__content {
+      width: 100%;
+    }
+    .el-radio-group,
+    .el-switch {
+      top: 0px;
+    }
+  }
+}
+@media only screen and (min-width: 1200px) {
+  // .el-col-lg-12 {
+  //     width: 50%;
+  // }
+  .el-col.el-col-lg-nline {
+    // padding-right: 0px;
+    // .el-form-item__label {
+    // width: 100%;
+    // }
+    .el-form-item__content {
+      width: 100%;
+    }
+    .el-radio-group,
+    .el-switch {
+      top: 0px;
+    }
+  }
+}
+@media only screen and (min-width: 992px) {
+  // .el-col-md-12 {
+  //     width: 50%;
+  // }
+  .dialog-md-24 {
+    .el-dialog {
+      width: 98%;
+    }
+  }
+  .el-col.el-col-md-nline {
+    // padding-right: 0px;
+    // .el-form-item__label {
+    // width: 100%;
+    // }
+    .el-form-item__content {
+      width: 100%;
+    }
+    .el-radio-group,
+    .el-switch {
+      top: 0px;
+    }
+  }
+}
+@media only screen and (min-width: 768px) {
+  // .el-col-sm-24 {
+  //     width: 100%;
+  // }
+  .el-col.el-col-sm-hide {
+    // padding-right: 0px;
+    .el-form-item__label {
+      display: none;
+    }
+  }
+  .el-col.el-col-sm-nline {
+    // padding-right: 0px;
+    // .el-form-item__label {
+    // width: 100%;
+    // }
+    .el-form-item__content {
+      width: 100%;
+    }
+    .el-radio-group,
+    .el-switch {
+      top: 0px;
+    }
+  }
+  .dialog-sm-24 {
+    .el-dialog {
+      width: 98%;
+    }
+  }
+}
+@media only screen and (max-width: 767px) {
+  // .el-col-xs-24 {
+  //     width: 100%;
+  // }
+  .el-col.el-col-xs-hide {
+    // padding-right: 0px;
+    .el-form-item__label {
+      display: none;
+    }
+  }
+  .el-col.el-col-xs-nline {
+    // padding-right: 0px;
+    // .el-form-item__label {
+    // width: 100%;
+    // }
+    .el-form-item__content {
+      width: 100%;
+    }
+    .el-radio-group,
+    .el-switch {
+      top: 0px;
+    }
+  }
+  .dialog-xs-24 {
+    .el-dialog {
+      width: 98%;
+    }
+  }
+}

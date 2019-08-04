@@ -11,5 +11,6 @@ export default {
 </script>
 <style lang="scss">
 @import "@/assets/site.scss";
-@import "@/assets/responsive.scss";
+@import "@/assets/el-responsive.scss";
+// @import "@/assets/responsive.scss";
 </style>

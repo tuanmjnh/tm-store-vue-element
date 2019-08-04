@@ -13,6 +13,9 @@ const getters = {
   // roles: state => state.user.roles,
   permission_routes: state => state.permission.routes,
   errorLogs: state => state.errorLog.logs,
-  auth: state => state.auth
+  authUser: state => {
+    // if (state.auth.user.phoneNumber) state.auth.user.phoneNumber = state.auth.user.phoneNumber.replace(`+${state.auth.user.phoneRegion}`, '')
+    return state.auth.user
+  }
 }
 export default getters

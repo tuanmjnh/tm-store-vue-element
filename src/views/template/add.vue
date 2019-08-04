@@ -30,60 +30,63 @@
     <!-- <hr class="hr"> -->
     <el-tabs v-model="tabs">
       <el-tab-pane :label="$t('tabs.main')" name="one">
-        <el-form ref="form" :model="form" label-width="120px">
-          <el-form-item prop="name" label="Activity name" :rules="[
-            {required: true, message: $t('error.required'), trigger: 'blur'},
-            {min:4, message: $t('error.min_length',{min:4}), trigger: 'blur'}]">
-            <el-input v-model.trim="form.name" type="text"></el-input>
+        <el-form ref="form" :model="form">
+          <el-form-item prop="name" label="Activity name"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline"
+            :rules="[{required: true, message: $t('error.required'), trigger: 'blur'},{min:4, message: $t('error.min_length',{min:4}), trigger: 'blur'}]">
+            <!-- <span slot="label" class="">Label for the slot</span> -->
+            <el-input v-model="form.name" v-trim placeholder="Activity name" />
           </el-form-item>
           <el-form-item prop="region" label="Activity zone"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
             <el-select v-model="form.region" placeholder="please select your zone">
               <el-option label="Zone one" value="shanghai"></el-option>
               <el-option label="Zone two" value="beijing"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="Activity time" required>
-            <div class="el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-11 el-col-lg-8 el-col-xl-8">
+          <el-form-item label="Activity time" required
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline">
+            <div class="el-col el-col-xs-24 el-col-sm-24 el-col-md-11 el-col-lg-8">
               <!-- <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8"> -->
               <el-form-item prop="start_date"
                 :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-                <el-date-picker v-model.trim="form.start_date" type="date" placeholder="Pick a date" style="width: 100%;">
+                <el-date-picker v-model="form.start_date" type="date" placeholder="Pick a date" style="width: 100%;">
                 </el-date-picker>
               </el-form-item>
               <!-- </el-col> -->
             </div>
-            <div class="el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-11 el-col-lg-8 el-col-xl-8">
+            <div class="el-col el-col-xs-24 el-col-sm-24 el-col-md-11 el-col-lg-8">
               <!-- <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8"> -->
-              <el-form-item prop="end_date"
-                :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-                <el-time-picker v-model.trim="form.end_date" placeholder="Pick a time" style="width: 100%;">
-                </el-time-picker>
+              <el-form-item prop="end_date" :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
+                <el-time-picker v-model="form.end_date" placeholder="Pick a time" style="width: 100%;" />
               </el-form-item>
               <!-- </el-col> -->
             </div>
           </el-form-item>
-          <el-form-item label="Instant delivery">
-            <el-switch v-model="form.delivery"></el-switch>
-          </el-form-item>
           <el-form-item prop="type" label="Activity type"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
             <el-checkbox-group v-model="form.type">
-              <el-checkbox label="Online activities" name="type"></el-checkbox>
-              <el-checkbox label="Promotion activities" name="type"></el-checkbox>
-              <el-checkbox label="Offline activities" name="type"></el-checkbox>
-              <el-checkbox label="Simple brand exposure" name="type"></el-checkbox>
+              <el-checkbox label="Online activities" name="type" />
+              <el-checkbox label="Promotion activities" name="type" />
+              <el-checkbox label="Offline activities" name="type" />
+              <el-checkbox label="Simple brand exposure" name="type" />
             </el-checkbox-group>
           </el-form-item>
           <el-form-item prop="resource" label="Resources"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
             <el-radio-group v-model="form.resource">
-              <el-radio label="Sponsor"></el-radio>
-              <el-radio label="Venue"></el-radio>
+              <el-radio label="Sponsor" />
+              <el-radio label="Venue" />
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="Activity form">
-            <el-input v-model.trim="form.desc" type="textarea"></el-input>
+           <el-form-item label="Instant delivery" class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline">
+            <el-switch v-model="form.delivery" />
+          </el-form-item>
+          <el-form-item label="Activity form" class="el-col el-col-xs-24 el-col-sm-24 el-col-xs-nline el-col-sm-nline">
+            <el-input v-model="form.desc" v-trim type="textarea" placeholder="Activity form" />
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -176,6 +179,9 @@ export default {
       this.form = { ...this.default }
     }
   },
+  // mounted() {
+  //   console.log(this.$refs.form.validate())
+  // },
   methods: {
     onSubmit(action) {
       if (this.$route.params.id) {
