@@ -64,21 +64,23 @@
     </div>
     <hr class="hr">
     <!-- <loading-content v-if="loading"></loading-content> -->
-    <el-table ref="table" v-loading="loading" :data="items">
-      <el-table-column type="selection" width="55">
+    <el-table ref="table" v-loading="loading" :data="items" :default-sort="{prop: 'name', order: 'ascending'}">
+      <el-table-column type="selection" width="55" fixed />
+      <el-table-column prop="name" label="Name" min-width="250" sortable>
+         <template slot-scope="scope">
+          <span>{{ scope.row.name }}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="name" label="Name">
+      <el-table-column prop="region" label="Region" min-width="250" sortable>
       </el-table-column>
-      <el-table-column prop="region" label="Region">
+      <el-table-column prop="resource" label="Resource" min-width="250" sortable>
       </el-table-column>
-      <el-table-column prop="resource" label="Resource">
-      </el-table-column>
-      <el-table-column :label="$t('global.start_date')">
+      <el-table-column :label="$t('global.start_date')" min-width="100" sortable>
         <template slot-scope="scope">
           {{ scope.row.start_date ? scope.row.start_date.toDate().toLocaleDateString() : '' }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('global.end_date')">
+      <el-table-column :label="$t('global.end_date')" min-width="100" sortable>
         <template slot-scope="scope">
           {{ scope.row.end_date ? scope.row.end_date.toDate().toLocaleTimeString() : '' }}
         </template>

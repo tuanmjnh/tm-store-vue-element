@@ -37,8 +37,8 @@
       </span>
     </el-dialog>
     <!-- dialog add -->
-    <el-dialog :title="item?$t('global.edit'):$t('global.add')" class="dialog-xs-24"
-      :visible.sync="dialogAdd" :close-on-click-modal="false">
+    <el-dialog :title="item?$t('global.edit'):$t('global.add')" class="dialog-xs-24" :visible.sync="dialogAdd"
+      :close-on-click-modal="false">
       <template-add :dialog.sync="dialogAdd" :item.sync="item" :items.sync="items" />
     </el-dialog>
     <!-- header -->
@@ -70,18 +70,19 @@
     </div>
     <hr class="hr">
     <!-- <loading-content v-if="loading"></loading-content> -->
-    <el-table ref="table" v-loading="loading" :data="items">
-      <el-table-column type="selection" width="55">
+    <el-table ref="table" v-loading="loading" :data="items" :default-sort="{prop: 'key', order: 'ascending'}">
+      <el-table-column type="selection" width="55" fixed />
+      <el-table-column prop="key" :label="$t('roles.key')" min-width="250" sortable />
+      <el-table-column prop="name" :label="$t('roles.name')" min-width="300" sortable>
+        <template slot-scope="scope">
+          <span :style="{color:scope.row.color}">{{ scope.row.name }}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="key" :label="$t('roles.key')">
-      </el-table-column>
-      <el-table-column prop="name" :label="$t('roles.name')">
-      </el-table-column>
-      <el-table-column prop="desc" :label="$t('global.desc')">
-      </el-table-column>
+      <el-table-column prop="desc" :label="$t('global.desc')" min-width="350" sortable />
       <el-table-column label="#" width="180" align="center">
         <template slot="header" slot-scope="scope">
-          <el-input v-model="params.search" :d-val="scope" :placeholder="$t('global.search')" @change="getItems()" />
+          <el-input v-model="params.search" :d-val="scope" :placeholder="$t('global.search')" />
+          <!-- @change="getItems()"  -->
         </template>
         <template slot-scope="scope">
           <el-tooltip effect="dark" :content="$t('global.edit')" placement="bottom">
@@ -95,10 +96,8 @@
     </el-table>
     <p>
       <el-pagination :page-size.sync="params.pageSize" :pager-count="params.pagerCount"
-        layout="sizes, prev, pager, next" :page-sizes="params.pageSizes" :total="params.totalItems" align="right"
-        :current-page.sync="params.currentPage" @current-change="onPaginationChange"
-        @size-change="onSizePaginationChange">
-      </el-pagination>
+        layout="sizes, prev, pager, next" :page-sizes="params.pageSizes" :total="$store.state.roles.items.length"
+        align="right" :current-page.sync="params.currentPage" />
     </p>
   </div>
 </template>
@@ -106,13 +105,13 @@
 <script>
 import add from './add'
 import * as api from '@/api/firebase/roles'
-import { remove } from '@/utils'
+import { remove, searchValue, pagination } from '@/utils'
 export default {
   components: { 'template-add': add },
   data() {
     return {
       loading: false,
-      items: [],
+      // items: [],
       item: null,
       dialogFilter: false,
       dialogConfirmTrash: false,
@@ -128,30 +127,36 @@ export default {
       }
     }
   },
+  computed: {
+    items() {
+      const rs = searchValue(this.$store.state.roles.items, this.params.search, ['key', 'name', 'desc'])
+      return pagination(rs, this.params.currentPage - 1, this.params.pageSize)
+    }
+  },
   created() {
-    this.getItems()
+    // this.getItems()
     // console.log(this.$route.meta.flag)
   },
   methods: {
-    getItems() {
-      this.loading = true
-      api.getPagination(this.params).then((x) => {
-        this.items = x
-      }).catch((err) => {
-        this.$message.error(this.$t(err.message))
-      }).finally(() => {
-        this.loading = false
-      })
-    },
+    // getItems() {
+    //   this.loading = true
+    //   api.getPagination(this.params).then((x) => {
+    //     this.items = x
+    //   }).catch((err) => {
+    //     this.$message.error(this.$t(err.message))
+    //   }).finally(() => {
+    //     this.loading = false
+    //   })
+    // },
     onPaginationChange(val) {
-      this.getItems()
+      // this.getItems()
     },
     onSizePaginationChange(val) {
-      this.getItems()
+      // this.getItems()
     },
-    // onSelection(val) {
-    //   this.selected = val
-    // },
+    onSelection(val) {
+      this.selected = val
+    },
     onTrash(type, val) {
       this.$refs.table.clearSelection()
       this.$refs.table.selection.push(val)
@@ -192,7 +197,7 @@ export default {
     },
     onDialogFilter() {
       this.dialogFilter = false
-      this.getItems()
+      // this.getItems()
     },
     onEdit(row) {
       this.dialogAdd = true

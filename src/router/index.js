@@ -130,11 +130,7 @@ export const asyncRoutes = [
     redirect: 'noRedirect',
     alwaysShow: true, // will always show the root menu
     name: 'template',
-    meta: {
-      title: 'template',
-      icon: 'document',
-      roles: ['admin'] // you can set roles in root nav
-    },
+    meta: { title: 'template', icon: 'document', roles: ['admin'] }, // you can set roles in root nav
     children: [
       {
         path: 'list',
@@ -171,8 +167,8 @@ export const asyncRoutes = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/profile/index'),
         name: 'Profile',
+        component: () => import('@/views/profile/index'),
         meta: { title: 'profile', icon: 'user', noCache: true }
       }
     ]
@@ -180,22 +176,173 @@ export const asyncRoutes = [
   // Demo app
   {
     path: '/demo',
+    name: 'Demo',
+    alwaysShow: true, // will always show the root menu
     component: Layout,
     redirect: 'noRedirect',
-    name: 'Demo',
-    meta: {
-      title: 'demo',
-      icon: 'guide'
-    },
+    meta: { title: 'demo', icon: 'guide' },
     /** when your routing map is too long, you can split it into small modules **/
     children: [
-      guide,
-      documentation,
-      permission,
+      {
+        path: 'guide',
+        name: 'Guide',
+        component: () => import('@/views/demo/guide/index'),
+        meta: { title: 'guide', icon: 'guide', noCache: true }
+      },
+      {
+        path: 'documentation',
+        name: 'Documentation',
+        component: () => import('@/views/demo/documentation/index'),
+        meta: { title: 'documentation', icon: 'documentation', affix: false }
+      },
+      {
+        path: 'permission',
+        name: 'Permission',
+        component: () => import('@/views/demo'),
+        redirect: 'permission/page',
+        meta: { title: 'permission', icon: 'lock', roles: ['admin', 'editor'] }, // you can set roles in root nav
+        children: [
+          {
+            path: 'page',
+            name: 'PagePermission',
+            component: () => import('@/views/demo/permission/page'),
+            meta: { title: 'pagePermission', roles: ['admin'] } // or you can only set roles in sub nav
+          },
+          {
+            path: 'directive',
+            name: 'DirectivePermission',
+            component: () => import('@/views/demo/permission/directive'),
+            meta: { title: 'directivePermission' } // if do not set roles, means: this page does not require permission
+          },
+          {
+            path: 'role',
+            name: 'RolePermission',
+            component: () => import('@/views/demo/permission/role'),
+            meta: { title: 'rolePermission', roles: ['admin'] }
+          }
+        ]
+      },
       components,
-      charts,
-      nested,
-      table,
+      // charts,
+      {
+        path: 'charts',
+        name: 'Charts',
+        component: () => import('@/views/demo'),
+        redirect: 'charts/keyboard',
+        meta: { title: 'charts', icon: 'chart' },
+        children: [
+          {
+            path: 'keyboard',
+            name: 'KeyboardChart',
+            component: () => import('@/views/demo/charts/keyboard'),
+            meta: { title: 'keyboardChart', noCache: true }
+          },
+          {
+            path: 'line',
+            name: 'LineChart',
+            component: () => import('@/views/demo/charts/line'),
+            meta: { title: 'lineChart', noCache: true }
+          },
+          {
+            path: 'mix-chart',
+            name: 'MixChart',
+            component: () => import('@/views/demo/charts/mix-chart'),
+            meta: { title: 'mixChart', noCache: true }
+          }
+        ]
+      },
+      // nested,
+      {
+        path: 'nested',
+        name: 'Nested',
+        component: () => import('@/views/demo'),
+        redirect: '/demo/nested/menu1/menu1-1',
+        meta: { title: 'nested', icon: 'nested' },
+        children: [
+          {
+            path: 'menu1',
+            name: 'Menu1',
+            component: () => import('@/views/demo/nested/menu1/index'), // Parent router-view
+            meta: { title: 'menu1' },
+            redirect: '/nested/menu1/menu1-1',
+            children: [
+              {
+                path: 'menu1-1',
+                name: 'Menu1-1',
+                component: () => import('@/views/demo/nested/menu1/menu1-1'),
+                meta: { title: 'menu1-1' }
+              },
+              {
+                path: 'menu1-2',
+                name: 'Menu1-2',
+                component: () => import('@/views/demo/nested/menu1/menu1-2'),
+                redirect: '/nested/menu1/menu1-2/menu1-2-1',
+                meta: { title: 'menu1-2' },
+                children: [
+                  {
+                    path: 'menu1-2-1',
+                    name: 'Menu1-2-1',
+                    component: () => import('@/views/demo/nested/menu1/menu1-2/menu1-2-1'),
+                    meta: { title: 'menu1-2-1' }
+                  },
+                  {
+                    path: 'menu1-2-2',
+                    name: 'Menu1-2-2',
+                    component: () => import('@/views/demo/nested/menu1/menu1-2/menu1-2-2'),
+                    meta: { title: 'menu1-2-2' }
+                  }
+                ]
+              },
+              {
+                path: 'menu1-3',
+                name: 'Menu1-3',
+                component: () => import('@/views/demo/nested/menu1/menu1-3'),
+                meta: { title: 'menu1-3' }
+              }
+            ]
+          },
+          {
+            path: 'menu2',
+            name: 'Menu2',
+            component: () => import('@/views/demo/nested/menu2/index'),
+            meta: { title: 'menu2' }
+          }
+        ]
+      },
+      // table,
+      {
+        path: 'table',
+        name: 'Table',
+        component: () => import('@/views/demo'),
+        redirect: '/demo/table/complex-table',
+        meta: { title: 'Table', icon: 'table' },
+        children: [
+          {
+            path: 'dynamic-table',
+            name: 'DynamicTable',
+            component: () => import('@/views/demo/table/dynamic-table/index'),
+            meta: { title: 'dynamicTable' }
+          },
+          {
+            path: 'drag-table',
+            name: 'DragTable',
+            component: () => import('@/views/demo/table/drag-table'),
+            meta: { title: 'dragTable' }
+          },
+          {
+            path: 'inline-edit-table',
+            name: 'InlineEditTable',
+            component: () => import('@/views/demo/table/inline-edit-table'),
+            meta: { title: 'inlineEditTable' }
+          },
+          {
+            path: 'complex-table',
+            name: 'ComplexTable',
+            component: () => import('@/views/demo/table/complex-table'),
+            meta: { title: 'complexTable' }
+          }
+        ]
+      },
       example,
       icon,
       tab,

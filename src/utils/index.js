@@ -499,3 +499,51 @@ export function trim(obj) {
   }
   return obj
 }
+// onlyUnique Array
+export function onlyUnique(value, index, self) {
+  // console.log(value)
+  return self.indexOf(value) === index
+}
+export function distinctArry(arr) {
+  return [...new Set(arr)]
+}
+export function distinctArrayObject(arr, key) {
+  return [...new Set(arr.map(x => x[key]))]
+}
+export function filterValue(data, obj) {
+  if (data.length < 1 || !obj) return data
+  return Object.keys(obj).forEach((key, index) => {
+    const _key = key.toLowerCase()
+    return data.filter(row => { return row[_key] === obj[_key] })
+  })
+}
+export function searchValue(data, search, key) {
+  if (!data || data.length < 1 || !search) return data
+  if (key && key.length > 0) {
+    return data.filter(row => {
+      return key.some(e => {
+        return (String(row[e]).toLowerCase().indexOf(search) > -1)
+      })
+    })
+  } else {
+    return data.filter(row => {
+      return Object.keys(row).some(key => {
+        return (String(row[key]).toLowerCase().indexOf(search) > -1)
+      })
+    })
+  }
+}
+export function sortByKey(data, sortBy, direction = 'asc') {
+  if (data.length < 1 || !sortBy) return data
+  direction = direction === 'asc' ? 1 : -1
+  return data.slice().sort((a, b) => {
+    a = a[sortBy]
+    b = b[sortBy]
+    return (a === b ? 0 : a > b ? 1 : -1) * direction
+  })
+}
+
+export function pagination(data, offset = 0, limit = 10) {
+  if (!data || data.length < 1) return data
+  return data.slice(offset * limit, (offset + 1) * limit)
+}

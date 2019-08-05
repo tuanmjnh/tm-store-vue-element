@@ -70,17 +70,15 @@
     </div>
     <hr class="hr">
     <!-- <loading-content v-if="loading"></loading-content> -->
-    <el-table ref="table" v-loading="loading" :data="items">
-      <el-table-column type="selection" width="55" fixed>
-      </el-table-column>
-      <el-table-column prop="email" label="Email" min-width="250">
-      </el-table-column>
-      <el-table-column :label="$t('users.full_name')" min-width="350">
+    <el-table ref="table" v-loading="loading" :data="items" :default-sort="{prop: 'key', order: 'ascending'}">
+      <el-table-column type="selection" width="55" fixed />
+      <el-table-column prop="email" label="Email" min-width="250" sortable />
+      <el-table-column prop="displayName" :label="$t('users.full_name')" min-width="350" sortable>
         <template slot-scope="scope">
           {{ scope.row.displayName?scope.row.displayName:'' }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('roles.title')" min-width="150">
+      <el-table-column :label="$t('roles.title')" min-width="150" sortable>
         <template slot-scope="scope">
           <template v-if="scope.row.roles && scope.row.roles.length>0">
             <template v-for="(role,index) in getRoles(scope.row.roles)">

@@ -1,14 +1,14 @@
 import Demo from '@/views/demo'
 
 const guide = {
-  path: '/demo/guide',
+  path: 'guide',
   component: Demo,
   redirect: '/demo/guide/index',
   children: [
     {
       path: 'index',
-      component: () => import('@/views/demo/guide/index'),
       name: 'Guide',
+      component: () => import('@/views/demo/guide/index'),
       meta: { title: 'guide', icon: 'guide', noCache: true }
     }
   ]
@@ -21,8 +21,8 @@ const documentation = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/demo/documentation/index'),
       name: 'Documentation',
+      component: () => import('@/views/demo/documentation/index'),
       meta: { title: 'documentation', icon: 'documentation', affix: false }
     }
   ]
@@ -34,8 +34,8 @@ const icon = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/demo/icons/index'),
       name: 'Icons',
+      component: () => import('@/views/demo/icons/index'),
       meta: { title: 'icons', icon: 'icon', noCache: true }
     }
   ]
@@ -47,8 +47,8 @@ const tab = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/demo/tab/index'),
       name: 'Tab',
+      component: () => import('@/views/demo/tab/index'),
       meta: { title: 'tab', icon: 'tab' }
     }
   ]
@@ -60,8 +60,8 @@ const theme = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/demo/theme/index'),
       name: 'Theme',
+      component: () => import('@/views/demo/theme/index'),
       meta: { title: 'theme', icon: 'theme' }
     }
   ]
@@ -73,8 +73,8 @@ const clipboard = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/demo/clipboard/index'),
       name: 'ClipboardDemo',
+      component: () => import('@/views/demo/clipboard/index'),
       meta: { title: 'clipboardDemo', icon: 'clipboard' }
     }
   ]
@@ -86,8 +86,8 @@ const i18n = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/demo/i18n-demo/index'),
       name: 'I18n',
+      component: () => import('@/views/demo/i18n-demo/index'),
       meta: { title: 'i18n', icon: 'international' }
     }
   ]
