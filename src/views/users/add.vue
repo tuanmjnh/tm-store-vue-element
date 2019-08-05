@@ -79,7 +79,7 @@
       </el-tab-pane>
       <el-tab-pane :label="$t('roles.title')" name="two">
         <el-tree ref="tree" :check-strictly="checkStrictly" :data="roles" :props="defaultProps" show-checkbox
-          node-key="key" class="permission-tree" />
+          node-key="id" class="permission-tree" />
       </el-tab-pane>
       <el-tab-pane v-if="item" :label="$t('tabs.updated')" name="three" class="details">
         <el-table v-if="loading" v-loading="loading" empty-text=" " />
@@ -129,7 +129,7 @@ export default {
       loading_drafts: false,
       tabs: 'one',
       form: {},
-      roles: [],
+      // roles: [],
       passwordType: 'password',
       capsTooltip: false,
       defaultProps: {
@@ -148,10 +148,16 @@ export default {
         phoneRegion: '84',
         phoneNumber: '',
         photoURL: '',
+        roles: [],
         emailVerified: false,
         disabled: false
       },
       region: region
+    }
+  },
+  computed: {
+    roles() {
+      return this.$store.state.roles.items
     }
   },
   watch: {
@@ -188,14 +194,14 @@ export default {
   created() {
     // this.form = { ...this.default }
     // console.log(this.routes)
-    this.getRoles()
+    // this.getRoles()
   },
   methods: {
-    getRoles() {
-      roles.getAll()
-        .then((x) => { this.roles = x })
-        .catch((err) => { this.$message.error(this.$t(err.message)) })
-    },
+    // getRoles() {
+    //   roles.getAll()
+    //     .then((x) => { this.roles = x })
+    //     .catch((err) => { this.$message.error(this.$t(err.message)) })
+    // },
     onSubmit(action) {
       // const checkedKeys = this.$refs.tree.getCheckedKeys()
       // const _routes = this.generateTree(routes, '/', checkedKeys)
@@ -250,6 +256,7 @@ export default {
       this.form = { ...this.default }
       if (!this.dialog) this.$emit('update:item', null)
       if (this.$refs.form) this.$refs.form.resetFields()
+      if (this.$refs.tree) this.$refs.tree.setCheckedKeys([])
       // this.loading_add = false
       // this.loading_drafts = false
     }

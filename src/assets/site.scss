@@ -78,3 +78,10 @@
     font-style: italic;
   }
 }
+
+// el-tree
+.el-tree {
+  .el-tree-node__label {
+    padding-left: 6px;
+  }
+}

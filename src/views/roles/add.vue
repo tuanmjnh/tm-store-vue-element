@@ -5,14 +5,19 @@
       <el-tab-pane :label="$t('tabs.main')" name="one">
         <el-form ref="form" :model="form">
           <el-form-item prop="key" :label="$t('roles.key')"
-            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}, {min:4, message: $t('error.min_length',{min:4}), trigger: 'blur'}]">
             <el-input v-model="form.key" v-trim v-lowercase />
           </el-form-item>
           <el-form-item prop="name" :label="$t('roles.name')"
-            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-12 el-col-xs-nline el-col-sm-nline"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
             <el-input v-model="form.name" v-trim v-uppercasefirst type="text" />
+          </el-form-item>
+          <el-form-item prop="color" :label="$t('global.color')"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline"
+            :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
+            <el-input v-model="form.color" v-trim v-lowercase type="text" />
           </el-form-item>
           <el-form-item :label="$t('global.desc')"
             class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline">

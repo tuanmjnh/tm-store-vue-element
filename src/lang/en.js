@@ -103,7 +103,8 @@ export default {
     updated_at: 'Updated at',
     deleted_by: 'Deleted by',
     deleted_at: 'Deleted by',
-    updating: 'Updating...'
+    updating: 'Updating...',
+    color: 'Color'
   },
   success: {
     insert: 'Insert record success',

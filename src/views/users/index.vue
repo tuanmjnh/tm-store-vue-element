@@ -71,18 +71,26 @@
     <hr class="hr">
     <!-- <loading-content v-if="loading"></loading-content> -->
     <el-table ref="table" v-loading="loading" :data="items">
-      <el-table-column type="selection" width="55">
+      <el-table-column type="selection" width="55" fixed>
       </el-table-column>
-      <el-table-column prop="email" label="Email">
+      <el-table-column prop="email" label="Email" min-width="250">
       </el-table-column>
-      <el-table-column :label="$t('users.full_name')">
+      <el-table-column :label="$t('users.full_name')" min-width="350">
         <template slot-scope="scope">
           {{ scope.row.displayName?scope.row.displayName:'' }}
         </template>
       </el-table-column>
-      <el-table-column :label="$t('roles.title')">
+      <el-table-column :label="$t('roles.title')" min-width="150">
         <template slot-scope="scope">
-          {{ scope.row.roles?scope.row.roles.join(', ').trim():'' }}
+          <template v-if="scope.row.roles && scope.row.roles.length>0">
+            <template v-for="(role,index) in getRoles(scope.row.roles)">
+              <span :key="index" :style="{color:role.color}">{{ role.name + ' ' }}</span>
+              <!-- <div v-if="index<scope.row.roles.length-1" :key="index+'after'">{{ ', ' }}</div> -->
+              <!-- <span v-if="" :key="index+'span'">, </span> -->
+            </template>
+          </template>
+          <span v-else :style="{color:'#909399'}">{{ $t('global.updating') }}</span>
+          <!-- {{ scope.row.roles?scope.row.roles.join(', ').trim():'' }} -->
         </template>
       </el-table-column>
       <el-table-column label="#" width="180" align="center">
@@ -226,6 +234,16 @@ export default {
     onEdit(row) {
       this.dialogAdd = true
       this.item = row
+    },
+    getRoles(id) {
+      // console.log(id)
+      // console.log(this.$store.state.roles.items)
+      if (!id) {
+        return []
+      }
+      return this.$store.state.roles.items.filter(x => {
+        return id.includes(x.id)
+      })
     }
   }
 }

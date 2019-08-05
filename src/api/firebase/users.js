@@ -1,16 +1,25 @@
 import db from './index'
+import store from '@/store'
 // import * as admin from 'firebase-admin'
 import * as actions from './extend-action'
 import http from '@/utils/http-client'
 const collection = 'users'
+
+function getRoles(id) {
+  if (!id) return []
+  return store.state.roles.items.filter(x => {
+    return id.includes(x.id)
+  })
+}
 
 export async function getAll(params) {
   const res = await http.get(`/${collection}`)
   const users = []
   for await (const user of res.data) {
     const _user = await db.firestore().collection(collection).doc(user.uid).get()
-    if (_user.exists) users.push({ ...user, ..._user.data() })
-    else users.push(user)
+    if (_user.exists) {
+      users.push({ ...user, ..._user.data() })
+    } else users.push(user)
   }
   return users
 }

@@ -33,6 +33,7 @@ module.exports = {
     "vue/no-unused-vars": "off",// ["error", {
     //   "ignoreWhenBindingPresent": true
     // }],
+    "vue/no-parsing-error": "off",
     'accessor-pairs': 2,
     'arrow-spacing': [2, {
       'before': true,

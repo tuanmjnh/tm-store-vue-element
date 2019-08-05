@@ -101,7 +101,8 @@ export default {
     updated_at: 'Ngày sửa',
     deleted_by: 'Người xóa',
     deleted_at: 'Ngày xóa',
-    updating: 'Đang cập nhật...'
+    updating: 'Đang cập nhật...',
+    color: 'Mầu sắc'
   },
   success: {
     insert: 'Thêm mới bản ghi thành công',
