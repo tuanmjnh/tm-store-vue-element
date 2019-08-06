@@ -70,7 +70,7 @@ import i18n from '@/lang'
 import TimelineLog from '@/components/TimelineLog'
 import * as api from '@/api/firebase/roles'
 import { update, deepClone } from '@/utils'
-import { constantRoutes, asyncRoutes } from '@/router'
+import { constantRoutes, asyncRoutes, resetRouter, router } from '@/router'
 const routes = deepClone([...constantRoutes, ...asyncRoutes])
 export default {
   components: { 'time-line-log': TimelineLog },
@@ -87,7 +87,6 @@ export default {
       tabs: 'one',
       form: {},
       routes: [],
-      routesException: [],
       defaultProps: {
         children: 'children',
         label: 'title'
@@ -124,7 +123,7 @@ export default {
             })
             .finally(() => { this.loading = false })
         }
-        // this.checkStrictly = true
+        this.checkStrictly = true
         if (this.form.routes && this.form.routes.length > 0) {
           this.$nextTick(() => {
             // const routes = this.generateRoutes(this.form.routes)
@@ -132,6 +131,7 @@ export default {
             // console.log(this.form.routes)
             this.$refs.tree.setCheckedKeys(this.form.routes)
             // set checked state of a node not affects its father and child nodes
+            // console.log(this.$refs.tree.getHalfCheckedKeys())
             this.checkStrictly = false
           })
         }
@@ -168,15 +168,6 @@ export default {
       const res = []
 
       for (let route of routes) {
-        // Routes Exception
-        if (route.exception) this.routesException.push(route.name)
-        // {
-        // this.routesException.push({
-        //   path: path.resolve(basePath, route.path),
-        //   title: route.meta && route.meta.title,
-        //   name: route.name
-        // })
-        // }
         // skip some route
         if (route.hidden && route.constant) { continue }
 
@@ -253,17 +244,27 @@ export default {
     onSubmit(action) {
       // const checkedKeys = this.$refs.tree.getCheckedKeys()
       // const _routes = this.generateTree(routes, '/', checkedKeys)
-      this.form.routes = this.$refs.tree.getCheckedKeys()
-      if (this.routesException.length > 0) this.form.routes = this.form.routes.concat(this.routesException)
-      console.log(this.form.routes)
+      // this.checkStrictly = false
+      this.form.routes = [...this.$refs.tree.getCheckedKeys(), ...this.$refs.tree.getHalfCheckedKeys()]
       if (this.item) {
         this.$refs.form.validate(valid => {
           if (valid) {
             this.loading_add = true
-            api.edit({ id: this.item.id, data: this.form }).then((x) => {
+            api.edit({ id: this.item.id, data: this.form }).then(async (x) => {
               if (x) this.form.log.unshift(x)
               update({ data: this.items, element: this.form, key: 'id' })
               this.$message.success(this.$t('success.update'))
+              // this.checkStrictly = false
+              if (this.$store.state.auth.user.roles.includes(this.form.id)) {
+                resetRouter()
+                await this.$store.commit('auth/SET_ROLES', this.$store.state.roles.items)
+                const accessRoutes = await this.$store.dispatch('permission/generateRoutes', [this.form])
+                // // dynamically add accessible routes
+                router.addRoutes(accessRoutes)
+                // add exception routes
+                router.addRoutes(this.$store.state.permission.exception)
+              }
+              // resetRouter()
             }).catch((err) => {
               this.$message.error(this.$t(err.message))
             }).finally(() => {

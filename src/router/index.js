@@ -13,8 +13,7 @@ import table from './modules/demo/table'
 import nested from './modules/demo/nested'
 import permission from './modules/demo/permission'
 import example from './modules/demo/example'
-import { guide, documentation, icon, tab, theme, clipboard, i18n, externalLink } from './modules/demo/common'
-import { error, errorLog } from './modules/demo/error'
+import error from './modules/demo/error'
 import { excel, zip, pdf } from './modules/demo/export'
 
 // vue-loader at least v13.0.0+
@@ -167,14 +166,16 @@ export const asyncRoutes = [
   },
   {
     path: '/profile',
-    name: '/profile',
+    name: 'profile',
     component: Layout,
-    redirect: '/profile/index',
+    // alwaysShow: true, // will always show the root menu
+    // redirect: '/profile/index',
     hidden: true,
+    meta: { title: 'profile' },
     children: [
       {
-        path: 'profile/index',
-        name: 'profile',
+        path: 'index',
+        name: 'profile/index',
         component: () => import('@/views/profile/index'),
         meta: { title: 'profile', icon: 'user', noCache: true }
       }
@@ -183,7 +184,7 @@ export const asyncRoutes = [
   // Demo app
   {
     path: '/demo',
-    name: 'Demo',
+    name: 'demo',
     alwaysShow: true, // will always show the root menu
     component: Layout,
     redirect: 'noRedirect',
@@ -192,7 +193,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'guide',
-        name: 'Guide',
+        name: 'demo/guide',
         component: () => import('@/views/demo/guide/index'),
         meta: { title: 'guide', icon: 'guide', noCache: true }
       },
@@ -202,166 +203,51 @@ export const asyncRoutes = [
         component: () => import('@/views/demo/documentation/index'),
         meta: { title: 'documentation', icon: 'documentation', affix: false }
       },
-      {
-        path: 'permission',
-        name: 'Permission',
-        component: () => import('@/views/demo'),
-        redirect: 'permission/page',
-        meta: { title: 'permission', icon: 'lock', roles: ['admin', 'editor'] }, // you can set roles in root nav
-        children: [
-          {
-            path: 'page',
-            name: 'PagePermission',
-            component: () => import('@/views/demo/permission/page'),
-            meta: { title: 'pagePermission', roles: ['admin'] } // or you can only set roles in sub nav
-          },
-          {
-            path: 'directive',
-            name: 'DirectivePermission',
-            component: () => import('@/views/demo/permission/directive'),
-            meta: { title: 'directivePermission' } // if do not set roles, means: this page does not require permission
-          },
-          {
-            path: 'role',
-            name: 'RolePermission',
-            component: () => import('@/views/demo/permission/role'),
-            meta: { title: 'rolePermission', roles: ['admin'] }
-          }
-        ]
-      },
+      permission,
       components,
-      // charts,
-      {
-        path: 'charts',
-        name: 'Charts',
-        component: () => import('@/views/demo'),
-        redirect: 'charts/keyboard',
-        meta: { title: 'charts', icon: 'chart' },
-        children: [
-          {
-            path: 'keyboard',
-            name: 'KeyboardChart',
-            component: () => import('@/views/demo/charts/keyboard'),
-            meta: { title: 'keyboardChart', noCache: true }
-          },
-          {
-            path: 'line',
-            name: 'LineChart',
-            component: () => import('@/views/demo/charts/line'),
-            meta: { title: 'lineChart', noCache: true }
-          },
-          {
-            path: 'mix-chart',
-            name: 'MixChart',
-            component: () => import('@/views/demo/charts/mix-chart'),
-            meta: { title: 'mixChart', noCache: true }
-          }
-        ]
-      },
-      // nested,
-      {
-        path: 'nested',
-        name: 'Nested',
-        component: () => import('@/views/demo'),
-        redirect: '/demo/nested/menu1/menu1-1',
-        meta: { title: 'nested', icon: 'nested' },
-        children: [
-          {
-            path: 'menu1',
-            name: 'Menu1',
-            component: () => import('@/views/demo/nested/menu1/index'), // Parent router-view
-            meta: { title: 'menu1' },
-            redirect: '/nested/menu1/menu1-1',
-            children: [
-              {
-                path: 'menu1-1',
-                name: 'Menu1-1',
-                component: () => import('@/views/demo/nested/menu1/menu1-1'),
-                meta: { title: 'menu1-1' }
-              },
-              {
-                path: 'menu1-2',
-                name: 'Menu1-2',
-                component: () => import('@/views/demo/nested/menu1/menu1-2'),
-                redirect: '/nested/menu1/menu1-2/menu1-2-1',
-                meta: { title: 'menu1-2' },
-                children: [
-                  {
-                    path: 'menu1-2-1',
-                    name: 'Menu1-2-1',
-                    component: () => import('@/views/demo/nested/menu1/menu1-2/menu1-2-1'),
-                    meta: { title: 'menu1-2-1' }
-                  },
-                  {
-                    path: 'menu1-2-2',
-                    name: 'Menu1-2-2',
-                    component: () => import('@/views/demo/nested/menu1/menu1-2/menu1-2-2'),
-                    meta: { title: 'menu1-2-2' }
-                  }
-                ]
-              },
-              {
-                path: 'menu1-3',
-                name: 'Menu1-3',
-                component: () => import('@/views/demo/nested/menu1/menu1-3'),
-                meta: { title: 'menu1-3' }
-              }
-            ]
-          },
-          {
-            path: 'menu2',
-            name: 'Menu2',
-            component: () => import('@/views/demo/nested/menu2/index'),
-            meta: { title: 'menu2' }
-          }
-        ]
-      },
-      // table,
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/demo'),
-        redirect: '/demo/table/complex-table',
-        meta: { title: 'Table', icon: 'table' },
-        children: [
-          {
-            path: 'dynamic-table',
-            name: 'DynamicTable',
-            component: () => import('@/views/demo/table/dynamic-table/index'),
-            meta: { title: 'dynamicTable' }
-          },
-          {
-            path: 'drag-table',
-            name: 'DragTable',
-            component: () => import('@/views/demo/table/drag-table'),
-            meta: { title: 'dragTable' }
-          },
-          {
-            path: 'inline-edit-table',
-            name: 'InlineEditTable',
-            component: () => import('@/views/demo/table/inline-edit-table'),
-            meta: { title: 'inlineEditTable' }
-          },
-          {
-            path: 'complex-table',
-            name: 'ComplexTable',
-            component: () => import('@/views/demo/table/complex-table'),
-            meta: { title: 'complexTable' }
-          }
-        ]
-      },
+      charts,
+      nested,
+      table,
       example,
-      icon,
-      tab,
+      {
+        path: 'icon',
+        name: 'demo/icon',
+        component: () => import('@/views/demo/icons/index'),
+        meta: { title: 'icons', icon: 'icon', noCache: true }
+      },
+      {
+        path: 'tab',
+        name: 'demo/tab',
+        component: () => import('@/views/demo/tab/index'),
+        meta: { title: 'tab', icon: 'tab' }
+      },
       error,
-      errorLog,
       excel,
       zip,
       pdf,
-      theme,
-      clipboard,
-      i18n,
-      externalLink
+      {
+        path: 'theme',
+        name: 'demo/theme',
+        component: () => import('@/views/demo/theme/index'),
+        meta: { title: 'theme', icon: 'theme' }
+      },
+      {
+        path: 'clipboard',
+        name: 'demo/clipboard',
+        component: () => import('@/views/demo/clipboard/index'),
+        meta: { title: 'clipboardDemo', icon: 'clipboard' }
+      },
+      {
+        path: 'i18n',
+        name: 'demo/i18n',
+        component: () => import('@/views/demo/i18n-demo/index'),
+        meta: { title: 'i18n', icon: 'international' }
+      },
+      {
+        path: 'https://github.com/PanJiaChen/vue-element-admin',
+        name: 'demo/external-link',
+        meta: { title: 'externalLink', icon: 'link' }
+      }
     ]
   },
   { path: '*', name: '404', redirect: '/404', hidden: true, constant: true, exception: true }
@@ -387,12 +273,18 @@ const createRouter = () => new Router({
   routes: constantRoutes
 })
 
-const router = createRouter()
+export const router = createRouter()
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
+}
+
+export function addRoutes(routers) {
+  console.log(router.options.routes)
+  routers = routers.filter(x => { if (!router.includes(x.name)) return x })
+  router.addRoutes(routers)
 }
 
 export default router

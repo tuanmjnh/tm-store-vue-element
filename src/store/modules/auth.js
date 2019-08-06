@@ -39,6 +39,7 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     if (state.user && state.user.roles && state.user.roles.length > 0) {
+      state.routes = []
       state.roles = roles.filter(x => {
         if (state.user.roles.includes(x.id)) {
           pushIfNotExist(state.routes, x.routes)
