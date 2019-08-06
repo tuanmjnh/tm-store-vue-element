@@ -51,6 +51,7 @@ export const constantRoutes = [
     path: '/redirect',
     component: Layout,
     hidden: true,
+    constant: true,
     children: [
       {
         path: '/redirect/:path*',
@@ -61,27 +62,32 @@ export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index'),
-    hidden: true
+    hidden: true,
+    constant: true
   },
   {
     path: '/auth-redirect',
     component: () => import('@/views/login/auth-redirect'),
-    hidden: true
+    hidden: true,
+    constant: true
   },
   {
     path: '/404',
     component: () => import('@/views/error-page/404'),
-    hidden: true
+    hidden: true,
+    constant: true
   },
   {
     path: '/401',
     component: () => import('@/views/error-page/401'),
-    hidden: true
+    hidden: true,
+    constant: true
   },
   {
     path: '',
     component: Layout,
     redirect: 'dashboard',
+    constant: true,
     children: [
       {
         path: 'dashboard',
@@ -103,7 +109,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: 'noRedirect',
     alwaysShow: true, // will always show the root menu
-    name: 'Manager',
+    name: 'manager',
     meta: {
       title: 'manager',
       icon: 'segmdl2-defender-app',
@@ -113,13 +119,13 @@ export const asyncRoutes = [
       {
         path: 'users',
         component: () => import('@/views/users/index'),
-        name: 'users',
+        name: 'manager/users',
         meta: { title: 'users', icon: 'user', noCache: true, flag: 1 }
       },
       {
         path: 'roles',
         component: () => import('@/views/roles/index'),
-        name: 'roles',
+        name: 'manager/roles',
         meta: { title: 'roles', icon: 'lock', noCache: true }
       }
     ]
@@ -135,39 +141,40 @@ export const asyncRoutes = [
       {
         path: 'list',
         component: () => import('@/views/template/list'),
-        name: 'template-list',
+        name: 'template/list',
         meta: { title: 'template_list', icon: 'list', noCache: true, flag: 1 }
       },
       {
         path: 'add',
         component: () => import('@/views/template/add'),
-        name: 'template-add',
+        name: 'template/add',
         meta: { title: 'template_add', icon: 'edit', noCache: true }
       },
       {
         path: 'edit/:id',
         component: () => import('@/views/template/add'),
-        name: 'template_edit',
+        name: 'template/edit',
         meta: { title: 'template_edit', noCache: true, activeMenu: '/template/list' },
         hidden: true
       },
       {
         path: 'trash',
         component: () => import('@/views/template/list'),
-        name: 'template-trash',
+        name: 'template/trash',
         meta: { title: 'template_trash', icon: 'trash', noCache: true, flag: 0 }
       }
     ]
   },
   {
     path: '/profile',
+    name: '/profile',
     component: Layout,
     redirect: '/profile/index',
     hidden: true,
     children: [
       {
-        path: 'index',
-        name: 'Profile',
+        path: 'profile/index',
+        name: 'profile',
         component: () => import('@/views/profile/index'),
         meta: { title: 'profile', icon: 'user', noCache: true }
       }
@@ -357,7 +364,7 @@ export const asyncRoutes = [
       externalLink
     ]
   },
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', name: '404', redirect: '/404', hidden: true, constant: true, exception: true }
 ]
 
 // const r = function(router) {

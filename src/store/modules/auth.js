@@ -1,11 +1,14 @@
 import firebase from '@/api/firebase/index'
 import { getToken, setToken, removeToken, getUserSetting, setUserSetting, removeUserSetting } from '@/utils/auth'
 import message from '@/utils/message'
+import { pushIfNotExist } from '@/utils'
 import router, { resetRouter } from '@/router'
 const collection = firebase.firestore().collection('users')
 
 const state = {
   user: {},
+  roles: [],
+  routes: [],
   setting: {
     cookie: true,
     show: true,
@@ -34,6 +37,18 @@ const mutations = {
       // roles: ['admin']
     }
   },
+  SET_ROLES: (state, roles) => {
+    if (state.user && state.user.roles && state.user.roles.length > 0) {
+      state.roles = roles.filter(x => {
+        if (state.user.roles.includes(x.id)) {
+          pushIfNotExist(state.routes, x.routes)
+          return x
+        }
+      })
+    }
+    // console.log(state.roles)
+    // console.log(state.routes)
+  },
   SET_TOKEN: (state, token) => {
     state.token = token
     setToken(token)
@@ -46,6 +61,7 @@ const mutations = {
     } else {
       state.user.setting = { ...state.user.setting, ...user.setting }
     }
+    // console.log(state.user)
     // console.log(getUserSetting())
   },
   CHANGE_SETTING(state, item) {
@@ -88,6 +104,7 @@ const actions = {
         .then(doc => {
           if (doc.exists) {
             commit('SET_USER', doc.data())
+            commit('SET_ROLES', rootState.roles.items)
             // console.log(doc.data())
             resolve(doc.data())
           }

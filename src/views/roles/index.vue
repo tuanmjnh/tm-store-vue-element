@@ -72,13 +72,14 @@
     <!-- <loading-content v-if="loading"></loading-content> -->
     <el-table ref="table" v-loading="loading" :data="items" :default-sort="{prop: 'key', order: 'ascending'}">
       <el-table-column type="selection" width="55" fixed />
-      <el-table-column prop="key" :label="$t('roles.key')" min-width="250" sortable />
-      <el-table-column prop="name" :label="$t('roles.name')" min-width="300" sortable>
+      <el-table-column prop="key" :label="$t('roles.key')" min-width="150" sortable />
+      <el-table-column prop="name" :label="$t('roles.name')" min-width="200" sortable>
         <template slot-scope="scope">
           <span :style="{color:scope.row.color}">{{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="desc" :label="$t('global.desc')" min-width="350" sortable />
+      <el-table-column prop="type" :label="$t('global.type')" min-width="100" sortable />
+      <el-table-column prop="desc" :label="$t('global.desc')" min-width="250" sortable />
       <el-table-column label="#" width="180" align="center">
         <template slot="header" slot-scope="scope">
           <el-input v-model="params.search" :d-val="scope" :placeholder="$t('global.search')" />

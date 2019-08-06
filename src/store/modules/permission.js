@@ -28,11 +28,12 @@ export function filterAsyncRoutes(routes, authRoutes, parent = '') {
   routes.forEach(route => {
     const tmp = { ...route }
     // console.log(tmp.path.indexOf(`${parent}/`))
+    console.log(tmp)
     const path = parent ? `${parent}/${tmp.path}` : tmp.path
     // console.log(path)
-    if (authRoutes.includes(path)) {
+    if (authRoutes.includes(tmp.name)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, authRoutes, path)
+        tmp.children = filterAsyncRoutes(tmp.children, authRoutes)
       }
       res.push(tmp)
     }
@@ -58,15 +59,15 @@ const mutations = {
 
 const actions = {
   generateRoutes({ commit, rootState }, roles) {
-    let authRoutes = []
-    rootState.roles.items.forEach(e => { if (roles.includes(e.id)) authRoutes = authRoutes.concat(e.routes) })
+    // let authRoutes = []
+    // rootState.roles.items.forEach(e => { if (roles.includes(e.id)) authRoutes = authRoutes.concat(e.routes) })
     return new Promise(resolve => {
       // const accessedRoutes = filterAsyncRoutes(asyncRoutes, authRoutes)
 
       let accessedRoutes
 
       if (roles.includes('admin')) accessedRoutes = asyncRoutes || []
-      else accessedRoutes = filterAsyncRoutes(asyncRoutes, authRoutes)
+      else accessedRoutes = filterAsyncRoutes(asyncRoutes, rootState.auth.routes) // filterAsyncRoutes(asyncRoutes, authRoutes)
 
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)

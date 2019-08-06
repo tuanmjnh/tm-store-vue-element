@@ -104,7 +104,8 @@ export default {
     deleted_by: 'Deleted by',
     deleted_at: 'Deleted by',
     updating: 'Updating...',
-    color: 'Color'
+    color: 'Color',
+    type: 'Type'
   },
   success: {
     insert: 'Insert record success',

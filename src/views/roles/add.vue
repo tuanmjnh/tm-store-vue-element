@@ -14,6 +14,13 @@
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
             <el-input v-model="form.name" v-trim v-uppercasefirst type="text" />
           </el-form-item>
+          <el-form-item prop="type" :label="$t('global.type')"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline"
+            :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
+            <el-select v-model="form.type" placeholder="Select">
+              <el-option v-for="type in types" :key="type.key" :label="type.text" :value="type.key" />
+            </el-select>
+          </el-form-item>
           <el-form-item prop="color" :label="$t('global.color')"
             class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
@@ -27,7 +34,7 @@
       </el-tab-pane>
       <el-tab-pane :label="$t('roles.menus')" name="two">
         <el-tree ref="tree" :check-strictly="checkStrictly" :data="routes" :props="defaultProps" show-checkbox
-          node-key="path" class="permission-tree" />
+          node-key="name" class="permission-tree" />
       </el-tab-pane>
       <el-tab-pane v-if="item" :label="$t('tabs.updated')" name="three" class="details">
         <el-table v-if="loading" v-loading="loading" empty-text=" " />
@@ -80,6 +87,7 @@ export default {
       tabs: 'one',
       form: {},
       routes: [],
+      routesException: [],
       defaultProps: {
         children: 'children',
         label: 'title'
@@ -89,8 +97,14 @@ export default {
         key: '',
         name: '',
         desc: '',
+        type: 'personal',
         routes: []
       }
+    }
+  },
+  computed: {
+    types() {
+      return this.$store.state.roles.types
     }
   },
   watch: {
@@ -154,8 +168,17 @@ export default {
       const res = []
 
       for (let route of routes) {
+        // Routes Exception
+        if (route.exception) this.routesException.push(route.name)
+        // {
+        // this.routesException.push({
+        //   path: path.resolve(basePath, route.path),
+        //   title: route.meta && route.meta.title,
+        //   name: route.name
+        // })
+        // }
         // skip some route
-        if (route.hidden) { continue }
+        if (route.hidden && route.constant) { continue }
 
         const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
 
@@ -165,8 +188,8 @@ export default {
 
         const data = {
           path: path.resolve(basePath, route.path),
-          title: route.meta && route.meta.title
-
+          title: route.meta && route.meta.title,
+          name: route.name
         }
 
         // recursive child routes
@@ -231,6 +254,8 @@ export default {
       // const checkedKeys = this.$refs.tree.getCheckedKeys()
       // const _routes = this.generateTree(routes, '/', checkedKeys)
       this.form.routes = this.$refs.tree.getCheckedKeys()
+      if (this.routesException.length > 0) this.form.routes = this.form.routes.concat(this.routesException)
+      console.log(this.form.routes)
       if (this.item) {
         this.$refs.form.validate(valid => {
           if (valid) {

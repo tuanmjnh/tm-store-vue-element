@@ -1,19 +1,19 @@
 <template>
   <div class="dashboard-container">
-    <component :is="currentRole" />
+    <component :is="dashboard" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import adminDashboard from './admin'
-import editorDashboard from './editor'
+import editor from './editor'
+import admin from './admin'
 export default {
   name: 'Dashboard',
-  components: { adminDashboard, editorDashboard },
+  components: { editor, admin },
   data() {
     return {
-      currentRole: 'adminDashboard'
+      dashboard: 'editor'
     }
   },
   computed: {
@@ -22,18 +22,7 @@ export default {
     // ])
   },
   created() {
-    if (!this.$store.state.auth.user.roles.includes('admin')) {
-      this.currentRole = 'editorDashboard'
-    }
-    // auth.currentUser.updateProfile({
-    //   displayName: "tuanmjnh",
-    //   phoneNumber: '0888814222',
-    //   photoURL: "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
-    // }).then(function() {
-    //   console.log(auth.currentUser)
-    // }).catch(function(err) {
-    //   console.log(err)
-    // });
+    if (this.$store.state.auth.roles.some(x => x.type === 'manager')) this.dashboard = 'admin'
   }
 }
 </script>

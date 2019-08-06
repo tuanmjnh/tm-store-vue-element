@@ -445,25 +445,6 @@ export function remove({ data, element, key }) {
   return data
 }
 
-export function pushIfNotExist({ data, element, comparer }) {
-  if (comparer) {
-    if (data.indexOf(comparer) < 0) data.push(element)
-  } else {
-    if (Array.isArray(element)) {
-      element.forEach(e => {
-        if (data.indexOf(e) < 0) data.push(e)
-      })
-    } else {
-      if (data.indexOf(element) < 0) data.push(element)
-    }
-  }
-  return data
-}
-
-export function RandomDate(start, end) {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-}
-
 export function NewGuid() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
@@ -485,6 +466,7 @@ export function NewGuid() {
     s4()
   )
 }
+
 export function trim(obj) {
   if (Array.isArray(obj)) {
     for (let index = 0; index < obj.length; index++) {
@@ -499,6 +481,26 @@ export function trim(obj) {
   }
   return obj
 }
+
+export function pushIfNotExist(data, element, comparer) {
+  if (comparer) {
+    if (data.indexOf(comparer) < 0) data.push(element)
+  } else {
+    if (Array.isArray(element)) {
+      element.forEach(e => {
+        if (data.indexOf(e) < 0) data.push(e)
+      })
+    } else {
+      if (data.indexOf(element) < 0) data.push(element)
+    }
+  }
+  return data
+}
+
+export function RandomDate(start, end) {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+}
+
 // onlyUnique Array
 export function onlyUnique(value, index, self) {
   // console.log(value)

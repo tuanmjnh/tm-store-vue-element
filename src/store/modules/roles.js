@@ -2,7 +2,11 @@ import db from '@/api/firebase/index'
 const collection = 'roles'
 
 const state = {
-  items: {}
+  items: {},
+  types: [
+    { key: 'personal', text: 'Personal' },
+    { key: 'manager', text: 'Manager' }
+  ]
   // default: {
   //   id: '',
   //   key: '',
