@@ -22,7 +22,7 @@ export default {
     // ])
   },
   created() {
-    if (this.$store.state.auth.roles.some(x => x.type === 'manager')) this.dashboard = 'admin'
+    if (this.$store.state.auth.roles.some(x => x.level < 3)) this.dashboard = 'admin'
   }
 }
 </script>

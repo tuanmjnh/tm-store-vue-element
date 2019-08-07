@@ -105,7 +105,10 @@ export default {
     deleted_at: 'Deleted by',
     updating: 'Updating...',
     color: 'Color',
-    type: 'Type'
+    type: 'Type',
+    hello: 'Hello',
+    order: 'Order',
+    level: 'Level'
   },
   success: {
     insert: 'Insert record success',
@@ -170,7 +173,8 @@ export default {
     note: 'Introduction',
     disabled: 'Locked',
     phone_region: 'Phone region',
-    email_verified: 'email Verified'
+    email_verified: 'email Verified',
+    about_me: 'About me'
   },
   documentation: {
     documentation: 'Documentation',

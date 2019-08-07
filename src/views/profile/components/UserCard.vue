@@ -1,13 +1,13 @@
 <template>
   <el-card style="margin-bottom:20px;">
     <div slot="header" class="clearfix">
-      <span>About me</span>
+      <span>{{ $t('users.about_me') }}</span>
     </div>
 
     <div class="user-profile">
       <div class="box-center">
         <pan-thumb :image="user.photoURL" :height="'100px'" :width="'100px'" :hoverable="false">
-          <div>Hello</div> {{ user.role }}
+          <div>{{ $t('global.hello') }}</div> {{ user.role }}
         </pan-thumb>
       </div>
       <div class="box-center">

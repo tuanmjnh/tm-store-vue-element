@@ -56,7 +56,9 @@ export default {
     // if (this.user.phoneNumber) this.user.phoneNumber = this.user.phoneNumber.replace(`+${this.user.phoneRegion}`, '')
     // this.getUser()
     if (this.user.phoneNumber) this.user.phoneNumber = this.user.phoneNumber.replace(`+${this.user.phoneRegion}`, '')
-    this.user.role = this.user.roles.join(' | ')
+    if (this.$store.state.auth.roles && this.$store.state.auth.roles.length > 0) {
+      this.user.role = this.$store.state.auth.roles[0].name
+    }
   },
   methods: {
     getUser() {

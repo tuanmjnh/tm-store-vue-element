@@ -49,7 +49,7 @@ export default {
 }
 
 .pan-info-roles-container {
-  padding: 20px;
+  padding: 23px;
   text-align: center;
 }
 

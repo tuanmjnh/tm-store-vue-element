@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-editor-container">
     <div class=" clearfix">
-      <pan-thumb :image="user.photoURL" style="float: left">
+      <pan-thumb v-if="user.photoURL" :image="user.photoURL" style="float: left">
         Your roles:
         <span v-for="item in user.roles" :key="item" class="pan-info-roles">{{ item }}</span>
       </pan-thumb>

@@ -1,16 +1,16 @@
 import router from './router'
 import store from './store'
 import { Message } from 'element-ui'
-import NProgress from 'nprogress' // progress bar
+// import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken, checkToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 // firebase
 import firebase from '@/api/firebase/index'
 
-NProgress.configure({ showSpinner: false }) // NProgress Configuration
+// NProgress.configure({ showSpinner: false }) // NProgress Configuration
 // start progress bar
-NProgress.start()
+// NProgress.start()
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 router.beforeEach(async (to, from, next) => {
@@ -23,17 +23,17 @@ router.beforeEach(async (to, from, next) => {
   //   const token = await auth.currentUser.getIdToken()
   //   console.log(token)
   // }
-  if (firebase.auth().currentUser) {
+  const user = await firebase.auth().currentUser
+  if (user) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
-      NProgress.done()
+      // NProgress.done()
     } else {
       // determine whether the user has obtained his permission roles through getInfo
       // const hasRoles = store.state.auth.user.roles && store.state.auth.user.roles.length > 0
       // console.log(store.state.auth.user.roles)
-      let roles = store.state.auth.user.roles
-      if (roles && roles.length > 0) {
+      if (store.state.auth.user.roles && store.state.auth.user.roles.length > 0) {
         next()
       } else {
         try {
@@ -46,15 +46,16 @@ router.beforeEach(async (to, from, next) => {
           const user = await store.dispatch('auth/getUser', { uid: store.state.auth.user.uid })
           // store.state.auth.roles = 'admin'
           // const user = { roles: 'admin' }
-          roles = user.roles
+          // roles = user.roles
           // roles = store.state.auth.roles
+          // next()
         } catch (err) {
           // remove token and go to login page to re-login
           await store.dispatch('auth/logout')
           // Message.error(error || 'Has Error')
           console.log(err)
           next(`/login?redirect=${to.path}`)
-          NProgress.done()
+          // NProgress.done()
         }
       }
       // Check is added routes
@@ -62,7 +63,7 @@ router.beforeEach(async (to, from, next) => {
         await store.dispatch('permission/isAddRoutes', false)
         store.state.permission.isAddRoutes = false
         // generate accessible routes map based on roles
-        const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+        const accessRoutes = await store.dispatch('permission/generateRoutes', store.state.auth.user.roles)
         // const accessRoutes = []
         // dynamically add accessible routes
         router.addRoutes(accessRoutes)
@@ -83,12 +84,12 @@ router.beforeEach(async (to, from, next) => {
     } else {
       // other pages that do not have permission to access are redirected to the login page.
       next(`/login?redirect=${to.path}`)
-      NProgress.done()
+      // NProgress.done()
     }
   }
 })
 
 router.afterEach(() => {
   // finish progress bar
-  NProgress.done()
+  // NProgress.done()
 })

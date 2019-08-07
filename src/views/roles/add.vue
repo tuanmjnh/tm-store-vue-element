@@ -12,19 +12,24 @@
           <el-form-item prop="name" :label="$t('roles.name')"
             class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-            <el-input v-model="form.name" v-trim v-uppercasefirst type="text" />
+            <el-input v-model="form.name" v-trim v-uppercasefirst />
           </el-form-item>
-          <el-form-item prop="type" :label="$t('global.type')"
+          <!-- <el-form-item prop="type" :label="$t('global.type')"
             class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
             <el-select v-model="form.type" placeholder="Select">
               <el-option v-for="type in types" :key="type.key" :label="type.text" :value="type.key" />
             </el-select>
+          </el-form-item> -->
+          <el-form-item prop="level" :label="$t('global.level')"
+            class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline"
+            :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
+            <el-input v-model.number="form.level" />
           </el-form-item>
           <el-form-item prop="color" :label="$t('global.color')"
             class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline"
             :rules="[{required: true, message: $t('error.required'), trigger: 'blur'}]">
-            <el-input v-model="form.color" v-trim v-lowercase type="text" />
+            <el-input v-model="form.color" v-trim v-lowercase />
           </el-form-item>
           <el-form-item :label="$t('global.desc')"
             class="el-col el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-xs-nline el-col-sm-nline">
@@ -96,15 +101,18 @@ export default {
         key: '',
         name: '',
         desc: '',
-        type: 'personal',
+        // type: 'personal',
+        level: 1,
+        // order: 1,
+        color: '#1890FF',
         routes: []
       }
     }
   },
   computed: {
-    types() {
-      return this.$store.state.roles.types
-    }
+    // types() {
+    //   return this.$store.state.roles.types
+    // }
   },
   watch: {
     dialog: {
@@ -281,7 +289,8 @@ export default {
               this.loading_drafts = true
             }
             api.add({ data: this.form }).then((x) => {
-              this.$emit('update:items', [...this.items, ...[x]])
+              // this.$emit('update:items', [...this.items, ...[x]])
+              this.$store.commit('roles/ADD_ITEMS', x)
               this.reset()
               this.$message.success(this.$t('success.insert'))
             }).catch((err) => {

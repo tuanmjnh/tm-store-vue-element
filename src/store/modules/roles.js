@@ -17,11 +17,14 @@ const state = {
 }
 
 const mutations = {
+  ADD_ITEMS(state, item) {
+    state.items.push(item)
+  }
 }
 
 const actions = {
   select({ state }, params) {
-    let qry = db.firestore().collection(collection).orderBy('name', 'asc')
+    let qry = db.firestore().collection(collection) // .orderBy('order', 'asc')
     // Filter data
     if (params) {
       if (params.conditions && params.conditions.length > 0) {

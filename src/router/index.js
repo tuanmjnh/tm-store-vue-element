@@ -7,6 +7,7 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 /* Router Modules */
+import common from './modules/demo/common'
 import components from './modules/demo/components'
 import charts from './modules/demo/charts'
 import table from './modules/demo/table'
@@ -45,6 +46,7 @@ import { excel, zip, pdf } from './modules/demo/export'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
+
 export const constantRoutes = [
   {
     path: '/redirect',
@@ -104,16 +106,29 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    path: '/profile',
+    name: 'profile',
+    component: Layout,
+    // alwaysShow: true, // will always show the root menu
+    // redirect: '/profile/index',
+    hidden: true,
+    meta: { title: 'profile' },
+    children: [
+      {
+        path: 'index',
+        name: 'profile/index',
+        component: () => import('@/views/profile/index'),
+        meta: { title: 'profile', icon: 'user', noCache: true }
+      }
+    ]
+  },
+  {
     path: '/manager',
     component: Layout,
     redirect: 'noRedirect',
     alwaysShow: true, // will always show the root menu
     name: 'manager',
-    meta: {
-      title: 'manager',
-      icon: 'segmdl2-defender-app',
-      roles: ['admin'] // you can set roles in root nav
-    },
+    meta: { title: 'manager', icon: 'segmdl2-defender-app', roles: ['admin'] }, // you can set roles in root nav
     children: [
       {
         path: 'users',
@@ -164,23 +179,6 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/profile',
-    name: 'profile',
-    component: Layout,
-    // alwaysShow: true, // will always show the root menu
-    // redirect: '/profile/index',
-    hidden: true,
-    meta: { title: 'profile' },
-    children: [
-      {
-        path: 'index',
-        name: 'profile/index',
-        component: () => import('@/views/profile/index'),
-        meta: { title: 'profile', icon: 'user', noCache: true }
-      }
-    ]
-  },
   // Demo app
   {
     path: '/demo',
@@ -190,65 +188,18 @@ export const asyncRoutes = [
     redirect: 'noRedirect',
     meta: { title: 'demo', icon: 'guide' },
     /** when your routing map is too long, you can split it into small modules **/
-    children: [
-      {
-        path: 'guide',
-        name: 'demo/guide',
-        component: () => import('@/views/demo/guide/index'),
-        meta: { title: 'guide', icon: 'guide', noCache: true }
-      },
-      {
-        path: 'documentation',
-        name: 'Documentation',
-        component: () => import('@/views/demo/documentation/index'),
-        meta: { title: 'documentation', icon: 'documentation', affix: false }
-      },
+    children: [...common, ...[
       permission,
       components,
       charts,
       nested,
       table,
       example,
-      {
-        path: 'icon',
-        name: 'demo/icon',
-        component: () => import('@/views/demo/icons/index'),
-        meta: { title: 'icons', icon: 'icon', noCache: true }
-      },
-      {
-        path: 'tab',
-        name: 'demo/tab',
-        component: () => import('@/views/demo/tab/index'),
-        meta: { title: 'tab', icon: 'tab' }
-      },
       error,
       excel,
       zip,
-      pdf,
-      {
-        path: 'theme',
-        name: 'demo/theme',
-        component: () => import('@/views/demo/theme/index'),
-        meta: { title: 'theme', icon: 'theme' }
-      },
-      {
-        path: 'clipboard',
-        name: 'demo/clipboard',
-        component: () => import('@/views/demo/clipboard/index'),
-        meta: { title: 'clipboardDemo', icon: 'clipboard' }
-      },
-      {
-        path: 'i18n',
-        name: 'demo/i18n',
-        component: () => import('@/views/demo/i18n-demo/index'),
-        meta: { title: 'i18n', icon: 'international' }
-      },
-      {
-        path: 'https://github.com/PanJiaChen/vue-element-admin',
-        name: 'demo/external-link',
-        meta: { title: 'externalLink', icon: 'link' }
-      }
-    ]
+      pdf
+    ]]
   },
   { path: '*', name: '404', redirect: '/404', hidden: true, constant: true, exception: true }
 ]

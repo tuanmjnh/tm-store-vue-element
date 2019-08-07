@@ -103,7 +103,10 @@ export default {
     deleted_at: 'Ngày xóa',
     updating: 'Đang cập nhật...',
     color: 'Mầu sắc',
-    type: 'Kiểu'
+    type: 'Kiểu',
+    hello: 'Xin chào',
+    order: 'Order',
+    level: 'Cấp độ'
   },
   success: {
     insert: 'Thêm mới bản ghi thành công',
@@ -168,7 +171,8 @@ export default {
     note: 'Gới thiệu',
     disabled: 'Đã khóa',
     phone_region: 'Mã vùng',
-    email_verified: 'Đã xác thực email'
+    email_verified: 'Đã xác thực email',
+    about_me: 'Thông tin'
   },
   documentation: {
     documentation: 'Tài liệu',

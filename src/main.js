@@ -84,6 +84,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
       // console.log(user.uid)
       // console.log(user.currentUser)
     }
+    store.state.$appLoading = false
     app = new Vue({
       el: '#app',
       router,

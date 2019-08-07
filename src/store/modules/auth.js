@@ -23,36 +23,49 @@ const state = {
 
 const mutations = {
   SET_AUTH: (state, user) => {
-    state.user = {
-      uid: user.uid,
-      email: user.email,
-      emailVerified: user.emailVerified,
-      phoneNumber: user.phoneNumber,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      disabled: user.disabled,
-      metadata: user.metadata,
-      providerData: user.providerData,
-      refreshToken: user.refreshToken
-      // roles: ['admin']
-    }
+    if (user) {
+      state.user = {
+        uid: user.uid,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        phoneNumber: user.phoneNumber,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        disabled: user.disabled,
+        metadata: user.metadata,
+        providerData: user.providerData,
+        refreshToken: user.refreshToken
+        // roles: ['admin']
+      }
+    } else state.user = {}
   },
   SET_ROLES: (state, roles) => {
-    if (state.user && state.user.roles && state.user.roles.length > 0) {
+    if (roles) {
+      if (state.user && state.user.roles && state.user.roles.length > 0) {
+        state.routes = []
+        state.roles = roles.filter(x => {
+          if (state.user.roles.includes(x.id)) {
+            pushIfNotExist(state.routes, x.routes)
+            return x
+          }
+        })
+      }
+    } else {
       state.routes = []
-      state.roles = roles.filter(x => {
-        if (state.user.roles.includes(x.id)) {
-          pushIfNotExist(state.routes, x.routes)
-          return x
-        }
-      })
+      state.roles = []
     }
     // console.log(state.roles)
     // console.log(state.routes)
   },
   SET_TOKEN: (state, token) => {
-    state.token = token
-    setToken(token)
+    if (token) {
+      state.token = token
+      setToken(token)
+    } else {
+      state.token = ''
+      removeToken()
+      resetRouter()
+    }
   },
   SET_USER: (state, user) => {
     state.user = { ...state.user, ...user }
@@ -129,9 +142,10 @@ const actions = {
       if (params && params.loading) rootState.$getLoading = true
       firebase.auth().signOut()
         .then(() => {
-          commit('SET_TOKEN', '')
-          removeToken()
-          resetRouter()
+          commit('SET_AUTH')
+          commit('SET_ROLES')
+          commit('SET_TOKEN')
+          commit('permission/SET_ADD_ROUTES', true, { root: true })
           resolve(true)
         })
         .catch((err) => {
