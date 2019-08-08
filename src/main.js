@@ -22,6 +22,10 @@ import './utils/error-log' // error log
 import * as directives from './directive' // global directive
 import * as filters from './filters' // global filters
 import './permission'
+
+// nprogress
+import NProgress from 'nprogress' // progress bar
+import 'nprogress/nprogress.css' // progress bar style
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
