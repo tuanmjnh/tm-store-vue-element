@@ -1,11 +1,16 @@
 <template>
   <div class="social-signup-container">
-    <div class="sign-btn" @click="onGoogle('google')">
-      <span class="gg-svg-container">
+    <div class="sign-btn" @click="onProvider('google')">
+      <span class="svg-container gg-svg-container">
         <svg-icon icon-class="google" class="icon" /></span>
       Google
     </div>
-    <div class="sign-btn" @click="onWechat('wechat')">
+    <div class="sign-btn" @click="onProvider('facebook')">
+      <span class="svg-container fb-svg-container">
+        <svg-icon icon-class="facebook" class="icon" /></span>
+      Facebook
+    </div>
+    <!-- <div class="sign-btn" @click="onWechat('wechat')">
       <span class="wx-svg-container">
         <svg-icon icon-class="wechat" class="icon" /></span>
       WeChat
@@ -14,7 +19,7 @@
       <span class="qq-svg-container">
         <svg-icon icon-class="qq" class="icon" /></span>
       QQ
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -25,11 +30,20 @@ import message from '@/utils/message'
 export default {
   name: 'SocialSignin',
   methods: {
-    onGoogle() {
-      const GoogleAuthProvider = new firebase.auth.GoogleAuthProvider()
-      firebase.auth().signInWithPopup(GoogleAuthProvider).then((result) => {
-        var token = result.credential.accessToken
-        var user = result.user
+    onProvider(provider) {
+      switch (provider) {
+        case 'google':
+          provider = new firebase.auth.GoogleAuthProvider()
+          break
+        default:
+          provider = new firebase.auth.FacebookAuthProvider()
+          break
+      }
+      // console.log(provider)
+      this.$store.dispatch('auth/loginProvider', { provider: provider }).then((result) => {
+        // var token = result.credential.accessToken
+        // var user = result.user
+        // console.log(result)
         this.$router.push({ path: this.redirect })
       }).catch((err) => {
         err.message = 'login.network_request_failed'
@@ -62,15 +76,14 @@ export default {
   .sign-btn {
     display: inline-block;
     cursor: pointer;
+    margin-right: 20px;
   }
   .icon {
     color: #fff;
     font-size: 24px;
     margin-top: 8px;
   }
-  .gg-svg-container,
-  .wx-svg-container,
-  .qq-svg-container {
+  .svg-container {
     display: inline-block;
     width: 40px;
     height: 40px;
@@ -83,6 +96,9 @@ export default {
   }
   .gg-svg-container {
     background-color: #4285f4;
+  }
+  .fb-svg-container {
+    background-color: #3c5a99;
   }
   .wx-svg-container {
     background-color: #24da70;

@@ -1,16 +1,16 @@
 import router from './router'
 import store from './store'
 import { Message } from 'element-ui'
-// import NProgress from 'nprogress' // progress bar
-// import 'nprogress/nprogress.css' // progress bar style
+import NProgress from 'nprogress' // progress bar
+import 'nprogress/nprogress.css' // progress bar style
 import { getToken, checkToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 // firebase
 import firebase from '@/api/firebase/index'
 
-// NProgress.configure({ showSpinner: false }) // NProgress Configuration
+NProgress.configure({ showSpinner: false }) // NProgress Configuration
 // start progress bar
-// NProgress.start()
+NProgress.start()
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 router.beforeEach(async (to, from, next) => {
@@ -28,7 +28,7 @@ router.beforeEach(async (to, from, next) => {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
-      // NProgress.done()
+      NProgress.done()
     } else {
       // determine whether the user has obtained his permission roles through getInfo
       // const hasRoles = store.state.auth.user.roles && store.state.auth.user.roles.length > 0
@@ -55,7 +55,7 @@ router.beforeEach(async (to, from, next) => {
           // Message.error(error || 'Has Error')
           console.log(err)
           next(`/login?redirect=${to.path}`)
-          // NProgress.done()
+          NProgress.done()
         }
       }
       // Check is added routes
@@ -84,12 +84,12 @@ router.beforeEach(async (to, from, next) => {
     } else {
       // other pages that do not have permission to access are redirected to the login page.
       next(`/login?redirect=${to.path}`)
-      // NProgress.done()
+      NProgress.done()
     }
   }
 })
 
 router.afterEach(() => {
   // finish progress bar
-  // NProgress.done()
+  NProgress.done()
 })

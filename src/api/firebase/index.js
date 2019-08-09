@@ -28,6 +28,7 @@ if (!firebase.apps.length) firebase.initializeApp(config)
 
 // const functions = require('firebase-functions')
 // export const GoogleAuthProvider = new firebase.auth.GoogleAuthProvider()
+// export const FacebookAuthProvider = new firebase.auth.FacebookAuthProvider()
 // export const auth = firebase.auth()
 // export const storage = firebase.storage()
 // export const database = firebase.database()

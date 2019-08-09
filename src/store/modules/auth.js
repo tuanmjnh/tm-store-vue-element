@@ -111,6 +111,27 @@ const actions = {
         .finally(() => { if (params && params.loading) rootState.$getLoading = false })
     })
   },
+  loginProvider({ commit, rootState }, params) {
+    return new Promise((resolve, reject) => {
+      if (params && params.loading) rootState.$getLoading = true
+      firebase.auth().signInWithPopup(params.provider).then(result => {
+        commit('SET_TOKEN', result.credential.accessToken)
+        commit('SET_AUTH', result.user)
+        resolve(result)
+      })
+        .catch((err) => {
+          console.log(err)
+          if (err.code === 'auth/invalid-email') err.message = 'login.auth_invalid_email'
+          else if (err.code === 'auth/user-not-found') err.message = 'login.auth_user_not_found'
+          else if (err.code === 'auth/wrong-password') err.message = 'login.auth_wrong_password'
+          else if (err.code === 'auth/too-many-requests') err.message = 'login.auth_too_many_requests'
+          else err.message = 'login.network_request_failed'
+          message.error(err)
+          reject(err)
+        })
+        .finally(() => { if (params && params.loading) rootState.$getLoading = false })
+    })
+  },
   getUser({ commit, rootState }, params) {
     return new Promise((resolve, reject) => {
       if (params && params.loading) rootState.$getLoading = true
