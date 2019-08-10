@@ -3,7 +3,7 @@ import { getToken, setToken, removeToken, getUserSetting, setUserSetting, remove
 import message from '@/utils/message'
 import { pushIfNotExist } from '@/utils'
 import router, { resetRouter } from '@/router'
-const collection = firebase.firestore().collection('users')
+const collection = 'users'
 
 const state = {
   user: {},
@@ -18,7 +18,8 @@ const state = {
     theme: '#1890ff',
     language: 'vi'
   },
-  token: getToken()
+  token: getToken(),
+  guest: 'guest'
 }
 
 const mutations = {
@@ -41,6 +42,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     if (roles) {
+      if (state.user.roles === state.guest) {
+        state.user.roles = roles.filter(x => x.key === state.user.roles).map(x => x.id)
+      }
       if (state.user && state.user.roles && state.user.roles.length > 0) {
         state.routes = []
         state.roles = roles.filter(x => {
@@ -118,30 +122,33 @@ const actions = {
         commit('SET_TOKEN', result.credential.accessToken)
         commit('SET_AUTH', result.user)
         resolve(result)
-      })
-        .catch((err) => {
-          console.log(err)
-          if (err.code === 'auth/invalid-email') err.message = 'login.auth_invalid_email'
-          else if (err.code === 'auth/user-not-found') err.message = 'login.auth_user_not_found'
-          else if (err.code === 'auth/wrong-password') err.message = 'login.auth_wrong_password'
-          else if (err.code === 'auth/too-many-requests') err.message = 'login.auth_too_many_requests'
-          else err.message = 'login.network_request_failed'
-          message.error(err)
-          reject(err)
-        })
-        .finally(() => { if (params && params.loading) rootState.$getLoading = false })
+        // guest
+      }).catch((err) => {
+        console.log(err)
+        if (err.code === 'auth/invalid-email') err.message = 'login.auth_invalid_email'
+        else if (err.code === 'auth/user-not-found') err.message = 'login.auth_user_not_found'
+        else if (err.code === 'auth/wrong-password') err.message = 'login.auth_wrong_password'
+        else if (err.code === 'auth/too-many-requests') err.message = 'login.auth_too_many_requests'
+        else err.message = 'login.network_request_failed'
+        message.error(err)
+        reject(err)
+      }).finally(() => { if (params && params.loading) rootState.$getLoading = false })
     })
   },
   getUser({ commit, rootState }, params) {
     return new Promise((resolve, reject) => {
       if (params && params.loading) rootState.$getLoading = true
-      collection.doc(params.uid).get()
+      firebase.firestore().collection(collection).doc(params.uid).get()
         .then(doc => {
           if (doc.exists) {
             commit('SET_USER', doc.data())
             commit('SET_ROLES', rootState.roles.items)
             // console.log(doc.data())
             resolve(doc.data())
+          } else {
+            commit('SET_USER', { roles: state.guest })
+            commit('SET_ROLES', rootState.roles.items)
+            resolve(state.guest)
           }
         })
         .catch((err) => {
@@ -191,7 +198,7 @@ const actions = {
         const data = {}
         data[`setting.${params.key}`] = params.value
         if (params && params.loading) rootState.$commitLoading = true
-        collection.doc(state.uid)
+        firebase.firestore().collection(collection).doc(state.uid)
           .update(data)
           .then((doc) => {
             commit('CHANGE_SETTING', params)

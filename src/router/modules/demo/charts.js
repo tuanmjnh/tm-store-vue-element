@@ -10,19 +10,19 @@ const chartsRouter = {
   children: [
     {
       path: 'keyboard',
-      name: 'demo/charts/keyboard',
+      name: 'demo/charts/keyboardChart',
       component: () => import('@/views/demo/charts/keyboard'),
       meta: { title: 'keyboardChart', noCache: true }
     },
     {
       path: 'line',
-      name: 'demo/charts/line',
+      name: 'demo/charts/lineChart',
       component: () => import('@/views/demo/charts/line'),
       meta: { title: 'lineChart', noCache: true }
     },
     {
       path: 'mix-chart',
-      name: 'demo/charts/mix',
+      name: 'demo/charts/mixChart',
       component: () => import('@/views/demo/charts/mix-chart'),
       meta: { title: 'mixChart', noCache: true }
     }

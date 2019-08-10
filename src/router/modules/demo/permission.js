@@ -10,19 +10,19 @@ const permissionRouter = {
   children: [
     {
       path: 'page',
-      name: 'demo/permission/page',
+      name: 'demo/permission/pagePermission',
       component: () => import('@/views/demo/permission/page'),
       meta: { title: 'pagePermission', roles: ['admin'] } // or you can only set roles in sub nav
     },
     {
       path: 'directive',
-      name: 'demo/permission/directive',
+      name: 'demo/permission/directivePermission',
       component: () => import('@/views/demo/permission/directive'),
       meta: { title: 'directivePermission' } // if do not set roles, means: this page does not require permission
     },
     {
       path: 'role',
-      name: 'demo/permission/role',
+      name: 'demo/permission/rolePermission',
       component: () => import('@/views/demo/permission/role'),
       meta: { title: 'rolePermission', roles: ['admin'] }
     }

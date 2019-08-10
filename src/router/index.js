@@ -93,11 +93,12 @@ export const constantRoutes = [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
+        name: 'dashboard',
         meta: { title: 'dashboard', icon: 'dashboard', affix: true }
       }
     ]
   }
+  // { path: '*', name: '404', redirect: '/404', hidden: true, constant: true, exception: true }
 ]
 
 /**
@@ -156,26 +157,26 @@ export const asyncRoutes = [
         path: 'list',
         component: () => import('@/views/template/list'),
         name: 'template/list',
-        meta: { title: 'template_list', icon: 'list', noCache: true, flag: 1 }
+        meta: { title: 'list', icon: 'list', noCache: true, flag: 1 }
       },
       {
         path: 'add',
         component: () => import('@/views/template/add'),
         name: 'template/add',
-        meta: { title: 'template_add', icon: 'edit', noCache: true }
+        meta: { title: 'add', icon: 'edit', noCache: true }
       },
       {
         path: 'edit/:id',
         component: () => import('@/views/template/add'),
         name: 'template/edit',
-        meta: { title: 'template_edit', noCache: true, activeMenu: '/template/list' },
+        meta: { title: 'edit', noCache: true, activeMenu: '/template/list' },
         hidden: true
       },
       {
         path: 'trash',
         component: () => import('@/views/template/list'),
         name: 'template/trash',
-        meta: { title: 'template_trash', icon: 'trash', noCache: true, flag: 0 }
+        meta: { title: 'trash', icon: 'trash', noCache: true, flag: 0 }
       }
     ]
   },

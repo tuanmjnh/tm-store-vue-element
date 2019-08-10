@@ -25,6 +25,7 @@ function hasPermission(roles, route) {
  */
 export function filterAsyncRoutes(routes, authRoutes, exception) {
   const res = []
+  exception = []
   routes.forEach(route => {
     const tmp = { ...route }
     // console.log(tmp.path.indexOf(`${parent}/`))

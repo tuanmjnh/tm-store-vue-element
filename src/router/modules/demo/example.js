@@ -11,19 +11,19 @@ const exampleRouter = {
       path: 'list',
       name: 'demo/example/list',
       component: () => import('@/views/demo/example/list'),
-      meta: { title: 'articleList', icon: 'list' }
+      meta: { title: 'list', icon: 'list' }
     },
     {
-      path: 'create',
-      name: 'demo/example/create',
-      component: () => import('@/views/demo/example/create'),
-      meta: { title: 'createArticle', icon: 'edit' }
+      path: 'add',
+      name: 'demo/example/add',
+      component: () => import('@/views/demo/example/add'),
+      meta: { title: 'add', icon: 'edit' }
     },
     {
       path: 'edit/:id(\\d+)',
       name: 'demo/example/edit',
       component: () => import('@/views/demo/example/edit'),
-      meta: { title: 'editArticle', noCache: true, activeMenu: '/example/list' },
+      meta: { title: 'edit', noCache: true, activeMenu: '/example/list' },
       hidden: true
     }
   ]

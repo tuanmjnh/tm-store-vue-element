@@ -1,6 +1,12 @@
 export default {
   route: {
+    index: 'Index',
+    list: 'List',
+    add: 'Add',
+    edit: 'Edit',
+    trash: 'Trash',
     dashboard: 'Dashboard',
+    profile: 'Profile',
     manager: 'Manager',
     users: 'Users',
     roles: 'Roles',
@@ -47,9 +53,6 @@ export default {
     complexTable: 'Complex Table',
     tab: 'Tab',
     form: 'Form',
-    createArticle: 'Create Article',
-    editArticle: 'Edit Article',
-    articleList: 'Article List',
     errorPages: 'Error Pages',
     page401: '401',
     page404: '404',
@@ -63,15 +66,10 @@ export default {
     pdf: 'PDF',
     exportZip: 'Export Zip',
     theme: 'Theme',
-    clipboardDemo: 'Clipboard',
+    clipboard: 'Clipboard',
     i18n: 'I18n',
     externalLink: 'External Link',
-    profile: 'Profile',
-    template: 'Template',
-    template_list: 'List',
-    template_edit: 'Edit',
-    template_add: 'Add',
-    template_trash: 'Trash'
+    template: 'Template'
   },
   global: {
     list: 'List data',
@@ -161,7 +159,8 @@ export default {
     auth_user_not_found: 'Account does not exist!',
     auth_wrong_password: 'The password is invalid!',
     auth_too_many_requests: 'Too many unsuccessful login attempts. Please include reCaptcha verification or try again later!',
-    network_request_failed: 'A network error. Please try again!'
+    network_request_failed: 'A network error. Please try again!',
+    login_with: 'Login with'
   },
   users: {
     password: 'Password',

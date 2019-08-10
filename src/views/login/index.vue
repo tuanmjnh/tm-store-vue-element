@@ -52,7 +52,7 @@
         </el-button>
       </el-row>
       <div style="position:relative">
-        <div class="tips">{{ $t('login.thirdpartyTips') }}</div>
+        <!-- <div class="tips">{{ $t('login.thirdpartyTips') }}</div> -->
         <br>
         <!-- <div class="tips">
           <span>{{ $t('login.username') }} : admin</span>
@@ -65,20 +65,22 @@
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
         </div> -->
       </div>
-      <el-row type="flex" class="row-bg" justify="end">
+      <br>
+      <social-sign />
+      <!-- <el-row type="flex" class="row-bg" justify="end">
         <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
           {{ $t('login.thirdparty') }}
         </el-button>
-      </el-row>
+      </el-row> -->
     </el-form>
 
-    <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
+    <!-- <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
       {{ $t('login.thirdpartyTips') }}
       <br>
       <br>
       <br>
       <social-sign />
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 

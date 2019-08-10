@@ -7,7 +7,7 @@ const common = [
   },
   {
     path: 'documentation',
-    name: 'Documentation',
+    name: 'demo/documentation',
     component: () => import('@/views/demo/documentation/index'),
     meta: { title: 'documentation', icon: 'documentation', affix: false }
   },
@@ -33,7 +33,7 @@ const common = [
     path: 'clipboard',
     name: 'demo/clipboard',
     component: () => import('@/views/demo/clipboard/index'),
-    meta: { title: 'clipboardDemo', icon: 'clipboard' }
+    meta: { title: 'clipboard', icon: 'clipboard' }
   },
   {
     path: 'i18n',

@@ -1,6 +1,12 @@
 export default {
   route: {
+    index: 'Trang chủ',
+    list: 'Danh sách',
+    add: 'Thêm mới',
+    edit: 'Sửa',
+    trash: 'Đã xóa',
     dashboard: 'Dashboard',
+    profile: 'Hồ sơ',
     manager: 'Quản trị',
     users: 'Tài khoản',
     roles: 'Quyền',
@@ -47,9 +53,6 @@ export default {
     complexTable: 'Complex Table',
     tab: 'Tab',
     form: 'Form',
-    createArticle: 'Create Article',
-    editArticle: 'Edit Article',
-    articleList: 'Article List',
     errorPages: 'Error Pages',
     page401: '401',
     page404: '404',
@@ -63,14 +66,10 @@ export default {
     pdf: 'PDF',
     exportZip: 'Export Zip',
     theme: 'Theme',
-    clipboardDemo: 'Clipboard',
+    clipboard: 'Clipboard',
     i18n: 'I18n',
     externalLink: 'External Link',
-    profile: 'Profile',
-    template: 'Template',
-    template_list: 'List',
-    template_add: 'Add',
-    template_trash: 'Trash'
+    template: 'Template'
   },
   global: {
     list: 'Danh sách dữ liệu',
@@ -159,7 +158,8 @@ export default {
     auth_user_not_found: 'Tài khoản không tồn tại!',
     auth_wrong_password: 'Mật khẩu không đúng!',
     auth_too_many_requests: 'Quá nhiều lần thử đăng nhập không thành công. Vui lòng xác minh reCaptcha hoặc thử lại sau!',
-    network_request_failed: 'Lỗi kết nối mạng. Vui lòng thử lại!'
+    network_request_failed: 'Lỗi kết nối mạng. Vui lòng thử lại!',
+    login_with: 'Đăng nhập bằng'
   },
   users: {
     password: 'Mật khẩu',

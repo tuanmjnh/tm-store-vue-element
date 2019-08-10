@@ -1,15 +1,17 @@
 <template>
   <div class="social-signup-container">
-    <div class="sign-btn" @click="onProvider('google')">
-      <span class="svg-container gg-svg-container">
-        <svg-icon icon-class="google" class="icon" /></span>
-      Google
-    </div>
-    <div class="sign-btn" @click="onProvider('facebook')">
-      <span class="svg-container fb-svg-container">
-        <svg-icon icon-class="facebook" class="icon" /></span>
-      Facebook
-    </div>
+    <el-tooltip class="item" effect="dark" :content="`${$t('login.login_with')} Google`" placement="top">
+      <div class="sign-btn" @click="onProvider('google')">
+        <span class="svg-container gg-svg-container">
+          <svg-icon icon-class="google" class="icon" /></span>
+      </div>
+    </el-tooltip>
+    <el-tooltip class="item" effect="dark" :content="`${$t('login.login_with')} Facebook`" placement="top">
+      <div class="sign-btn" @click="onProvider('facebook')">
+        <span class="svg-container fb-svg-container">
+          <svg-icon icon-class="facebook" class="icon" /></span>
+      </div>
+    </el-tooltip>
     <!-- <div class="sign-btn" @click="onWechat('wechat')">
       <span class="wx-svg-container">
         <svg-icon icon-class="wechat" class="icon" /></span>
@@ -43,7 +45,7 @@ export default {
       this.$store.dispatch('auth/loginProvider', { provider: provider }).then((result) => {
         // var token = result.credential.accessToken
         // var user = result.user
-        // console.log(result)
+        console.log(result)
         this.$router.push({ path: this.redirect })
       }).catch((err) => {
         err.message = 'login.network_request_failed'
@@ -77,6 +79,7 @@ export default {
     display: inline-block;
     cursor: pointer;
     margin-right: 20px;
+    // color: #fff;
   }
   .icon {
     color: #fff;

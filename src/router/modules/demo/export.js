@@ -39,8 +39,7 @@ const zip = {
   name: 'demo/zip',
   component: Demo,
   redirect: '/demo/zip/download',
-  alwaysShow: true,
-  meta: { title: 'zip', icon: 'zip' },
+  // meta: { title: 'zip', icon: 'zip' },
   children: [
     {
       path: 'export',
